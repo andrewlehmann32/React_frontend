@@ -1,7 +1,10 @@
 // Imports:
 import { cn } from "../../lib/utils";
-import { TGenericProps } from "../../types/generics.types";
+import { Generics } from "../../types";
 
-export default function Wrapper({ children, className }: TGenericProps) {
+export default function Wrapper({
+  children,
+  className,
+}: Generics.TGenericProps) {
   return <div className={cn("w-full h-screen", className)}>{children}</div>;
 }

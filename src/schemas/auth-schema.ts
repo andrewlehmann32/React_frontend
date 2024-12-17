@@ -6,7 +6,7 @@ export enum authKeys {
   PASSWORD = "password",
 }
 
-export const authSchema = z.object({
+export const registerSchema = z.object({
   [authKeys.EMAIL]: z
     .string()
     .nonempty({
@@ -37,4 +37,20 @@ export const authSchema = z.object({
     }),
 });
 
-export type TAuthSchema = z.infer<typeof authSchema>;
+export const loginSchema = z.object({
+  [authKeys.EMAIL]: z
+    .string()
+    .nonempty({
+      message: "Email is required",
+    })
+    .email({
+      message: "Invalid email address",
+    }),
+
+  [authKeys.PASSWORD]: z.string().nonempty({
+    message: "Password is required",
+  }),
+});
+
+export type TRegisterSchema = z.infer<typeof registerSchema>;
+export type TLoginSchema = z.infer<typeof loginSchema>;

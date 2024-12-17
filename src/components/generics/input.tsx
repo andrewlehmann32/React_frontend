@@ -1,10 +1,10 @@
 // Imports:
 import { forwardRef } from "react";
-import { TInputProps } from "../../types/generics.types";
+import { Generics } from "../../types";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 
-const GenericInput = forwardRef<HTMLInputElement, TInputProps>(
+const GenericInput = forwardRef<HTMLInputElement, Generics.TInputProps>(
   ({ type, placeholder, label, onChange, value, name, ...field }, ref) => {
     return (
       <div className="grid w-full max-w-full items-center gap-1.5">
