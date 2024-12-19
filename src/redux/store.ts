@@ -1,24 +1,44 @@
-// Imports:
-import { configureStore } from "@reduxjs/toolkit";
+// store.ts
+import { combineReducers, configureStore } from "@reduxjs/toolkit";
+import {
+  FLUSH,
+  PAUSE,
+  PERSIST,
+  persistReducer,
+  persistStore,
+  PURGE,
+  REGISTER,
+  REHYDRATE,
+} from "redux-persist";
+import storage from "redux-persist/lib/storage";
 import { userAPI } from "./api/user-api";
-import { userSlice } from "./reducer/user-reducer";
+import userReducer from "./reducer/user-reducer";
 
-const store = configureStore({
-  reducer: {
-    // API:
-    [userAPI.reducerPath]: userAPI.reducer,
+const persistConfig = {
+  key: "root",
+  storage,
+  whitelist: ["user-reducer"],
+  blacklist: [userAPI.reducerPath],
+};
 
-    // Reducer:
-    [userSlice.name]: userSlice.reducer,
-  },
-  middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(userAPI.middleware),
-  devTools: import.meta.env.MODE !== "production",
+const rootReducer = combineReducers({
+  "user-reducer": userReducer,
+  [userAPI.reducerPath]: userAPI.reducer,
 });
 
-type TRootState = ReturnType<typeof store.getState>;
-type AppDispatch = typeof store.dispatch;
+const persistedReducer = persistReducer(persistConfig, rootReducer);
 
-// Exports:
-export { store };
-export type { AppDispatch, TRootState };
+export const store = configureStore({
+  reducer: persistedReducer,
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: {
+        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+      },
+    }).concat(userAPI.middleware),
+});
+
+export const persistor = persistStore(store);
+
+export type TRootState = ReturnType<typeof rootReducer>;
+export type AppDispatch = typeof store.dispatch;

@@ -2,6 +2,7 @@
 import { GoogleAuthProvider, getAuth, signInWithPopup } from "firebase/auth";
 import toast from "react-hot-toast";
 import { FcGoogle } from "react-icons/fc";
+import { useNavigate } from "react-router-dom";
 import { z } from "zod";
 import { useLoginContext, useRegisterContext } from "../../../contexts/auth";
 import { useAppDispatch } from "../../../hooks/redux";
@@ -14,12 +15,12 @@ import {
 import {
   clearError,
   clearMessage,
-  loginUser,
-  loginUserFailure,
+  loadUser,
+  loadUserFailure,
+  loadUserStart,
   registerUser,
   registerUserFailure,
-  signInWithGoogle,
-  signInWithGoogleFailure,
+  registerUserStart,
 } from "../../../redux/reducer/user-reducer";
 import {
   authKeys,
@@ -49,6 +50,7 @@ export default function Auth({ type, setFormState }: Home.AuthProps) {
   const [Register] = useRegisterMutation();
   const [Login] = useLoginMutation();
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
 
   // Form State Handler:
   const handleFormState = () => {
@@ -57,8 +59,7 @@ export default function Auth({ type, setFormState }: Home.AuthProps) {
 
   // Submit Handler:
   async function onRegister(values: z.infer<typeof registerSchema>) {
-    dispatch(clearError());
-    dispatch(clearMessage());
+    dispatch(registerUserStart());
 
     try {
       const { data, error } = await Register({
@@ -77,6 +78,8 @@ export default function Auth({ type, setFormState }: Home.AuthProps) {
         const { data } = error as unknown as { data: { message: string } };
         toast.error(data?.message);
         dispatch(registerUserFailure(data?.message));
+        dispatch(clearMessage());
+        dispatch(clearError());
         return;
       }
     } catch (error) {
@@ -84,43 +87,44 @@ export default function Auth({ type, setFormState }: Home.AuthProps) {
         error instanceof Error ? error.message : "Something went wrong";
       toast.error(message);
       dispatch(registerUserFailure(message));
+      dispatch(clearMessage());
+      dispatch(clearError());
     }
   }
 
   // Google Handler:
   async function googleHandler() {
-    dispatch(clearError());
-    dispatch(clearMessage());
+    dispatch(loadUserStart());
 
     try {
       const result = await signInWithPopup(auth, provider);
       const token = await result.user.getIdToken();
-      const { data, error } = await Google({ user: result.user, token });
+
+      const { data } = await Google({ user: result.user, token });
 
       if (data?.success) {
         toast.success("Signed in successfully");
-        dispatch(signInWithGoogle(data?.user));
-        return;
-      }
-
-      if (error) {
-        const { data } = error as unknown as { data: { message: string } };
-        toast.error(data?.message);
-        dispatch(signInWithGoogleFailure(data?.message));
+        dispatch(loadUser(data?.user));
+        localStorage.setItem("token", token);
+        localStorage.setItem("id", JSON.stringify(data?.user?._id));
+        navigate("/dashboard", {
+          replace: true,
+        });
         return;
       }
     } catch (error) {
       const message =
         error instanceof Error ? error.message : "Something went wrong";
       toast.error(message);
-      dispatch(signInWithGoogleFailure(message));
+      dispatch(loadUserFailure(message));
+      dispatch(clearMessage());
+      dispatch(clearError());
     }
   }
 
   // Login Handler:
   async function onLogin(values: z.infer<typeof loginSchema>) {
-    dispatch(clearError());
-    dispatch(clearMessage());
+    dispatch(loadUserStart());
 
     try {
       const { data, error } = await Login({
@@ -130,7 +134,12 @@ export default function Auth({ type, setFormState }: Home.AuthProps) {
 
       if (data?.success) {
         toast.success("Logged in successfully");
-        dispatch(loginUser(data?.user));
+        dispatch(loadUser(data?.user));
+        localStorage.setItem("token", data?.token);
+        localStorage.setItem("id", JSON.stringify(data?.user?._id));
+        navigate("/dashboard", {
+          replace: true,
+        });
         loginFormHook.reset();
         return;
       }
@@ -138,14 +147,18 @@ export default function Auth({ type, setFormState }: Home.AuthProps) {
       if (error) {
         const { data } = error as unknown as { data: { message: string } };
         toast.error(data?.message);
-        dispatch(loginUserFailure(data?.message));
+        dispatch(loadUserFailure(data?.message));
+        dispatch(clearMessage());
+        dispatch(clearError());
         return;
       }
     } catch (error) {
       const message =
         error instanceof Error ? error.message : "Something went wrong";
       toast.error(message);
-      dispatch(loginUserFailure(message));
+      dispatch(loadUserFailure(message));
+      dispatch(clearMessage());
+      dispatch(clearError());
     }
   }
 

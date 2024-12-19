@@ -38,12 +38,29 @@ export const userAPI = createApi({
       query: ({ email, password }: { email: string; password: string }) => ({
         url: "/user/login",
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: { email, password },
+      }),
+    }),
+
+    Me: builder.query({
+      query: ({ id, token }: { id: string; token: string }) => ({
+        url: `/user/me?id=${JSON.parse(id)}`,
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
       }),
     }),
   }),
 });
 
-export const { useGoogleMutation, useRegisterMutation, useLoginMutation } =
-  userAPI;
+export const {
+  useGoogleMutation,
+  useRegisterMutation,
+  useLoginMutation,
+  useMeQuery,
+} = userAPI;
