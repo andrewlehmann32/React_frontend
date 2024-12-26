@@ -9,9 +9,9 @@ export default function SplitScreen({
   rightClassName,
 }: Generics.TSplitScreenProps) {
   return (
-    <div className="flex flex-col sm:flex-row size-full">
-      <div className={cn("sm:w-1/2 h-full", leftClassName)}>{left}</div>
-      <div className={cn("sm:w-1/2 h-full", rightClassName)}>{right}</div>
+    <div className="flex flex-col sm:flex-row size-full w-full h-full">
+      <div className={cn("w-full h-full", leftClassName)}>{left}</div>
+      <div className={cn("w-full h-full", rightClassName)}>{right}</div>
     </div>
   );
 }

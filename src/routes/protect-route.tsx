@@ -1,8 +1,6 @@
 // Imports:
-import { useAppSelector } from "../hooks/redux";
-
 import { Navigate } from "react-router-dom";
-import { useAppDispatch } from "../hooks/redux";
+import { useAppDispatch, useAppSelector } from "../hooks/redux";
 import { logout } from "../redux/reducer/user-reducer";
 
 const ProtectedRoute = ({

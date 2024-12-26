@@ -12,17 +12,16 @@ import {
 } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 import { userAPI } from "./api/user-api";
-import userReducer from "./reducer/user-reducer";
+import { userSlice } from "./reducer/user-reducer";
 
 const persistConfig = {
   key: "root",
   storage,
-  whitelist: ["user-reducer"],
-  blacklist: [userAPI.reducerPath],
+  whitelist: [userSlice.name],
 };
 
 const rootReducer = combineReducers({
-  "user-reducer": userReducer,
+  [userSlice.name]: userSlice.reducer,
   [userAPI.reducerPath]: userAPI.reducer,
 });
 
