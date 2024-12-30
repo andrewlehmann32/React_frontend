@@ -1,21 +1,24 @@
 import { GoBellFill } from "react-icons/go";
 import { svgDrawer } from "../../lib/helpers/svgDrawer";
+import { menuItems } from "../../constants/constants";
 
-export const Header = () => {
+export const Header = ({ title }: { title: string }) => {
+  const item = menuItems.find((i) => i.title === title);
+
   return (
     <div className="flex flex-wrap justify-between items-center w-full">
       <div className="hidden sm:flex">
         <ol className="inline-flex items-center space-x-1 md:space-x-2 rtl:space-x-reverse">
           <li className="inline-flex items-center">
             <span className="inline-flex items-center text-sm font-medium text-gray-600 cursor-pointer hover:text-gray-900">
-              {svgDrawer.home}
+              {item?.icon && <item.icon className="w-4 h-4" />}
             </span>
           </li>
           <li>
             <div className="flex items-center">
               {svgDrawer.angleRight}
               <span className="text-sm px-3 font-medium text-gray-700">
-                Home
+                {title}
               </span>
             </div>
           </li>

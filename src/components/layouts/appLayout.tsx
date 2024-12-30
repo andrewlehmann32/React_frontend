@@ -1,7 +1,7 @@
 import { ReactNode, useState } from "react";
 import { SidebarProvider, SidebarTrigger } from "../ui/sidebar";
 import { AppSidebar } from "../generics/app-sidebar";
-import { items } from "../../constants/constants";
+import { menuItems } from "../../constants/constants";
 
 interface AppLayoutProps {
   children: ReactNode;
@@ -31,12 +31,12 @@ const AppLayout = ({ children }: AppLayoutProps) => {
               </div>
             </SidebarProvider>
           </div>
-          <div className="w-full flex-grow h-full min-h-screen p-0 sm:p-2">
+          <div className="w-full flex-grow h-full min-h-screen p-0 sm:p-2 flex-wrap">
             {children}
           </div>
         </div>
         <div className="flex w-full fixed bg-white bottom-0 sm:hidden justify-center border-t shadow-lg">
-          {items.map((item, index) => (
+          {menuItems.map((item, index) => (
             <div className="px-6 py-3 text-base" key={index}>
               {<item.icon className={`w-8 h-8  }`} />}
             </div>

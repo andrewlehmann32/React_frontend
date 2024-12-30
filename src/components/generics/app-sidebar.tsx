@@ -7,8 +7,9 @@ import {
 } from "../../components/ui/sidebar";
 
 import { ChevronDown } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { BsThreeDots } from "react-icons/bs";
+import { useLocation } from "react-router-dom";
 import {
   SidebarGroupContent,
   SidebarGroupLabel,
@@ -16,7 +17,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "../../components/ui/sidebar";
-import { items, miscItems } from "../../constants/constants";
+import { menuItems, miscItems } from "../../constants/constants";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -93,6 +94,15 @@ const SidebarHead = () => {
 };
 
 export const AppSidebar = () => {
+  const location = useLocation();
+  const [activeItem, setActiveItem] = useState("");
+
+  useEffect(() => {
+    const activePage = location.pathname.substring(1);
+    setActiveItem(activePage);
+  }, [location]);
+
+  console.log(location.pathname);
   return (
     <Sidebar className="w-fit border-none sm:h-screen lg:w-64 lg:transition-all lg:duration-300">
       <div className="overflow-hidden px-4 lg:pl-4 py-4 h-full flex flex-col bg-dashboard">
@@ -104,11 +114,18 @@ export const AppSidebar = () => {
                 Application
               </SidebarGroupLabel>
               <SidebarGroupContent>
-                <SidebarMenu className="space-y-2">
-                  {items.map((item) => (
+                <SidebarMenu>
+                  {menuItems.map((item) => (
                     <SidebarMenuItem key={item.title}>
                       <SidebarMenuButton asChild>
-                        <a href={item.url} className="flex items-center gap-2">
+                        <a
+                          href={item.url}
+                          className={`flex items-center gap-2 min-h-8 h-full ${
+                            activeItem === item.title.toLocaleLowerCase()
+                              ? "bg-white"
+                              : ""
+                          }`}
+                        >
                           <item.icon className="w-6 h-6" />
                           <span className="hidden lg:block">{item.title}</span>
                         </a>

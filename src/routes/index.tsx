@@ -4,6 +4,7 @@ import App from "../App";
 import Dashboard from "../pages/dashboard";
 import Home from "../pages/home";
 import { ProtectedRoute } from "./protect-route";
+import Team from "../pages/team";
 
 const router = createBrowserRouter([
   {
@@ -15,10 +16,18 @@ const router = createBrowserRouter([
         element: <Home />,
       },
       {
-        path: "/dashboard",
+        path: "/home",
         element: (
           <ProtectedRoute isAdmin={false}>
             <Dashboard />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "/team",
+        element: (
+          <ProtectedRoute isAdmin={false}>
+            <Team />
           </ProtectedRoute>
         ),
       },
