@@ -1,7 +1,9 @@
 // Imports:
-import { cn } from "../../lib/utils";
+import { mergeClasses } from "../../lib/helpers/utils";
 import { Generics } from "../../types";
 
-export default function Image({ src, alt, className }: Generics.TImageProps) {
-  return <img src={src} alt={alt} className={cn("w-full", className)} />;
-}
+export const Image = ({ src, alt, className }: Generics.TImageProps) => {
+  return (
+    <img src={src} alt={alt} className={mergeClasses("w-full", className)} />
+  );
+};

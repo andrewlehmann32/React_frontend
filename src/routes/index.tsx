@@ -3,7 +3,7 @@ import { createBrowserRouter } from "react-router-dom";
 import App from "../App";
 import Dashboard from "../pages/dashboard";
 import Home from "../pages/home";
-import ProtectRoute from "./protect-route";
+import { ProtectedRoute } from "./protect-route";
 
 const router = createBrowserRouter([
   {
@@ -17,9 +17,9 @@ const router = createBrowserRouter([
       {
         path: "/dashboard",
         element: (
-          <ProtectRoute isAdmin={false}>
+          <ProtectedRoute isAdmin={false}>
             <Dashboard />
-          </ProtectRoute>
+          </ProtectedRoute>
         ),
       },
     ],

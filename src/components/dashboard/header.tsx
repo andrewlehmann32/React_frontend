@@ -1,5 +1,5 @@
 import { GoBellFill } from "react-icons/go";
-import { svgDrawer } from "../../helpers/svgDrawer";
+import { svgDrawer } from "../../lib/helpers/svgDrawer";
 
 export const Header = () => {
   return (

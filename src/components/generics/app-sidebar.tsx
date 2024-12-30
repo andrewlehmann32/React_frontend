@@ -30,7 +30,7 @@ const workspace = {
   createdAt: " Created 5 Days Ago",
 };
 
-function SidebarHead() {
+const SidebarHead = () => {
   const [isWorkspaceActive, setIsWorkspaceActive] = useState(false);
 
   const RenderWorkSpace = () => {
@@ -90,9 +90,9 @@ function SidebarHead() {
       </SidebarMenu>
     </SidebarHeader>
   );
-}
+};
 
-export function AppSidebar() {
+export const AppSidebar = () => {
   return (
     <Sidebar className="w-fit border-none sm:h-screen lg:w-64 lg:transition-all lg:duration-300">
       <div className="overflow-hidden px-4 lg:pl-4 py-4 h-full flex flex-col bg-dashboard">
@@ -160,4 +160,4 @@ export function AppSidebar() {
       </div>
     </Sidebar>
   );
-}
+};

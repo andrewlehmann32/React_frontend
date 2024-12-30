@@ -1,5 +1,4 @@
 import { AveragePerformance } from "./averagePerformance";
-import { Header } from "./header";
 import { LatestInvoices } from "./latestInvoices";
 import { MonthlySpendage } from "./monthlySpendage";
 import { Traffic } from "./traffic";
@@ -13,8 +12,7 @@ const elements = [
 
 export const Main = () => {
   return (
-    <div className="flex flex-wrap h-full flex-col pl-4 gap-3 bg-white border rounded-lg p-3">
-      <Header />
+    <>
       <div className="pb-2">
         <div className="flex items-center gap-3 py-3">
           <img
@@ -35,6 +33,6 @@ export const Main = () => {
           <div key={index}>{elem}</div>
         ))}
       </div>
-    </div>
+    </>
   );
 };
