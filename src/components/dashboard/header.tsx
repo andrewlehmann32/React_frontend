@@ -1,9 +1,11 @@
 import { GoBellFill } from "react-icons/go";
+import { menuItems, miscItems } from "../../constants/constants";
 import { svgDrawer } from "../../lib/helpers/svgDrawer";
-import { menuItems } from "../../constants/constants";
 
 export const Header = ({ title }: { title: string }) => {
-  const item = menuItems.find((i) => i.title === title);
+  const item =
+    menuItems.find((i) => i.identifier === title.toLowerCase()) ??
+    miscItems.find((i) => i.identifier === title.toLowerCase());
 
   return (
     <div className="flex flex-wrap justify-between items-center w-full">
@@ -18,7 +20,7 @@ export const Header = ({ title }: { title: string }) => {
             <div className="flex items-center">
               {svgDrawer.angleRight}
               <span className="text-sm px-3 font-medium text-gray-700">
-                {title}
+                {item?.title}
               </span>
             </div>
           </li>

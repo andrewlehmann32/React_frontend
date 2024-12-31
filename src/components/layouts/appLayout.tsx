@@ -1,7 +1,7 @@
 import { ReactNode, useState } from "react";
-import { SidebarProvider, SidebarTrigger } from "../ui/sidebar";
-import { AppSidebar } from "../generics/app-sidebar";
 import { menuItems } from "../../constants/constants";
+import { AppSidebar } from "../generics/app-sidebar";
+import { SidebarProvider, SidebarTrigger } from "../ui/sidebar";
 
 interface AppLayoutProps {
   children: ReactNode;
@@ -11,12 +11,12 @@ const AppLayout = ({ children }: AppLayoutProps) => {
   const [isSidebarCollapsed, setSidebarCollapsed] = useState(false);
 
   return (
-    <div className="w-full">
+    <div className="w-screen">
       <div className="border h-full min-h-screen w-full bg-dashboard relative flex ">
-        <div className="flex flex-col sm:flex-row size-full w-full h-full">
+        <div className="flex flex-col sm:flex-row size-full w-full h-full flex-wrap">
           <div
             className={`w-20 h-full hidden sm:flex flex-col ${
-              isSidebarCollapsed ? "lg:w-fit" : "lg:w-3/12"
+              isSidebarCollapsed ? "lg:w-fit" : "lg:w-fit"
             } `}
           >
             <SidebarProvider>
@@ -31,7 +31,7 @@ const AppLayout = ({ children }: AppLayoutProps) => {
               </div>
             </SidebarProvider>
           </div>
-          <div className="w-full flex-grow h-full min-h-screen p-0 sm:p-2 flex-wrap">
+          <div className="w-full md:w-[80%] lg:w-8/12 flex-grow h-full min-h-screen p-0 sm:p-2 flex-wrap">
             {children}
           </div>
         </div>
