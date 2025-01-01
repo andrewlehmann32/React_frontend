@@ -11,6 +11,7 @@ import {
 // Menu items.
 
 interface MenuItem {
+  identifier: string;
   title: string;
   url: string;
   icon: ComponentType<React.SVGProps<SVGSVGElement>>;
@@ -18,41 +19,48 @@ interface MenuItem {
 
 export const menuItems: MenuItem[] = [
   {
+    identifier: "home",
     title: "Home",
     url: "/home",
     icon: Home,
   },
   {
+    identifier: "resources",
     title: "Compute Resources",
-    url: "#",
+    url: "/resources",
     icon: HiServerStack,
   },
   {
+    identifier: "team",
     title: "Team",
     url: "/team",
     icon: Calendar,
   },
   {
+    identifier: "ordering",
     title: "Ordering",
-    url: "#",
+    url: "/ordering",
     icon: PiShoppingCartSimpleDuotone,
   },
   {
+    identifier: "billing",
     title: "Billing",
-    url: "#",
+    url: "/billing",
     icon: PiCreditCardDuotone,
   },
 ];
 
 export const miscItems = [
   {
+    identifier: "activity",
     title: "Activity Log",
-    url: "#",
+    url: "/activity",
     icon: LuSquareActivity,
   },
   {
+    identifier: "help",
     title: "Help Center",
-    url: "#",
+    url: "/help",
     icon: BsQuestionSquare,
   },
 ];

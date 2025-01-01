@@ -1,6 +1,6 @@
 import { ReactNode } from "react";
-import { Header } from "../dashboard/header";
 import { useLocation } from "react-router-dom";
+import { Header } from "../dashboard/header";
 
 interface PageLayoutProps {
   children: ReactNode;
@@ -9,8 +9,10 @@ interface PageLayoutProps {
 const PageLayout = ({ children }: PageLayoutProps) => {
   const location = useLocation();
   const currentPage = location.pathname.substring(1);
-  const formattedPage =
-    currentPage.charAt(0).toUpperCase() + currentPage.slice(1).toLowerCase();
+  const formattedPage = currentPage
+    .split(/[-_]/)
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+    .join(" ");
 
   return (
     <div

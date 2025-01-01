@@ -11,8 +11,8 @@ export const Table = ({ headers, body }: TableData) => {
   );
 
   return (
-    <div className="relative overflow-x-auto w-full">
-      <table className="min-w-full text-sm text-left text-gray-500">
+    <div className="relative overflow-x-auto w-full rounded-t-lg">
+      <table className="min-w-full text-sm text-left text-gray-500 ">
         <thead className="text-xs text-gray-700 uppercase bg-gray-100">
           <tr>
             {updatedHeaders.map((header, index) => (
@@ -33,7 +33,7 @@ export const Table = ({ headers, body }: TableData) => {
                 const key = header.toLowerCase().replace(/\s+/g, "");
                 return (
                   <td
-                    className="px-4 py-2 sm:px-6 text-gray-700 text-xs truncate"
+                    className="px-4 py-3 sm:px-6 text-gray-700 text-xs truncate"
                     key={cellIndex}
                   >
                     {row[key] || ""}

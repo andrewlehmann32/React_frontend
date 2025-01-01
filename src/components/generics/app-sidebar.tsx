@@ -102,7 +102,6 @@ export const AppSidebar = () => {
     setActiveItem(activePage);
   }, [location]);
 
-  console.log(location.pathname);
   return (
     <Sidebar className="w-fit border-none sm:h-screen lg:w-64 lg:transition-all lg:duration-300">
       <div className="overflow-hidden px-4 lg:pl-4 py-4 h-full flex flex-col bg-dashboard">
@@ -121,9 +120,7 @@ export const AppSidebar = () => {
                         <a
                           href={item.url}
                           className={`flex items-center gap-2 min-h-8 h-full ${
-                            activeItem === item.title.toLocaleLowerCase()
-                              ? "bg-white"
-                              : ""
+                            activeItem === item.identifier ? "bg-white" : ""
                           }`}
                         >
                           <item.icon className="w-6 h-6" />
@@ -144,7 +141,12 @@ export const AppSidebar = () => {
                   {miscItems.map((item) => (
                     <SidebarMenuItem key={item.title}>
                       <SidebarMenuButton asChild>
-                        <a href={item.url} className="flex items-center gap-2">
+                        <a
+                          href={item.url}
+                          className={`flex items-center gap-2 ${
+                            activeItem === item.identifier ? "bg-white" : ""
+                          }`}
+                        >
                           <item.icon className="w-6 h-6" />
                           <span className="hidden lg:block ">{item.title}</span>
                         </a>

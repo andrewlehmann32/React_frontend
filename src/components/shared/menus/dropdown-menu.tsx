@@ -13,10 +13,14 @@ interface DropdownMenuProps {
     label: string;
     disabled?: boolean;
   }[];
+  placeholder?: string;
 }
 
-export const RDropdownMenu = ({ items }: DropdownMenuProps) => {
-  const [active, setActive] = useState("choose an option");
+export const RDropdownMenu = ({
+  items,
+  placeholder = "choose an option",
+}: DropdownMenuProps) => {
+  const [active, setActive] = useState(placeholder);
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>

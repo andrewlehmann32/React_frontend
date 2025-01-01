@@ -1,10 +1,12 @@
 // Imports:
 import { createBrowserRouter } from "react-router-dom";
 import App from "../App";
+import Activity from "../pages/activity-log";
+import Billing from "../pages/billing";
 import Dashboard from "../pages/dashboard";
 import Home from "../pages/home";
-import { ProtectedRoute } from "./protect-route";
 import Team from "../pages/team";
+import { ProtectedRoute } from "./protect-route";
 
 const router = createBrowserRouter([
   {
@@ -28,6 +30,22 @@ const router = createBrowserRouter([
         element: (
           <ProtectedRoute isAdmin={false}>
             <Team />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "/billing",
+        element: (
+          <ProtectedRoute isAdmin={false}>
+            <Billing />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "/activity",
+        element: (
+          <ProtectedRoute isAdmin={false}>
+            <Activity />
           </ProtectedRoute>
         ),
       },
