@@ -1,7 +1,6 @@
-// Imports:
-import Image from "../../generics/image";
+import { Image } from "../../generics/image";
 
-export default function AuthLayer() {
+export const AuthLayer = () => {
   return (
     <div className="container h-full overflow-hidden flex items-center justify-center">
       <Image
@@ -11,4 +10,4 @@ export default function AuthLayer() {
       />
     </div>
   );
-}
+};

@@ -1,8 +1,8 @@
-import { Main } from "../../components/dashboard/main";
 import AppLayout from "../../components/layouts/appLayout";
 import { PageLayout } from "../../components/layouts/pageLayout";
+import { Main } from "../../components/team/main";
 
-const Dashboard = () => {
+const Team = () => {
   return (
     <AppLayout>
       <PageLayout>
@@ -12,4 +12,4 @@ const Dashboard = () => {
   );
 };
 
-export default Dashboard;
+export default Team;

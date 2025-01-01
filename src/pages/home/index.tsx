@@ -1,9 +1,8 @@
-// Imports:
 import { useState } from "react";
-import SplitScreen from "../../components/generics/split-screen";
-import Wrapper from "../../components/layouts/wrapper";
-import Auth from "../../components/modules/login/auth";
-import AuthLayer from "../../components/modules/login/auth-layer";
+import { SplitScreen } from "../../components/generics/split-screen";
+import { Wrapper } from "../../components/layouts/wrapper";
+import { Auth } from "../../components/modules/login/auth";
+import { AuthLayer } from "../../components/modules/login/auth-layer";
 import { LoginFormProvider, RegisterFormProvider } from "../../contexts/auth";
 
 export default function Home() {

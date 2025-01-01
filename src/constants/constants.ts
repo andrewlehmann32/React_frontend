@@ -1,15 +1,25 @@
 // Imports:
 import { Calendar, Home } from "lucide-react";
+import { ComponentType } from "react";
 import { BsQuestionSquare } from "react-icons/bs";
-import { LuSquareActivity } from "react-icons/lu";
-import { PiShoppingCartSimpleDuotone } from "react-icons/pi";
-import { PiCreditCardDuotone } from "react-icons/pi";
 import { HiServerStack } from "react-icons/hi2";
+import { LuSquareActivity } from "react-icons/lu";
+import {
+  PiCreditCardDuotone,
+  PiShoppingCartSimpleDuotone,
+} from "react-icons/pi";
 // Menu items.
-export const items = [
+
+interface MenuItem {
+  title: string;
+  url: string;
+  icon: ComponentType<React.SVGProps<SVGSVGElement>>;
+}
+
+export const menuItems: MenuItem[] = [
   {
     title: "Home",
-    url: "#",
+    url: "/home",
     icon: Home,
   },
   {
@@ -19,7 +29,7 @@ export const items = [
   },
   {
     title: "Team",
-    url: "#",
+    url: "/team",
     icon: Calendar,
   },
   {

@@ -28,8 +28,8 @@ import {
   registerSchema,
 } from "../../../schemas/auth-schema";
 import { Home } from "../../../types";
-import Divider from "../../generics/divider";
-import GenericInput from "../../generics/input";
+import { Divider } from "../../generics/divider";
+import { GenericInput } from "../../generics/input";
 import { Button } from "../../ui/button";
 import {
   Form,
@@ -43,7 +43,7 @@ import {
 const auth = getAuth(firebase);
 const provider = new GoogleAuthProvider();
 
-export default function Auth({ type, setFormState }: Home.AuthProps) {
+export const Auth = ({ type, setFormState }: Home.AuthProps) => {
   const { formHook: registerFormHook } = useRegisterContext();
   const { formHook: loginFormHook } = useLoginContext();
   const [Google] = useGoogleMutation();
@@ -269,4 +269,4 @@ export default function Auth({ type, setFormState }: Home.AuthProps) {
       </div>
     </div>
   );
-}
+};

@@ -4,14 +4,23 @@ type TableData = {
 };
 
 export const Table = ({ headers, body }: TableData) => {
-  if (!headers || !body) return;
+  if (!headers?.length || !body?.length) return null;
+
+  const updatedHeaders = headers.map((header) =>
+    header === "Action" ? "" : header
+  );
+
   return (
-    <div className="relative overflow-x-auto sm:rounded-lg border-none">
-      <table className="w-full text-sm text-left rtl:text-right text-gray-500">
+    <div className="relative overflow-x-auto w-full">
+      <table className="min-w-full text-sm text-left text-gray-500">
         <thead className="text-xs text-gray-700 uppercase bg-gray-100">
           <tr>
-            {headers.map((header, index) => (
-              <th scope="col" className="px-3 sm:px-6 py-3" key={index}>
+            {updatedHeaders.map((header, index) => (
+              <th
+                scope="col"
+                className="px-4 py-3 sm:px-6 whitespace-nowrap"
+                key={index}
+              >
                 {header}
               </th>
             ))}
@@ -19,18 +28,15 @@ export const Table = ({ headers, body }: TableData) => {
         </thead>
         <tbody>
           {body.map((row, rowIndex) => (
-            <tr
-              key={rowIndex}
-              className="bg-white border-b border-gray-100 hover:bg-gray-50"
-            >
+            <tr key={rowIndex} className="bg-white border-b hover:bg-gray-50">
               {headers.map((header, cellIndex) => {
                 const key = header.toLowerCase().replace(/\s+/g, "");
                 return (
                   <td
-                    className="px-1 sm:px-6 py-1 border w-12 text-xs"
+                    className="px-4 py-2 sm:px-6 text-gray-700 text-xs truncate"
                     key={cellIndex}
                   >
-                    {row[key]}
+                    {row[key] || ""}
                   </td>
                 );
               })}
