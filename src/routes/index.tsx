@@ -5,6 +5,7 @@ import Activity from "../pages/activity-log";
 import Billing from "../pages/billing";
 import Dashboard from "../pages/dashboard";
 import Home from "../pages/home";
+import Ordering from "../pages/ordering";
 import Team from "../pages/team";
 import { ProtectedRoute } from "./protect-route";
 
@@ -30,6 +31,14 @@ const router = createBrowserRouter([
         element: (
           <ProtectedRoute isAdmin={false}>
             <Team />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "/ordering",
+        element: (
+          <ProtectedRoute isAdmin={false}>
+            <Ordering />
           </ProtectedRoute>
         ),
       },
