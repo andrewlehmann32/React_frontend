@@ -12,7 +12,7 @@ const initialState: Redux.TUserState = {
 };
 
 export const userSlice = createSlice({
-  name: "user-reducer",
+  name: "userSlice",
   initialState,
   reducers: {
     registerUserStart: (state) => {

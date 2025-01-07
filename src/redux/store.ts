@@ -12,7 +12,7 @@ import {
 } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 import { userAPI } from "./api/user-api";
-import { userSlice } from "./reducer/user-reducer";
+import { userSlice } from "./reducer/userSlice";
 
 const persistConfig = {
   key: "root",
@@ -39,5 +39,5 @@ export const store = configureStore({
 
 export const persistor = persistStore(store);
 
-export type TRootState = ReturnType<typeof rootReducer>;
+export type RootState = ReturnType<typeof rootReducer>;
 export type AppDispatch = typeof store.dispatch;

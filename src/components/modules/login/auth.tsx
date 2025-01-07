@@ -21,7 +21,7 @@ import {
   registerUser,
   registerUserFailure,
   registerUserStart,
-} from "../../../redux/reducer/user-reducer";
+} from "../../../redux/reducer/userSlice";
 import {
   authKeys,
   loginSchema,

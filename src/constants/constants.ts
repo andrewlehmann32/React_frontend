@@ -64,3 +64,10 @@ export const miscItems = [
     icon: BsQuestionSquare,
   },
 ];
+
+export enum DROPDOWN_DIRECTION {
+  UP = "up",
+  DOWN = "down",
+  LEFT = "left",
+  RIGHT = "right",
+}
