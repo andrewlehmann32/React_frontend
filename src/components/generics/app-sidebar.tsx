@@ -1,11 +1,4 @@
 // Imports:
-import {
-  Sidebar,
-  SidebarContent,
-  SidebarGroup,
-  SidebarHeader,
-} from "../../components/ui/sidebar";
-
 import { ChevronDown } from "lucide-react";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
@@ -13,8 +6,12 @@ import { BiSupport } from "react-icons/bi";
 import { TbLogout2 } from "react-icons/tb";
 import { useLocation, useNavigate } from "react-router-dom";
 import {
+  Sidebar,
+  SidebarContent,
+  SidebarGroup,
   SidebarGroupContent,
   SidebarGroupLabel,
+  SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
@@ -27,7 +24,10 @@ import {
 import { useAppDispatch, useAppSelector } from "../../hooks/redux";
 import { useLogoutMutation } from "../../redux/api/user-api";
 import { logout } from "../../redux/reducer/userSlice";
-import { selectUser } from "../../redux/selectors/userSelector";
+import {
+  selectUser,
+  selectUserProjects,
+} from "../../redux/selectors/userSelector";
 import { DotsDropdown } from "../shared/menus/simple-dropdown";
 import {
   DropdownMenu,
@@ -36,13 +36,7 @@ import {
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 
-const workspace = {
-  name: "Project Oasis",
-  icon: "/assets/workspace.png",
-  createdAt: " Created 5 Days Ago",
-};
-
-const SidebarHead = () => {
+const SidebarHead = ({ workspaces }: any) => {
   const [isWorkspaceActive, setIsWorkspaceActive] = useState(false);
 
   const RenderWorkSpace = () => {
@@ -53,22 +47,22 @@ const SidebarHead = () => {
         </div>
       );
 
-    return (
-      <div className="flex gap-0 px-0 lg:gap-2 lg:px-1 items-center">
-        <div>
-          <img src={workspace.icon} alt="workspace" className="w-10 h-10" />
-        </div>
-        <div className="hidden md:block">
-          <p className="hidden lg:block text-sm font-semibold">
-            {" "}
-            {workspace.name}
-          </p>
-          <span className="hidden lg:block text-xs text-gray-500">
-            {workspace.createdAt}
-          </span>
-        </div>
-      </div>
-    );
+    // return (
+    //   <div className="flex gap-0 px-0 lg:gap-2 lg:px-1 items-center">
+    //     <div>
+    //       <img src={workspace.icon} alt="workspace" className="w-10 h-10" />
+    //     </div>
+    //     <div className="hidden md:block">
+    //       <p className="hidden lg:block text-sm font-semibold">
+    //         {" "}
+    //         {workspace.name}
+    //       </p>
+    //       <span className="hidden lg:block text-xs text-gray-500">
+    //         {workspace.createdAt}
+    //       </span>
+    //     </div>
+    //   </div>
+    // );
   };
 
   return (
@@ -85,17 +79,19 @@ const SidebarHead = () => {
               className="w-[--radix-popper-anchor-width]"
               onClick={() => setIsWorkspaceActive(true)}
             >
-              <DropdownMenuItem className="px-0 lg:px-1">
-                <img src={workspace.icon} alt="workspace" />
-                <div className="flex flex-col flex-wrap">
-                  <p className="text-[10px] lg:text-sm font-medium">
-                    {workspace.name}
-                  </p>
-                  <span className="text-[8px] tracking-tighter lg:text-xs text-gray-500">
-                    {workspace.createdAt}
-                  </span>
-                </div>
-              </DropdownMenuItem>
+              {workspaces?.map(({ item, index }: any) => (
+                <DropdownMenuItem className="px-0 lg:px-1" key={index ?? 1}>
+                  <img src={item?.icon} alt="item" />
+                  <div className="flex flex-col flex-wrap">
+                    <p className="text-[10px] lg:text-sm font-medium">
+                      {item?.name}
+                    </p>
+                    <span className="text-[8px] tracking-tighter lg:text-xs text-gray-500">
+                      {item?.createdAt}
+                    </span>
+                  </div>
+                </DropdownMenuItem>
+              ))}
             </DropdownMenuContent>
           </DropdownMenu>
         </SidebarMenuItem>
@@ -108,6 +104,8 @@ export const AppSidebar = () => {
   const location = useLocation();
   const [activeItem, setActiveItem] = useState("");
   const { user } = useAppSelector(selectUser);
+  const userProjects = useAppSelector(selectUserProjects);
+  console.log({ userProjects });
   const [Logout] = useLogoutMutation();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
@@ -154,7 +152,7 @@ export const AppSidebar = () => {
   return (
     <Sidebar className="w-fit border-none sm:h-screen lg:w-64 lg:transition-all lg:duration-300">
       <div className="overflow-hidden px-4 lg:pl-4 py-4 h-full flex flex-col bg-dashboard">
-        <SidebarHead />
+        <SidebarHead workspaces={userProjects} />
         <SidebarContent className="flex flex-col flex-grow justify-between divide-y">
           <div className="divide-y">
             <SidebarGroup>
@@ -211,7 +209,7 @@ export const AppSidebar = () => {
               <div className="flex py-3 justify-between relative">
                 <div className="flex items-start  gap-3">
                   <img
-                    src={workspace.icon}
+                    // src={user?.avatar }
                     alt="workspace"
                     className="w-10 h-10"
                   />

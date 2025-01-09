@@ -71,6 +71,7 @@ export const Auth = ({ type, setFormState }: Home.AuthProps) => {
         toast.success("Registered successfully");
         dispatch(registerUser(data?.user));
         registerFormHook.reset();
+        handleFormState();
         return;
       }
 

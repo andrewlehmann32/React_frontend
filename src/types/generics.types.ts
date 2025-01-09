@@ -27,3 +27,13 @@ export type TInputProps = {
   value?: string;
   name?: string;
 };
+
+export type ProjectsType = {
+  name: string;
+  icon?: string;
+  createdBy: string;
+  createdAt?: Date;
+  teammates?: string[];
+  sshKeys?: string[];
+  paymentMethod?: string;
+};
