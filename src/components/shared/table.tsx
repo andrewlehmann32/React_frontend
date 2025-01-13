@@ -4,7 +4,7 @@ type TableData = {
 };
 
 export const Table = ({ headers, body }: TableData) => {
-  if (!headers?.length || !body?.length) return null;
+  if (!headers?.length) return null;
 
   const updatedHeaders = headers.map((header) =>
     header === "Action" ? "" : header
@@ -27,21 +27,27 @@ export const Table = ({ headers, body }: TableData) => {
           </tr>
         </thead>
         <tbody>
-          {body.map((row, rowIndex) => (
-            <tr key={rowIndex} className="bg-white border-b hover:bg-gray-50">
-              {headers.map((header, cellIndex) => {
-                const key = header.toLowerCase().replace(/\s+/g, "");
-                return (
-                  <td
-                    className="px-4 py-3 sm:px-6 text-gray-700 text-xs truncate"
-                    key={cellIndex}
-                  >
-                    {row[key] || ""}
-                  </td>
-                );
-              })}
-            </tr>
-          ))}
+          {body.length ? (
+            body.map((row, rowIndex) => (
+              <tr key={rowIndex} className="bg-white border-b hover:bg-gray-50">
+                {headers.map((header, cellIndex) => {
+                  const key = header.toLowerCase().replace(/\s+/g, "");
+                  return (
+                    <td
+                      className="px-4 py-3 sm:px-6 text-gray-700 text-xs truncate"
+                      key={cellIndex}
+                    >
+                      {row[key] || ""}
+                    </td>
+                  );
+                })}
+              </tr>
+            ))
+          ) : (
+            <td className="px-4 py-3 sm:px-6 text-gray-700 text-xs truncate">
+              No Data found
+            </td>
+          )}
         </tbody>
       </table>
     </div>

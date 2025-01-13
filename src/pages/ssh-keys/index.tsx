@@ -1,7 +1,7 @@
-import { Main } from "../../components/dashboard/main";
 import { PageLayout } from "../../components/layouts/pageLayout";
+import { Main } from "../../components/ssh-keys/main";
 
-const Dashboard = () => {
+const SSHkeys = () => {
   return (
     <PageLayout>
       <Main />
@@ -9,4 +9,4 @@ const Dashboard = () => {
   );
 };
 
-export default Dashboard;
+export default SSHkeys;

@@ -29,6 +29,7 @@ export type TInputProps = {
 };
 
 export type ProjectsType = {
+  _id: string;
   name: string;
   icon?: string;
   createdBy: string;

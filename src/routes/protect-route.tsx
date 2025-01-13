@@ -1,5 +1,6 @@
 // Imports:
 import { Navigate } from "react-router-dom";
+import AppLayout from "../components/layouts/appLayout";
 import { useAppDispatch, useAppSelector } from "../hooks/redux";
 import { logout } from "../redux/reducer/userSlice";
 import { selectUser } from "../redux/selectors/userSelector";
@@ -33,7 +34,7 @@ const ProtectedRoute = ({
     return <Navigate to="/" replace />;
   }
 
-  return children;
+  return <AppLayout>{children}</AppLayout>;
 };
 
 export { ProtectedRoute };
