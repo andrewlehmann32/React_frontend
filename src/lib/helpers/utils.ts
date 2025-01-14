@@ -19,3 +19,12 @@ export const calculateDaysFromDate = (createdAt: Date): number => {
   // Return the number of days, rounded to the nearest whole number
   return Math.floor(daysDifference);
 };
+
+export const formatTimestamp = (timestamp: Date) => {
+  const date = new Date(timestamp);
+  return date.toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
+};

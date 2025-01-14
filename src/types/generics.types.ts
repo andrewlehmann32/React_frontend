@@ -28,13 +28,39 @@ export type TInputProps = {
   name?: string;
 };
 
+export type User = {
+  _id: string;
+  name: string;
+  email: string;
+  password?: string;
+  oldPassword?: string;
+  confirmPassword?: string;
+  avatar: {
+    public_id?: string;
+    url: string;
+  };
+  googleId?: string;
+  role: "user" | "admin";
+  resetPasswordToken?: string;
+  resetPasswordExpire?: Date;
+  createdAt: Date;
+  updatedAt: Date;
+  projects: ProjectsType[];
+};
+
 export type ProjectsType = {
   _id: string;
   name: string;
   icon?: string;
   createdBy: string;
-  createdAt?: Date;
-  teammates?: string[];
-  sshKeys?: string[];
+  createdAt: Date;
+  teammates?: User[];
+  sshKeys?: ISSH[];
   paymentMethod?: string;
+};
+
+export type ISSH = {
+  name: string;
+  key: string;
+  projectId: string;
 };
