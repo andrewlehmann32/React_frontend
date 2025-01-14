@@ -45,6 +45,16 @@ export const userAPI = createApi({
       }),
     }),
 
+    Logout: builder.mutation({
+      query: () => ({
+        url: "/user/logout",
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }),
+    }),
+
     Me: builder.query({
       query: ({ id, token }: { id: string; token: string }) => ({
         url: `/user/me?id=${JSON.parse(id)}`,
@@ -63,4 +73,5 @@ export const {
   useRegisterMutation,
   useLoginMutation,
   useMeQuery,
+  useLogoutMutation,
 } = userAPI;

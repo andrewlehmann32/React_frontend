@@ -1,9 +1,11 @@
 // userSlice.ts
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { Redux } from "../../types";
+import { ProjectsType } from "../../types/generics.types";
 
 const initialState: Redux.TUserState = {
   user: null,
+  activeProject: null,
   isAuth: false,
   isLoading: false,
   isError: false,
@@ -12,7 +14,7 @@ const initialState: Redux.TUserState = {
 };
 
 export const userSlice = createSlice({
-  name: "user-reducer",
+  name: "userSlice",
   initialState,
   reducers: {
     registerUserStart: (state) => {
@@ -68,6 +70,12 @@ export const userSlice = createSlice({
       state.isSuccess = false;
       state.message = "";
     },
+    setActiveProject: (state, action: PayloadAction<ProjectsType>) => {
+      return {
+        ...state,
+        activeProject: action.payload,
+      };
+    },
   },
 });
 
@@ -81,6 +89,7 @@ export const {
   clearError,
   clearMessage,
   logout,
+  setActiveProject,
 } = userSlice.actions;
 
 export default userSlice.reducer;

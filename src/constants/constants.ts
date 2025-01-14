@@ -2,6 +2,7 @@
 import { Calendar, Home } from "lucide-react";
 import { ComponentType } from "react";
 import { BsQuestionSquare } from "react-icons/bs";
+import { GiHouseKeys } from "react-icons/gi";
 import { HiServerStack } from "react-icons/hi2";
 import { LuSquareActivity } from "react-icons/lu";
 import {
@@ -48,6 +49,12 @@ export const menuItems: MenuItem[] = [
     url: "/billing",
     icon: PiCreditCardDuotone,
   },
+  {
+    identifier: "sshkeys",
+    title: "SSH Keys",
+    url: "/sshkeys",
+    icon: GiHouseKeys,
+  },
 ];
 
 export const miscItems = [
@@ -64,3 +71,10 @@ export const miscItems = [
     icon: BsQuestionSquare,
   },
 ];
+
+export enum DROPDOWN_DIRECTION {
+  UP = "up",
+  DOWN = "down",
+  LEFT = "left",
+  RIGHT = "right",
+}

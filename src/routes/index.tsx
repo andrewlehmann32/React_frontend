@@ -6,6 +6,7 @@ import Billing from "../pages/billing";
 import Dashboard from "../pages/dashboard";
 import Home from "../pages/home";
 import Ordering from "../pages/ordering";
+import SSHkeys from "../pages/ssh-keys";
 import Team from "../pages/team";
 import { ProtectedRoute } from "./protect-route";
 
@@ -55,6 +56,14 @@ const router = createBrowserRouter([
         element: (
           <ProtectedRoute isAdmin={false}>
             <Activity />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "/sshkeys",
+        element: (
+          <ProtectedRoute isAdmin={false}>
+            <SSHkeys />
           </ProtectedRoute>
         ),
       },

@@ -4,9 +4,9 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@radix-ui/react-dropdown-menu";
-import { Button } from "../../ui/button";
 import { ChevronDown } from "lucide-react";
 import { useState } from "react";
+import { Button } from "../../ui/button";
 
 interface DropdownMenuProps {
   items: {
@@ -14,13 +14,15 @@ interface DropdownMenuProps {
     disabled?: boolean;
   }[];
   placeholder?: string;
+  defaultValue?: string;
 }
 
 export const RDropdownMenu = ({
   items,
   placeholder = "choose an option",
+  defaultValue,
 }: DropdownMenuProps) => {
-  const [active, setActive] = useState(placeholder);
+  const [active, setActive] = useState(defaultValue ?? placeholder);
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>

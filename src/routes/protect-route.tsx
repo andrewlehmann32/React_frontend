@@ -1,7 +1,9 @@
 // Imports:
 import { Navigate } from "react-router-dom";
+import AppLayout from "../components/layouts/appLayout";
 import { useAppDispatch, useAppSelector } from "../hooks/redux";
-import { logout } from "../redux/reducer/user-reducer";
+import { logout } from "../redux/reducer/userSlice";
+import { selectUser } from "../redux/selectors/userSelector";
 
 const ProtectedRoute = ({
   children,
@@ -11,9 +13,7 @@ const ProtectedRoute = ({
   isAdmin: boolean;
 }) => {
   const dispatch = useAppDispatch();
-  const { user, isAuth, isLoading } = useAppSelector(
-    (state) => state["user-reducer"]
-  );
+  const { user, isAuth, isLoading } = useAppSelector(selectUser);
 
   if (user?.role !== "admin" && isAdmin) {
     dispatch(logout());
@@ -34,7 +34,7 @@ const ProtectedRoute = ({
     return <Navigate to="/" replace />;
   }
 
-  return children;
+  return <AppLayout>{children}</AppLayout>;
 };
 
 export { ProtectedRoute };

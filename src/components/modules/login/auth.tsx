@@ -21,7 +21,7 @@ import {
   registerUser,
   registerUserFailure,
   registerUserStart,
-} from "../../../redux/reducer/user-reducer";
+} from "../../../redux/reducer/userSlice";
 import {
   authKeys,
   loginSchema,
@@ -71,6 +71,7 @@ export const Auth = ({ type, setFormState }: Home.AuthProps) => {
         toast.success("Registered successfully");
         dispatch(registerUser(data?.user));
         registerFormHook.reset();
+        handleFormState();
         return;
       }
 

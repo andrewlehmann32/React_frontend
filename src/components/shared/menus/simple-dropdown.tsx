@@ -1,12 +1,18 @@
 import { useEffect, useState } from "react";
 import { BsThreeDots } from "react-icons/bs";
+import { DROPDOWN_DIRECTION } from "../../../constants/constants";
 
 interface DotsDropdownProps {
   items: React.ReactNode[]; // Use 'label' instead of 'item'
   id: String;
+  direction?: String;
 }
 
-export const DotsDropdown = ({ items, id }: DotsDropdownProps) => {
+export const DotsDropdown = ({
+  items,
+  id,
+  direction = DROPDOWN_DIRECTION.DOWN,
+}: DotsDropdownProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [dropdownStyle, setDropdownStyle] = useState({ top: 0, left: 0 });
 
@@ -57,8 +63,14 @@ export const DotsDropdown = ({ items, id }: DotsDropdownProps) => {
       />
       {isOpen && (
         <div
-          className="fixed bg-white border rounded-md shadow-lg z-50 w-40"
-          style={{ top: dropdownStyle.top, left: dropdownStyle.left }}
+          className={`${
+            direction === DROPDOWN_DIRECTION.DOWN ? "fixed" : "absolute"
+          } bg-white border rounded-md shadow-lg z-50 w-40`}
+          style={
+            direction === DROPDOWN_DIRECTION.DOWN
+              ? { top: dropdownStyle.top, left: dropdownStyle.left }
+              : { bottom: 40, right: 0 }
+          }
         >
           <ul className="py-1">
             {items.map((item, index) => (

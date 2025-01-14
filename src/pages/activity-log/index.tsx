@@ -1,14 +1,11 @@
-import AppLayout from "../../components/layouts/appLayout";
-import { PageLayout } from "../../components/layouts/pageLayout";
 import { Main } from "../../components/activity/main";
+import { PageLayout } from "../../components/layouts/pageLayout";
 
 const Activity = () => {
   return (
-    <AppLayout>
-      <PageLayout>
-        <Main />
-      </PageLayout>
-    </AppLayout>
+    <PageLayout>
+      <Main />
+    </PageLayout>
   );
 };
 
