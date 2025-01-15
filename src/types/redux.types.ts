@@ -1,9 +1,8 @@
 // Imports:
-import { Entities } from "../../../server/types";
-import { ProjectsType } from "./generics.types";
+import { ProjectsType, User } from "./generics.types";
 
 export type TUserState = {
-  user: Partial<Entities.IUser> | null;
+  user: User | null;
   activeProject: ProjectsType | null;
   isLoading: boolean;
   isAuth: boolean;

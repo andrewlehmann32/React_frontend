@@ -38,6 +38,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
+import { AddTeam } from "./add-team";
 
 const SidebarHead = ({
   userProjects,
@@ -48,11 +49,12 @@ const SidebarHead = ({
 }) => {
   const dispatch = useAppDispatch();
   const [isWorkspaceActive, setIsWorkspaceActive] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [activeWorkspace, setActiveWorkspace] = useState({
-    icon: activeProject.icon ?? "https://i.pravatar.cc/150?img=62",
-    name: activeProject.name ?? "",
+    icon: activeProject?.icon ?? "https://i.pravatar.cc/150?img=62",
+    name: activeProject?.name ?? "",
     createdAt: `Created ${calculateDaysFromDate(
-      activeProject.createdAt
+      activeProject?.createdAt
     )} days ago`,
   });
 
@@ -135,10 +137,19 @@ const SidebarHead = ({
                   </DropdownMenuItem>
                 );
               })}
+              <DropdownMenuItem className="px-0 lg:px-1">
+                <p
+                  className="text-center text-sm font-medium text-gray-500 cursor-pointer px-2"
+                  onClick={() => setIsModalOpen(true)}
+                >
+                  + Create new team
+                </p>
+              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </SidebarMenuItem>
       </SidebarMenu>
+      <AddTeam isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} />
     </SidebarHeader>
   );
 };

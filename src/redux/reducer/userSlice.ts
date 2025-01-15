@@ -1,7 +1,7 @@
 // userSlice.ts
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { Redux } from "../../types";
-import { ProjectsType } from "../../types/generics.types";
+import { ProjectsType, User } from "../../types/generics.types";
 
 const initialState: Redux.TUserState = {
   user: null,
@@ -22,7 +22,7 @@ export const userSlice = createSlice({
       state.isError = false;
       state.isSuccess = false;
     },
-    registerUser: (state, action: PayloadAction<object>) => {
+    registerUser: (state, action: PayloadAction<User>) => {
       state.user = action.payload;
       state.isAuth = true;
       state.isLoading = false;
@@ -41,7 +41,7 @@ export const userSlice = createSlice({
       state.isSuccess = false;
       state.message = "";
     },
-    loadUser: (state, action: PayloadAction<object>) => {
+    loadUser: (state, action: PayloadAction<User>) => {
       state.user = action.payload;
       state.isAuth = true;
       state.isLoading = false;
