@@ -62,19 +62,19 @@ export const userSlice = createSlice({
       state.message = "";
     },
 
-    logout: (state) => {
-      state.user = null;
-      state.isAuth = false;
-      state.isLoading = false;
-      state.isError = false;
-      state.isSuccess = false;
-      state.message = "";
+    logout: () => {
+      return initialState;
     },
     setActiveProject: (state, action: PayloadAction<ProjectsType>) => {
       return {
         ...state,
         activeProject: action.payload,
       };
+    },
+    setUserProjects: (state, action: PayloadAction<ProjectsType[]>) => {
+      if (state.user) {
+        state.user.projects = action.payload;
+      }
     },
   },
 });
@@ -90,6 +90,7 @@ export const {
   clearMessage,
   logout,
   setActiveProject,
+  setUserProjects,
 } = userSlice.actions;
 
 export default userSlice.reducer;

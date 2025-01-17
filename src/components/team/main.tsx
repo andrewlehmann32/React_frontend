@@ -1,11 +1,14 @@
+import { useState } from "react";
 import { useAppSelector } from "../../hooks/redux";
 import { selectActiveProject } from "../../redux/selectors/userSelector";
 import { ToggleButton } from "../shared/buttons/buttons";
 import { Button } from "../ui/button";
+import { InviteMembers } from "./invite-members";
 import { ListTeamMembers } from "./list-teamMates";
 
 export const Main = () => {
   const currentProject = useAppSelector(selectActiveProject);
+  const [invite, setInvite] = useState(false);
   return (
     <div className="py-2 gap-4 flex flex-col pr-0 lg:pr-6 w-full">
       <h1 className="text-xl font-medium py-1">Team Members</h1>
@@ -22,9 +25,10 @@ export const Main = () => {
             </p>
           </div>
         </div>
-        <Button>Invite Members</Button>
+        <Button onClick={() => setInvite(true)}>Invite Members</Button>
       </div>
       <ListTeamMembers currentProject={currentProject} />
+      <InviteMembers isActive={invite} setIsActive={setInvite} />
     </div>
   );
 };

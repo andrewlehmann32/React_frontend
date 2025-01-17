@@ -77,7 +77,6 @@ const AddKey = ({ currentProject }: { currentProject: any }) => {
         + Add SSH Key
       </Button>
       <Modal
-        triggerText="+ Add SSH Key"
         title="SSH Key"
         onSave={handleSaveKey}
         actionButtonText="Save Key"

@@ -30,7 +30,6 @@ const ProtectedRoute = ({
     !localStorage.getItem("id") ||
     !isAuth
   ) {
-    dispatch(logout());
     return <Navigate to="/" replace />;
   }
 

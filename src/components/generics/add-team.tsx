@@ -2,6 +2,8 @@ import axios from "axios";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { environment } from "../../config/environment";
+import { useAppDispatch } from "../../hooks/redux";
+import { setUserProjects } from "../../redux/reducer/userSlice";
 import { Modal } from "../shared/popups/modal-box";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
@@ -13,6 +15,7 @@ export interface AddTeamProps {
 }
 
 export const AddTeam = ({ isModalOpen, setIsModalOpen }: AddTeamProps) => {
+  const dispatch = useAppDispatch();
   const [teamInfo, setTeamInfo] = useState({
     name: "",
     icon: "",
@@ -26,11 +29,33 @@ export const AddTeam = ({ isModalOpen, setIsModalOpen }: AddTeamProps) => {
     }));
   };
 
+  const fetchAndDispatchProjects = async () => {
+    try {
+      const response = await axios.get(`${environment.VITE_API_URL}/projects`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.status === 200) {
+        console.log(response.data?.projects);
+        toast.success("Projects fetched successfully");
+        dispatch(setUserProjects(response.data?.projects));
+      }
+    } catch (error) {
+      console.error("Error fetching projects:", error);
+      toast.error("Failed to fetch projects");
+    }
+  };
+
   const handleTeamCreation = async () => {
-    if (!teamInfo.name.length) return;
+    if (!teamInfo.name.length) {
+      toast.error("Please provide a name for the team");
+      return;
+    }
     try {
       const config = {
-        url: `${environment.VITE_API_URL}/projects/ssh`,
+        url: `${environment.VITE_API_URL}/projects`,
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -38,21 +63,24 @@ export const AddTeam = ({ isModalOpen, setIsModalOpen }: AddTeamProps) => {
         },
         data: {
           name: teamInfo.name,
+          icon: teamInfo.icon,
         },
       };
       const response = await axios(config);
 
       if (response.status === 201) {
-        toast.success("SSH Key saved successfully");
+        toast.success("New Team Created successfully");
         setIsModalOpen(false);
+        fetchAndDispatchProjects();
       }
     } catch (error) {
-      console.error("Error saving SSH Key:", error);
+      console.error("Error creating new team:", error);
+      toast.error("Failed to create team");
     }
   };
+
   return (
     <Modal
-      triggerText=""
       title="Create New Team"
       onSave={handleTeamCreation}
       actionButtonText="Create Team"
