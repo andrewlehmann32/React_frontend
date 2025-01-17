@@ -11,13 +11,12 @@ import {
 } from "../../ui/dialog";
 
 type ModalProps = {
-  triggerText: string;
   title: string;
   description?: string;
-  onSave: () => void;
-  buttonStyles?: string;
+  onSave?: () => void;
   buttonIcon?: ReactNode;
   children?: ReactNode;
+  button?: true;
   actionButtonStyles?: string;
   actionButtonText: string;
   isOpen: boolean;
@@ -36,6 +35,7 @@ export const Modal = ({
   actionButtonText,
   setIsOpen,
   isOpen,
+  button,
 }: ModalProps) => {
   return (
     <Dialog open={isOpen} onOpenChange={() => setIsOpen(false)}>
@@ -46,13 +46,15 @@ export const Modal = ({
         </DialogHeader>
         <div className=" py-1">{children}</div>
         <DialogFooter>
-          <Button
-            type="button"
-            onClick={onSave}
-            className={mergeClasses(defaultButtonStyles, actionButtonStyles)}
-          >
-            {actionButtonText}
-          </Button>
+          {button && (
+            <Button
+              type="button"
+              onClick={onSave}
+              className={mergeClasses(defaultButtonStyles, actionButtonStyles)}
+            >
+              {actionButtonText}
+            </Button>
+          )}
         </DialogFooter>
       </DialogContent>
     </Dialog>

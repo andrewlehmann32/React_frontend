@@ -59,7 +59,7 @@ export const ListTeamMembers = ({
           user: (
             <div className="flex gap-3 items-center">
               <img
-                src={member.avatar.url}
+                src={member.avatar?.url}
                 alt={member.email}
                 className="h-7 w-7 rounded-full"
               />

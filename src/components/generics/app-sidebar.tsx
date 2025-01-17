@@ -48,7 +48,7 @@ const SidebarHead = ({
   activeProject: any;
 }) => {
   const dispatch = useAppDispatch();
-  const [isWorkspaceActive, setIsWorkspaceActive] = useState(false);
+  const [isWorkspaceActive, setIsWorkspaceActive] = useState(!!activeProject);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [activeWorkspace, setActiveWorkspace] = useState({
     icon: activeProject?.icon ?? "https://i.pravatar.cc/150?img=62",
@@ -70,7 +70,7 @@ const SidebarHead = ({
   };
 
   const RenderWorkSpace = () => {
-    if (!activeWorkspace && !isWorkspaceActive)
+    if (!isWorkspaceActive)
       return (
         <div className="lg:flex hidden px-2 justify-between w-full items-center">
           Select a workspace <ChevronDown className="ml-auto" />
@@ -110,14 +110,14 @@ const SidebarHead = ({
               </SidebarMenuButton>
             </DropdownMenuTrigger>
             <DropdownMenuContent
-              className="w-[--radix-popper-anchor-width]"
+              className="w-[--radix-popper-anchor-width] divide-y"
               onClick={() => setIsWorkspaceActive(true)}
             >
               {userProjects.map((item: any, index: number) => {
                 const daysSinceCreated = calculateDaysFromDate(item.createdAt);
                 return (
                   <DropdownMenuItem
-                    className="px-0 lg:px-1"
+                    className="px-0 lg:px-3"
                     key={index}
                     onClick={() => handleWorkspace(item)}
                   >
@@ -170,8 +170,7 @@ export const AppSidebar = () => {
       if (data.success) {
         toast.success("Logged out successfully");
         dispatch(logout());
-        localStorage.removeItem("token");
-        localStorage.removeItem("id");
+        localStorage.clear();
         navigate("/", {
           replace: true,
         });
