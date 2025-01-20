@@ -2,7 +2,9 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { MdOutlineArrowOutward } from "react-icons/md";
 import { environment } from "../../config/environment";
+import { useAppSelector } from "../../hooks/redux";
 import { useDebounce } from "../../hooks/use-debounce";
+import { selectActiveProject } from "../../redux/selectors/userSelector";
 import { User } from "../../types/generics.types";
 import { Modal } from "../shared/popups/modal-box";
 import { Input } from "../ui/input";
@@ -22,6 +24,7 @@ export const InviteMembers = ({
   if (!isActive) return null;
   const [searchValue, setSearchValue] = useState("");
   const [users, setUsers] = useState<User[]>([]);
+  const activeProject = useAppSelector(selectActiveProject);
 
   const debouncedSearchValue = useDebounce(searchValue, 100);
 
@@ -93,7 +96,9 @@ export const InviteMembers = ({
             </span>
           </div>
         </div>
-        <ListUsers users={users} />
+        {activeProject && (
+          <ListUsers users={users} projectId={activeProject._id} />
+        )}
       </div>
     </Modal>
   );
