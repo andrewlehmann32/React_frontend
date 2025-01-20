@@ -7,9 +7,10 @@ import { Button } from "../ui/button";
 const token = localStorage.getItem("token");
 type ListUsersProps = {
   users: User[];
+  projectId: string;
 };
 
-export const ListUsers = ({ users }: ListUsersProps) => {
+export const ListUsers = ({ users, projectId }: ListUsersProps) => {
   const sendInvite = async (email: string) => {
     try {
       const config = {
@@ -21,6 +22,7 @@ export const ListUsers = ({ users }: ListUsersProps) => {
         },
         data: {
           email,
+          projectId,
         },
       };
 
