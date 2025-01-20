@@ -16,7 +16,7 @@ type ModalProps = {
   onSave?: () => void;
   buttonIcon?: ReactNode;
   children?: ReactNode;
-  button?: true;
+  button?: boolean;
   actionButtonStyles?: string;
   actionButtonText: string;
   isOpen: boolean;
@@ -35,7 +35,7 @@ export const Modal = ({
   actionButtonText,
   setIsOpen,
   isOpen,
-  button,
+  button = true,
 }: ModalProps) => {
   return (
     <Dialog open={isOpen} onOpenChange={() => setIsOpen(false)}>

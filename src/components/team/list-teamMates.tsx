@@ -28,7 +28,7 @@ export const ListTeamMembers = ({
   const handleDeleteMember = async (email: string) => {
     try {
       const config = {
-        url: `${environment.VITE_API_URL}/projects/remove-teammate`,
+        url: `${environment.VITE_API_URL}/members/remove-teammate`,
         method: "POST",
         headers: {
           "Content-Type": "application/json",
