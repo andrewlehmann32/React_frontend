@@ -1,6 +1,9 @@
 import axios from "axios";
+import toast from "react-hot-toast";
 import { environment } from "../../config/environment";
+import { useAppDispatch } from "../../hooks/redux";
 import { formatTimestamp } from "../../lib/helpers/utils";
+import { setActiveProject } from "../../redux/reducer/userSlice";
 import { User } from "../../types/generics.types";
 import { Button } from "../ui/button";
 
@@ -11,6 +14,7 @@ type ListUsersProps = {
 };
 
 export const ListUsers = ({ users, projectId }: ListUsersProps) => {
+  const dispatch = useAppDispatch();
   const sendInvite = async (email: string) => {
     try {
       const config = {
@@ -29,9 +33,32 @@ export const ListUsers = ({ users, projectId }: ListUsersProps) => {
       const response = await axios(config);
 
       if (response.status === 200) {
+        toast.success("Team member added successfully");
+        await fetchAndDispatchProject();
       }
     } catch (err) {
       console.error(err);
+    }
+  };
+
+  const fetchAndDispatchProject = async () => {
+    try {
+      const config = {
+        url: `${environment.VITE_API_URL}/projects/${projectId}`,
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      };
+
+      const response = await axios(config);
+      console.info(response);
+      if (response.status === 200) {
+        dispatch(setActiveProject(response.data.project));
+      }
+    } catch (error) {
+      console.error(error);
     }
   };
 
