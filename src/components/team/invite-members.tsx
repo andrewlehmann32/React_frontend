@@ -71,14 +71,14 @@ export const InviteMembers = ({
       actionButtonStyles="w-full border"
       isOpen={isActive}
       setIsOpen={setIsActive}
+      button={false}
     >
       <div className="w-full flex flex-col gap-6 px-3">
         <div className="flex flex-col gap-2">
-          <div className="flex justify-between items-center text-gray-500">
+          <div className="flex  items-center text-gray-500">
             <p className="text-gray-700 text-sm font-medium">
               People with access
             </p>
-            <p>Max 3</p>
           </div>
           <div className="relative">
             <Input
@@ -97,7 +97,11 @@ export const InviteMembers = ({
           </div>
         </div>
         {activeProject && (
-          <ListUsers users={users} projectId={activeProject._id} />
+          <ListUsers
+            users={users}
+            projectId={activeProject._id}
+            setModal={setIsActive}
+          />
         )}
       </div>
     </Modal>

@@ -41,7 +41,7 @@ export const MonthlySpendage = () => {
             </div>
           </div>
         </div>
-        <div className="flex">
+        <div>
           <Chart />
         </div>
       </div>

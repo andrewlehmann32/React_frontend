@@ -12,7 +12,7 @@ export const Traffic = () => {
       </div>
       <div className="flex flex-col border rounded-md  px-3 sm:px-6 max-h-96 h-full justify-between ">
         <h4 className="text-gray-500 text-sm pt-4 font-normal">Traffic In</h4>
-        <div className="flex">
+        <div>
           <Chart />
         </div>
       </div>

@@ -3,25 +3,26 @@ import { BsThreeDots } from "react-icons/bs";
 import { DROPDOWN_DIRECTION } from "../../../constants/constants";
 
 interface DotsDropdownProps {
-  items: React.ReactNode[]; // Use 'label' instead of 'item'
+  items: React.ReactNode[];
   id: String;
   direction?: String;
+  isSidebarCollapsed: boolean;
 }
 
 export const DotsDropdown = ({
   items,
   id,
   direction = DROPDOWN_DIRECTION.DOWN,
+  isSidebarCollapsed,
 }: DotsDropdownProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [dropdownStyle, setDropdownStyle] = useState({ top: 0, left: 0 });
 
   const toggleDropdown = (event: React.MouseEvent) => {
-    event.stopPropagation(); // Prevent global click event from immediately closing
+    event.stopPropagation();
     setIsOpen((prevState) => {
       const newState = !prevState;
       if (newState) {
-        // Close other dropdowns
         document.dispatchEvent(
           new CustomEvent("closeAllDropdowns", { detail: id })
         );
@@ -55,13 +56,21 @@ export const DotsDropdown = ({
     };
   }, [id]);
 
+  useEffect(() => {
+    if (isSidebarCollapsed) {
+      setIsOpen(false);
+    }
+  }, [isSidebarCollapsed]);
+
   return (
     <div className="relative flex justify-center">
-      <BsThreeDots
-        onClick={toggleDropdown}
-        className="text-gray-400 cursor-pointer"
-      />
-      {isOpen && (
+      {!isSidebarCollapsed && (
+        <BsThreeDots
+          onClick={toggleDropdown}
+          className="text-gray-400 cursor-pointer"
+        />
+      )}
+      {isOpen && !isSidebarCollapsed && (
         <div
           className={`${
             direction === DROPDOWN_DIRECTION.DOWN ? "fixed" : "absolute"

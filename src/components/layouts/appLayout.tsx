@@ -21,7 +21,7 @@ const AppLayout = ({ children }: AppLayoutProps) => {
           >
             <SidebarProvider>
               <div className={`transition-all border-r flex`}>
-                <AppSidebar />
+                <AppSidebar isSidebarCollapsed={isSidebarCollapsed} />
                 <div className="w-full hidden lg:flex lg:justify-center h-8 ">
                   <SidebarTrigger
                     className={`h-7 ${isSidebarCollapsed ? "rotate-180" : ""}`}
