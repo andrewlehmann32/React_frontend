@@ -51,7 +51,7 @@ export type User = {
 export type ProjectsType = {
   _id: string;
   name: string;
-  icon?: string;
+  icon: string;
   createdBy: string;
   createdAt: Date;
   teammates?: User[];

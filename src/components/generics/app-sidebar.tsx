@@ -1,4 +1,3 @@
-// Imports:
 import { ChevronDown } from "lucide-react";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
@@ -51,18 +50,32 @@ const SidebarHead = ({
   const [isWorkspaceActive, setIsWorkspaceActive] = useState(!!activeProject);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [activeWorkspace, setActiveWorkspace] = useState({
-    icon: activeProject?.icon ?? "https://i.pravatar.cc/150?img=62",
-    name: activeProject?.name ?? "",
+    icon: activeProject?.icon ?? userProjects[0]?.icon,
+    name: activeProject?.name ?? userProjects[0]?.name,
     createdAt: `Created ${calculateDaysFromDate(
-      activeProject?.createdAt
+      activeProject?.createdAt ?? userProjects[0]?.createdAt
     )} days ago`,
   });
 
+  useEffect(() => {
+    if (!activeProject && userProjects.length > 0) {
+      const defaultProject = userProjects[0];
+      setActiveWorkspace({
+        icon: defaultProject?.icon ?? "https://i.pravatar.cc/150?img=62",
+        name: defaultProject.name,
+        createdAt: `Created ${calculateDaysFromDate(
+          defaultProject.createdAt
+        )} days ago`,
+      });
+      dispatch(setActiveProject(defaultProject));
+      setIsWorkspaceActive(true);
+    }
+  }, [activeProject, userProjects, dispatch]);
+
   const handleWorkspace = (item: any) => {
     setIsWorkspaceActive(true);
-
     setActiveWorkspace({
-      icon: item.icon ?? "https://i.pravatar.cc/150?img=62",
+      icon: item?.icon ?? "https://i.pravatar.cc/150?img=62",
       name: item.name,
       createdAt: `Created ${calculateDaysFromDate(item.createdAt)} days ago`,
     });
@@ -88,7 +101,6 @@ const SidebarHead = ({
         </div>
         <div className="hidden md:block">
           <p className="hidden lg:block text-sm font-semibold">
-            {" "}
             {activeWorkspace.name}
           </p>
           <span className="hidden lg:block text-xs text-gray-500">
@@ -109,10 +121,7 @@ const SidebarHead = ({
                 <RenderWorkSpace />
               </SidebarMenuButton>
             </DropdownMenuTrigger>
-            <DropdownMenuContent
-              className="w-[--radix-popper-anchor-width] divide-y"
-              onClick={() => setIsWorkspaceActive(true)}
-            >
+            <DropdownMenuContent className="w-[--radix-popper-anchor-width] divide-y">
               {userProjects.map((item: any, index: number) => {
                 const daysSinceCreated = calculateDaysFromDate(item.createdAt);
                 return (
@@ -154,9 +163,14 @@ const SidebarHead = ({
   );
 };
 
-export const AppSidebar = () => {
+export const AppSidebar = ({
+  isSidebarCollapsed,
+}: {
+  isSidebarCollapsed: boolean;
+}) => {
   const location = useLocation();
   const [activeItem, setActiveItem] = useState("");
+  const [isOpen, setIsOpen] = useState(false); // Added isOpen state
   const { user } = useAppSelector(selectUser);
   const userProjects = useAppSelector(selectUserProjects);
   const activeProject = useAppSelector(selectActiveProject);
@@ -183,13 +197,14 @@ export const AppSidebar = () => {
   const actionMenuItems = [
     <div
       className="flex gap-2 items-center text-gray-500 font-medium"
-      key="duplicate"
+      key="support"
     >
       <BiSupport />
       <span>Support</span>
     </div>,
     <div
       className="flex gap-2 items-center text-gray-500 font-medium"
+      key="logout"
       onClick={handleLogout}
     >
       <TbLogout2 />
@@ -201,7 +216,7 @@ export const AppSidebar = () => {
     const activePage = location.pathname.substring(1);
     setActiveItem(activePage);
   }, [location]);
-
+  console.log(isSidebarCollapsed);
   return (
     <Sidebar className="w-fit border-none sm:h-screen lg:w-64 lg:transition-all lg:duration-300">
       <div className="overflow-hidden px-4 lg:pl-4 py-4 h-full flex flex-col bg-dashboard">
@@ -212,7 +227,7 @@ export const AppSidebar = () => {
         <SidebarContent className="flex flex-col flex-grow justify-between divide-y">
           <div className="divide-y">
             <SidebarGroup>
-              <SidebarGroupLabel className="hidden lg:block ">
+              <SidebarGroupLabel className="hidden lg:block">
                 Application
               </SidebarGroupLabel>
               <SidebarGroupContent>
@@ -227,7 +242,11 @@ export const AppSidebar = () => {
                           }`}
                         >
                           <item.icon className="w-6 h-6" />
-                          <span className="hidden lg:block">{item.title}</span>
+                          {!isSidebarCollapsed && (
+                            <span className="hidden lg:block">
+                              {item.title}
+                            </span>
+                          )}
                         </Link>
                       </SidebarMenuButton>
                     </SidebarMenuItem>
@@ -251,7 +270,11 @@ export const AppSidebar = () => {
                           }`}
                         >
                           <item.icon className="w-6 h-6" />
-                          <span className="hidden lg:block ">{item.title}</span>
+                          {!isSidebarCollapsed && (
+                            <span className="hidden lg:block">
+                              {item.title}
+                            </span>
+                          )}
                         </a>
                       </SidebarMenuButton>
                     </SidebarMenuItem>
@@ -263,22 +286,46 @@ export const AppSidebar = () => {
           <SidebarGroup className="mt-auto">
             <SidebarGroupContent>
               <div className="flex py-3 justify-between relative">
-                <div className="flex items-start  gap-3">
+                <div
+                  className={`flex items-start gap-3 ${
+                    isSidebarCollapsed ? "cursor-pointer" : ""
+                  }`}
+                  onClick={
+                    isSidebarCollapsed ? () => setIsOpen(!isOpen) : undefined
+                  }
+                >
                   <img
                     src={user?.avatar?.url}
                     alt="workspace"
                     className="w-10 h-10 rounded-md"
                   />
-                  <div className="hidden lg:block">
-                    <div>{user?.email?.split("@")[0]}</div>
-                    <div className="text-sm text-gray-500">{user?.email}</div>
-                  </div>
+                  {!isSidebarCollapsed && (
+                    <div className="hidden lg:block">
+                      <div>{user?.email?.split("@")[0]}</div>
+                      <div className="text-sm text-gray-500">{user?.email}</div>
+                    </div>
+                  )}
                 </div>
-                <DotsDropdown
-                  items={actionMenuItems}
-                  id="1"
-                  direction={DROPDOWN_DIRECTION.UP}
-                />
+                {!isSidebarCollapsed && (
+                  <DotsDropdown
+                    items={actionMenuItems}
+                    id="1"
+                    direction={DROPDOWN_DIRECTION.UP}
+                    isSidebarCollapsed={isSidebarCollapsed}
+                  />
+                )}
+                {isOpen && isSidebarCollapsed && (
+                  <div className="absolute right-0 bg-white shadow-md rounded-md z-50 w-40 py-2">
+                    {actionMenuItems.map((item, index) => (
+                      <div
+                        key={index}
+                        className="px-4 py-2 text-gray-700 hover:bg-gray-200 cursor-pointer"
+                      >
+                        {item}
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             </SidebarGroupContent>
           </SidebarGroup>

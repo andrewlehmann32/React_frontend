@@ -8,6 +8,7 @@ import Home from "../pages/home";
 import Ordering from "../pages/ordering";
 import SSHkeys from "../pages/ssh-keys";
 import Team from "../pages/team";
+import VerifyInvite from "../pages/verify-invitation";
 import { ProtectedRoute } from "./protect-route";
 
 const router = createBrowserRouter([
@@ -56,6 +57,14 @@ const router = createBrowserRouter([
         element: (
           <ProtectedRoute isAdmin={false}>
             <Activity />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "/verify-invite",
+        element: (
+          <ProtectedRoute isAdmin={false}>
+            <VerifyInvite />
           </ProtectedRoute>
         ),
       },
