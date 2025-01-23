@@ -85,6 +85,7 @@ export const ListTeamMembers = ({
                 </div>,
               ]}
               id={index.toString()}
+              isSidebarCollapsed={false}
             />
           ),
         }))
