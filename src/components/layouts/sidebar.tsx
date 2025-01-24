@@ -2,6 +2,7 @@ import { ChevronDown } from "lucide-react";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { BiSupport } from "react-icons/bi";
+import { FiMenu } from "react-icons/fi";
 import { PiCaretDoubleLeftBold } from "react-icons/pi";
 import { TbLogout2 } from "react-icons/tb";
 import { Link, useLocation, useNavigate } from "react-router-dom";
@@ -9,25 +10,25 @@ import {
   DROPDOWN_DIRECTION,
   menuItems,
   miscItems,
-} from "../constants/constants";
-import { useAppDispatch, useAppSelector } from "../hooks/redux";
-import { calculateDaysFromDate, mergeClasses } from "../lib/helpers/utils";
-import { useLogoutMutation } from "../redux/api/user-api";
-import { logout, setActiveProject } from "../redux/reducer/userSlice";
+} from "../../constants/constants";
+import { useAppDispatch, useAppSelector } from "../../hooks/redux";
+import { calculateDaysFromDate, mergeClasses } from "../../lib/helpers/utils";
+import { useLogoutMutation } from "../../redux/api/user-api";
+import { logout, setActiveProject } from "../../redux/reducer/userSlice";
 import {
   selectActiveProject,
   selectUser,
   selectUserProjects,
-} from "../redux/selectors/userSelector";
-import { ProjectsType } from "../types/generics.types";
-import { AddTeam } from "./generics/add-team";
-import { DotsDropdown } from "./shared/menus/simple-dropdown";
+} from "../../redux/selectors/userSelector";
+import { ProjectsType } from "../../types/generics.types";
+import { AddTeam } from "../generics/add-team";
+import { DotsDropdown } from "../shared/menus/simple-dropdown";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "./ui/dropdown-menu";
+} from "../ui/dropdown-menu";
 
 type SidebarHeaderProps = {
   userProjects: any;
@@ -86,7 +87,7 @@ const SidebarHead = ({
 
     return (
       <div
-        className={`flex gap-0 px-0 lg:gap-2 items-center ${
+        className={`flex gap-2 md:gap-0 px-0 lg:gap-2 items-center ${
           isSidebarCollapsed ? "justify-center p-2" : "justify-start"
         }`}
       >
@@ -99,7 +100,7 @@ const SidebarHead = ({
         <div
           className={`${
             isSidebarCollapsed ? "lg:hidden" : "block"
-          } hidden lg:block`}
+          } md:hidden lg:block`}
         >
           <p className=" text-sm font-semibold text-gray-900">
             {activeWorkspace.name}
@@ -167,6 +168,7 @@ const SidebarHead = ({
 
 const Sidebar = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [activeItem, setActiveItem] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const { user } = useAppSelector(selectUser);
@@ -221,10 +223,20 @@ const Sidebar = () => {
   return (
     <div
       className={mergeClasses(
-        "flex flex-col h-screen transition-width duration-300 bg-dashboard w-20",
+        "flex flex-col sm:h-screen transition-width duration-300 bg-dashboard",
         isCollapsed ? "lg:w-16" : "lg:w-64"
       )}
     >
+      <button
+        className="block md:hidden p-3 text-gray-500 fixed top-2 left-2 z-50" // Visible only on mobile
+        onClick={() => setIsMobileOpen(!isMobileOpen)}
+      >
+        <FiMenu
+          className={`w-6 h-6 transition-transform ${
+            isMobileOpen ? "rotate-90" : ""
+          }`}
+        />
+      </button>
       <div className="justify-end hidden lg:flex">
         <button
           onClick={() => setIsCollapsed(!isCollapsed)}
@@ -241,7 +253,11 @@ const Sidebar = () => {
       <div
         className={`${
           isCollapsed ? "lg:px-2" : "lg:px-6"
-        } px-3 flex flex-col justify-around h-full py-3 lg:py-0`}
+        } px-3 flex-col justify-around h-full py-3 lg:py-0 ${
+          isMobileOpen
+            ? "fixed top-0 left-0 w-64 z-50 bg-white"
+            : "hidden md:flex"
+        }`}
       >
         {/* Sidebar Header */}
         <>
@@ -261,16 +277,19 @@ const Sidebar = () => {
                 {menuItems.map((item, index) => (
                   <Link
                     to={item.url}
-                    className={`flex items-center gap-2 px-2 rounded-md min-h-8 h-full justify-center  ${
+                    className={`flex items-center gap-2 px-2 rounded-md min-h-8 h-full md:justify-center  ${
                       isCollapsed ? "justify-center" : "lg:justify-start"
                     } ${activeItem === item.identifier ? "bg-white" : ""}`}
                     key={index}
+                    onClick={() => setIsMobileOpen(false)}
                   >
                     <item.icon
                       className={`${isCollapsed ? "w-5 h-5" : "w-4 h-4"}`}
                     />
                     {!isCollapsed && (
-                      <span className="hidden lg:block">{item.title}</span>
+                      <span className="block md:hidden lg:block">
+                        {item.title}
+                      </span>
                     )}
                   </Link>
                 ))}
@@ -287,15 +306,18 @@ const Sidebar = () => {
                 {miscItems.map((item) => (
                   <Link
                     to={item.url}
-                    className={`flex items-center gap-2 px-2 rounded-md min-h-8 h-full justify-center  ${
+                    className={`flex items-center gap-2 px-2 rounded-md min-h-8 h-full md:justify-center  ${
                       isCollapsed ? "justify-center" : "lg:justify-start"
                     } ${activeItem === item.identifier ? "bg-white" : ""}`}
+                    onClick={() => setIsMobileOpen(false)}
                   >
                     <item.icon
                       className={`${isCollapsed ? "w-5 h-5" : "w-4 h-4"}`}
                     />
                     {!isCollapsed && (
-                      <span className="hidden lg:block">{item.title}</span>
+                      <span className="block md:hidden lg:block">
+                        {item.title}
+                      </span>
                     )}
                   </Link>
                 ))}
@@ -304,7 +326,7 @@ const Sidebar = () => {
           </div>
         </>
         {/* Sidebar Footer */}
-        <div className="flex items-center justify-start border-t border-gray-200 mt-auto">
+        <div className="flex items-center justify-start border-t border-gray-200 mt-64 sm:mt-auto">
           <div
             className={`flex pt-3 pb-8 ${
               isCollapsed ? "justify-center" : "justify-between"
@@ -322,7 +344,7 @@ const Sidebar = () => {
                 className="w-10 h-10 rounded-md"
               />
               {!isCollapsed && (
-                <div className="hidden lg:block text-sm">
+                <div className="md:hidden lg:block text-sm">
                   <div>{user?.email?.split("@")[0]}</div>
                   <div className="text-sm text-gray-500">{user?.email}</div>
                 </div>
@@ -351,6 +373,12 @@ const Sidebar = () => {
           </div>
         </div>
       </div>
+      {isMobileOpen && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-50 z-10 lg:hidden"
+          onClick={() => setIsMobileOpen(false)}
+        />
+      )}
     </div>
   );
 };
