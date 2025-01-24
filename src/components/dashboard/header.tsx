@@ -26,7 +26,7 @@ export const Header = ({ title }: { title: string }) => {
           </li>
         </ol>
       </div>
-      <div className="flex gap-4 items-center w-full sm:w-fit justify-between">
+      <div className="flex gap-2 items-center w-full sm:w-fit justify-end sm:justify-between ">
         <div className="relative">
           <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
             <svg
