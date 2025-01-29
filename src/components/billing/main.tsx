@@ -1,8 +1,23 @@
+import { Elements } from "@stripe/react-stripe-js";
+import { loadStripe } from "@stripe/stripe-js";
+import axios from "axios";
+import toast from "react-hot-toast";
+import Swal from "sweetalert2";
+import { environment } from "../../config/environment";
+import { useAppDispatch, useAppSelector } from "../../hooks/redux";
+import {
+  setActiveProject,
+  setUserProjects,
+} from "../../redux/reducer/userSlice";
+import { selectActiveProject } from "../../redux/selectors/userSelector";
 import { RDropdownMenu } from "../shared/menus/dropdown-menu";
 import { Table } from "../shared/table";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
+import { AddPaymentMethod } from "./addPaymentMethod";
 import { PaymentMethods } from "./payment-methods";
+
+const stripePromise = loadStripe(environment.STRIPE_PUBLISHABLE_KEY!);
 
 type TableData = {
   headers: string[];
@@ -85,6 +100,91 @@ const tableData: TableData = {
 };
 
 export const Main = () => {
+  const activeProject = useAppSelector(selectActiveProject);
+  const dispatch = useAppDispatch();
+  const token = localStorage.getItem("token");
+
+  const showDeletePopup = async (id: string) => {
+    const result = await Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    });
+
+    if (result.isConfirmed) {
+      handleDeletePaymentMethod(id);
+    }
+  };
+
+  const fetchAndDispatchProjects = async () => {
+    try {
+      const response = await axios.get(
+        `${environment.VITE_API_URL}/projects/`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        dispatch(setUserProjects(response.data?.projects));
+        const currentProject = response.data.projects.find(
+          (project: any) => project._id === activeProject?._id
+        );
+        dispatch(setActiveProject(currentProject));
+      }
+    } catch (error) {
+      console.error("Error fetching projects:", error);
+      toast.error("Failed to fetch projects");
+    }
+  };
+
+  const handleDeletePaymentMethod = async (paymentMethodId: string) => {
+    if (!token) {
+      toast.error("User is not authenticated");
+      return;
+    }
+
+    if (!activeProject?._id) {
+      toast.error("Project not found");
+      return;
+    }
+
+    if (!paymentMethodId) {
+      toast.error("Invalid payment method");
+      return;
+    }
+    console.log(activeProject._id, paymentMethodId);
+    try {
+      const response = await axios.post(
+        `${environment.VITE_API_URL}/projects/remove-payment-method/`,
+        {
+          projectId: activeProject._id,
+          paymentMethodId,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        toast.success("Payment method deleted successfully");
+        fetchAndDispatchProjects();
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("An error occurred while deleting the payment method");
+    }
+  };
+
   return (
     <div className="py-2 gap-2 flex flex-col pr-0 lg:pr-6 w-full divide-y">
       <div className="flex flex-col">
@@ -108,44 +208,59 @@ export const Main = () => {
             ))}
           </div>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 py-5">
-          <PaymentMethods
-            cardNumber="Via****8143"
-            expiry="Expires 3/2026"
-            default
-          />
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 py-5 items-center">
+          {activeProject?.paymentMethods?.map((item: any, index: number) => {
+            const { brand, last4, exp_year, exp_month } =
+              item.paymentMethod.card;
 
-          <PaymentMethods
-            cardNumber="American Express****6617"
-            expiry="Expires 3/2026"
-          />
+            const cardNumber = `${brand}****${last4}`;
+            const expiry = `Expires ${exp_month}/${exp_year}`;
+            const isDefault = item.paymentMethod.default || false;
+
+            return (
+              <PaymentMethods
+                cardNumber={cardNumber}
+                expiry={expiry}
+                default={isDefault}
+                key={index}
+                onDelete={() => showDeletePopup(item._id)}
+              />
+            );
+          })}
+
+          <Elements stripe={stripePromise}>
+            <AddPaymentMethod reFetch={fetchAndDispatchProjects} />
+          </Elements>
         </div>
-      </div>
-      <div className="justify-between items-center grid grid-cols-1 sm:grid-cols-2 gap-0 sm:gap-3">
-        <div className="flex flex-col">
-          <h1 className="py-4 font-medium text-md">Coupon</h1>
-          <Input placeholder="Enter your coupon code" className="rounded-sm" />
-          <div className="flex py-4 justify-end items-center">
-            <Button className="bg-white text-gray-900 border shadow-none">
-              Add Coupon
-            </Button>
+        <div className="justify-between items-center grid grid-cols-1 sm:grid-cols-2 gap-0 sm:gap-3">
+          <div className="flex flex-col">
+            <h1 className="py-4 font-medium text-md">Coupon</h1>
+            <Input
+              placeholder="Enter your coupon code"
+              className="rounded-sm"
+            />
+            <div className="flex py-4 justify-end items-center">
+              <Button className="bg-white text-gray-900 border shadow-none hover:text-white">
+                Add Coupon
+              </Button>
+            </div>
+          </div>
+          <div className="flex flex-col">
+            <h1 className="py-4 font-medium text-md">Tax ID</h1>
+            <RDropdownMenu items={[]} placeholder="select an ID type" />
+            <div className="flex py-4 justify-end items-center">
+              <Button className="bg-white text-gray-900 border shadow-none hover:text-white">
+                Save Changes
+              </Button>
+            </div>
           </div>
         </div>
-        <div className="flex flex-col">
-          <h1 className="py-4 font-medium text-md">Tax ID</h1>
-          <RDropdownMenu items={[]} placeholder="select an ID type" />
-          <div className="flex py-4 justify-end items-center">
-            <Button className="bg-white text-gray-900 border shadow-none">
-              Save Changes
-            </Button>
+        <div className="flex flex-col h-full w-full gap-2 pt-4">
+          <div className="flex text-gray-800 font-medium gap-1 items-center">
+            <h1>Latest Invoices</h1>
           </div>
+          <Table {...tableData} />
         </div>
-      </div>
-      <div className="flex flex-col h-full w-full gap-2 pt-4">
-        <div className="flex text-gray-800 font-medium gap-1 items-center">
-          <h1>Latest Invoices</h1>
-        </div>
-        <Table {...tableData} />
       </div>
     </div>
   );

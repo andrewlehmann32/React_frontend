@@ -7,4 +7,6 @@ export const environment = {
     import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || "",
   FIREBASE_APP_ID: import.meta.env.VITE_FIREBASE_APP_ID || "",
   VITE_API_URL: import.meta.env.VITE_API_URL || "",
+  STRIPE_SECRET: import.meta.env.VITE_STRIPE_SECRET_KEY,
+  STRIPE_PUBLISHABLE_KEY: import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY,
 };
