@@ -18,7 +18,7 @@ type ModalProps = {
   children?: ReactNode;
   button?: boolean;
   actionButtonStyles?: string;
-  actionButtonText: string;
+  actionButtonText?: string;
   isOpen: boolean;
   setIsOpen: (state: boolean) => void;
 };

@@ -56,11 +56,22 @@ export type ProjectsType = {
   createdAt: Date;
   teammates?: User[];
   sshKeys?: ISSH[];
-  paymentMethod?: string;
+  paymentMethods?: PaymentMethodsType[];
 };
 
 export type ISSH = {
   name: string;
   key: string;
   projectId: string;
+};
+export type PaymentMethodsType = {
+  paymentMethod: any;
+  name: string;
+  addressLine1: string;
+  addressLine2?: string;
+  city: string;
+  state: string;
+  country: string;
+  createdAt?: Date;
+  updatedAt?: Date;
 };

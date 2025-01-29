@@ -5,12 +5,14 @@ type PaymentMethodProps = {
   expiry: string;
   cardNumber: string;
   default?: boolean;
+  onDelete: () => void;
 };
 
 export const PaymentMethods = ({
   cardNumber,
   expiry,
   default: isDefault,
+  onDelete,
 }: PaymentMethodProps) => {
   const renderDefault = () => {
     if (!isDefault) return null;
@@ -31,7 +33,10 @@ export const PaymentMethods = ({
       <h1 className="font-semibold text-gray-900">{cardNumber}</h1>
       <div className="flex items-center gap-2">
         <p>{expiry}</p>
-        <FaRegTrashCan />
+        <FaRegTrashCan
+          onClick={onDelete}
+          className="cursor-pointer hover:text-gray-900"
+        />
         {!isDefault && <TiPencil className="text-base" />}
       </div>
       {renderDefault()}

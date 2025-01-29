@@ -1,5 +1,5 @@
 // Imports:
-import { Calendar, Home } from "lucide-react";
+import { Home } from "lucide-react";
 import { ComponentType } from "react";
 import { BsQuestionSquare } from "react-icons/bs";
 import { GiHouseKeys } from "react-icons/gi";
@@ -9,6 +9,7 @@ import {
   PiCreditCardDuotone,
   PiShoppingCartSimpleDuotone,
 } from "react-icons/pi";
+import { RiTeamLine } from "react-icons/ri";
 // Menu items.
 
 interface MenuItem {
@@ -35,7 +36,7 @@ export const menuItems: MenuItem[] = [
     identifier: "team",
     title: "Team",
     url: "/team",
-    icon: Calendar,
+    icon: RiTeamLine,
   },
   {
     identifier: "ordering",
