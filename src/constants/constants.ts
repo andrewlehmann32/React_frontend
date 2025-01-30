@@ -74,8 +74,8 @@ export const miscItems = [
 ];
 
 export enum DROPDOWN_DIRECTION {
-  UP = "up",
-  DOWN = "down",
+  TOP = "top",
+  BOTTOM = "bottom",
   LEFT = "left",
   RIGHT = "right",
 }

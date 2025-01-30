@@ -6,6 +6,7 @@ import {
 } from "@radix-ui/react-dropdown-menu";
 import { ChevronDown } from "lucide-react";
 import { useEffect, useState } from "react";
+import { DROPDOWN_DIRECTION } from "../../../constants/constants";
 import { Button } from "../../ui/button";
 
 interface DropdownMenuProps {
@@ -17,6 +18,7 @@ interface DropdownMenuProps {
   placeholder?: string;
   defaultValue?: string;
   value?: string;
+  direction?: DROPDOWN_DIRECTION;
   onChange?: (value: string) => void;
 }
 
@@ -25,6 +27,7 @@ export const RDropdownMenu = ({
   placeholder = "Choose an option",
   defaultValue,
   value,
+  direction = DROPDOWN_DIRECTION.BOTTOM,
   onChange = () => {},
 }: DropdownMenuProps & { value?: string }) => {
   const [active, setActive] = useState(value ?? defaultValue ?? placeholder);
@@ -46,13 +49,19 @@ export const RDropdownMenu = ({
           <ChevronDown />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="border bg-white shadow-md rounded-lg p-2 w-48">
+      <DropdownMenuContent
+        className="border bg-white shadow-md rounded-lg p-2 w-48 max-h-40 overflow-y-scroll divide-y"
+        side={direction}
+        align={
+          direction === "left" || direction === "right" ? "start" : "center"
+        }
+      >
         {items.map((item, index) => (
           <DropdownMenuItem
             key={index}
             onSelect={() => handleSelect(item.value ?? item.label)}
             disabled={item.disabled}
-            className={`px-4 py-2 text-sm rounded-md cursor-pointer ${
+            className={`px-4 py-2 text-sm cursor-pointer ${
               item.disabled
                 ? "text-gray-400 cursor-not-allowed"
                 : "text-gray-700 hover:bg-gray-100"

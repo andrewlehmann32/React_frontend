@@ -4,6 +4,7 @@ import {
   CardNumberElement,
 } from "@stripe/react-stripe-js";
 import { getCodeList } from "country-list";
+import { DROPDOWN_DIRECTION } from "../../constants/constants";
 import { RDropdownMenu } from "../shared/menus/dropdown-menu";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
@@ -138,6 +139,7 @@ export const AddPaymentForm = ({
             countryOptions.find((item) => item.value === userData.country)
               ?.label || "Select a country"
           }
+          direction={DROPDOWN_DIRECTION.TOP}
         />
       </span>
 
