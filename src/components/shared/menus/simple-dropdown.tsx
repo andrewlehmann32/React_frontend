@@ -12,7 +12,7 @@ interface DotsDropdownProps {
 export const DotsDropdown = ({
   items,
   id,
-  direction = DROPDOWN_DIRECTION.DOWN,
+  direction = DROPDOWN_DIRECTION.BOTTOM,
   isSidebarCollapsed,
 }: DotsDropdownProps) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -73,12 +73,12 @@ export const DotsDropdown = ({
       {isOpen && !isSidebarCollapsed && (
         <div
           className={`${
-            direction === DROPDOWN_DIRECTION.DOWN ? "fixed" : "absolute"
+            direction === DROPDOWN_DIRECTION.BOTTOM ? "fixed" : "absolute"
           } bg-white border rounded-md shadow-lg z-50 w-40`}
           style={
-            direction === DROPDOWN_DIRECTION.DOWN
+            direction === DROPDOWN_DIRECTION.BOTTOM
               ? { top: dropdownStyle.top, left: dropdownStyle.left }
-              : { bottom: 40, right: 0 }
+              : { bottom: 40, left: 10 }
           }
         >
           <ul className="py-1">

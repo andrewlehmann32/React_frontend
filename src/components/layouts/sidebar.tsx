@@ -354,7 +354,7 @@ const Sidebar = () => {
               <DotsDropdown
                 items={actionMenuItems}
                 id="1"
-                direction={DROPDOWN_DIRECTION.UP}
+                direction={DROPDOWN_DIRECTION.RIGHT}
                 isSidebarCollapsed={isCollapsed}
               />
             )}
