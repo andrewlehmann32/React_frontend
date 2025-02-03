@@ -1,5 +1,6 @@
 // Imports:
 import { HTMLInputTypeAttribute } from "react";
+import { InvoiceStatus } from "../constants/constants";
 
 export type TGenericProps = {
   children: React.ReactNode;
@@ -57,6 +58,7 @@ export type ProjectsType = {
   teammates?: User[];
   sshKeys?: ISSH[];
   paymentMethods?: PaymentMethodsType[];
+  invoices?: InvoiceType[];
 };
 
 export type ISSH = {
@@ -74,4 +76,11 @@ export type PaymentMethodsType = {
   country: string;
   createdAt?: Date;
   updatedAt?: Date;
+};
+
+export type InvoiceType = {
+  invoiceNumber: string;
+  amount: number;
+  status: InvoiceStatus;
+  projectId: string;
 };

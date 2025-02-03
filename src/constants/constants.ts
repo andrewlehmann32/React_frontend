@@ -79,3 +79,9 @@ export enum DROPDOWN_DIRECTION {
   LEFT = "left",
   RIGHT = "right",
 }
+
+export enum InvoiceStatus {
+  PENDING = "pending",
+  PAID = "paid",
+  OVERDUE = "overdue",
+}

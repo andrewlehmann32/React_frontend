@@ -4,6 +4,7 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import Swal from "sweetalert2";
 import { environment } from "../../config/environment";
+import { InvoiceStatus } from "../../constants/constants";
 import { useAppDispatch, useAppSelector } from "../../hooks/redux";
 import {
   setActiveProject,
@@ -104,6 +105,29 @@ export const Main = () => {
   const dispatch = useAppDispatch();
   const token = localStorage.getItem("token");
 
+  const tableData: TableData = {
+    headers: ["Invoice Number", "Amount", "  Date  ", "Status"],
+    body:
+      activeProject?.invoices?.map((invoice) => ({
+        invoicenumber: invoice.invoiceNumber,
+        amount: `$${invoice.amount}`,
+        date: "March 10,2024",
+        status: (
+          <p
+            className={`px-2 py-1 rounded-full ${
+              invoice.status === InvoiceStatus.PAID
+                ? "bg-green-200 text-green-700"
+                : invoice.status === InvoiceStatus.OVERDUE
+                ? "bg-red-200 text-red-700"
+                : "bg-gray-200 text-gray-700"
+            }  text-center my-0 w-full max-w-20`}
+          >
+            {invoice.status}
+          </p>
+        ),
+      })) || [],
+  };
+
   const showDeletePopup = async (id: string) => {
     const result = await Swal.fire({
       title: "Are you sure?",
@@ -159,7 +183,6 @@ export const Main = () => {
       toast.error("Invalid payment method");
       return;
     }
-    console.log(activeProject._id, paymentMethodId);
     try {
       const response = await axios.post(
         `${environment.VITE_API_URL}/projects/remove-payment-method/`,
