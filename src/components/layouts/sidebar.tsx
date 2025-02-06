@@ -218,8 +218,6 @@ const Sidebar = () => {
     setActiveItem(activePage);
   }, [location]);
 
-  console.log(isCollapsed);
-
   return (
     <div
       className={mergeClasses(
@@ -303,13 +301,14 @@ const Sidebar = () => {
               )}
 
               <nav className="flex flex-col mt-4 space-y-2">
-                {miscItems.map((item) => (
+                {miscItems.map((item, index) => (
                   <Link
                     to={item.url}
                     className={`flex items-center gap-2 px-2 rounded-md min-h-8 h-full md:justify-center  ${
                       isCollapsed ? "justify-center" : "lg:justify-start"
                     } ${activeItem === item.identifier ? "bg-white" : ""}`}
                     onClick={() => setIsMobileOpen(false)}
+                    key={index}
                   >
                     <item.icon
                       className={`${isCollapsed ? "w-5 h-5" : "w-4 h-4"}`}

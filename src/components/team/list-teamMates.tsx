@@ -5,7 +5,7 @@ import { environment } from "../../config/environment";
 import { useAppDispatch } from "../../hooks/redux";
 import { formatTimestamp } from "../../lib/helpers/utils";
 import { setActiveProject } from "../../redux/reducer/userSlice";
-import { ProjectsType } from "../../types/generics.types";
+import { ProjectsType, Roles } from "../../types/generics.types";
 import { RDropdownMenu } from "../shared/menus/dropdown-menu";
 import { DotsDropdown } from "../shared/menus/simple-dropdown";
 import { Table } from "../shared/table";
@@ -13,9 +13,9 @@ import { Table } from "../shared/table";
 const token = localStorage.getItem("token");
 
 const menuItems = [
-  { label: "Administrator" },
-  { label: "Owner" },
-  { label: "User" },
+  { label: Roles.ADMINISTRATOR },
+  { label: Roles.OWNER },
+  { label: Roles.USER },
 ];
 
 export const ListTeamMembers = ({
@@ -23,9 +23,12 @@ export const ListTeamMembers = ({
 }: {
   currentProject: ProjectsType | null;
 }) => {
+  if (!currentProject) return;
+  const { createdBy } = currentProject;
   const dispatch = useAppDispatch();
 
-  const handleDeleteMember = async (email: string) => {
+  const handleDeleteMember = async (email: string, isOwner: boolean) => {
+    if (isOwner) return;
     try {
       const config = {
         url: `${environment.VITE_API_URL}/members/remove-teammate`,
@@ -52,6 +55,20 @@ export const ListTeamMembers = ({
     }
   };
 
+  const handleRoleChange = async (userId: string, newRole: string) => {
+    const updatedUser = await updateUserRole(userId, newRole);
+    if (updatedUser) {
+      dispatch(
+        setActiveProject({
+          ...currentProject,
+          teammates: currentProject.teammates?.map((member) =>
+            member._id === userId ? { ...member, role: newRole } : member
+          ),
+        })
+      );
+    }
+  };
+
   const tableData = {
     headers: ["User", "Role", "Created", "Last", "Action"],
     body: currentProject?.teammates?.length
@@ -69,16 +86,29 @@ export const ListTeamMembers = ({
               </div>
             </div>
           ),
-          role: <RDropdownMenu items={menuItems} defaultValue={member.role} />,
+          role: (
+            <RDropdownMenu
+              items={menuItems}
+              value={member.role}
+              onChange={(e) => handleRoleChange(member._id, e)}
+              disabled={member._id === createdBy}
+            />
+          ),
           created: formatTimestamp(member.createdAt),
           last: formatTimestamp(member.updatedAt),
           action: (
             <DotsDropdown
               items={[
                 <div
-                  className="flex gap-3 items-center text-red-500"
+                  className={`flex gap-3 items-center ${
+                    member._id === createdBy
+                      ? "text-gray-400 cursor-not-allowed"
+                      : "text-red-500"
+                  } `}
                   key="remove"
-                  onClick={() => handleDeleteMember(member.email)}
+                  onClick={() =>
+                    handleDeleteMember(member.email, member._id === createdBy)
+                  }
                 >
                   <FaRegTrashCan />
                   <span>Remove User</span>
@@ -90,6 +120,32 @@ export const ListTeamMembers = ({
           ),
         }))
       : [],
+  };
+
+  const updateUserRole = async (userId: string, newRole: string) => {
+    try {
+      const response = await axios.patch(
+        `${environment.VITE_API_URL}/users/update-role`,
+        { userId, newRole },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        toast.success("User role updated successfully");
+        return response.data.user;
+      }
+    } catch (error: any) {
+      console.error("Error updating user role:", error);
+      toast.error(
+        error.response?.data?.message || "Failed to update user role"
+      );
+      return null;
+    }
   };
 
   return (

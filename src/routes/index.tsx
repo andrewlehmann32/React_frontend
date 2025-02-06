@@ -62,11 +62,7 @@ const router = createBrowserRouter([
       },
       {
         path: "/verify-invite",
-        element: (
-          <ProtectedRoute isAdmin={false}>
-            <VerifyInvite />
-          </ProtectedRoute>
-        ),
+        element: <VerifyInvite />,
       },
       {
         path: "/sshkeys",

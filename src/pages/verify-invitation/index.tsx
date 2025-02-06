@@ -44,7 +44,7 @@ const VerifyInvite = () => {
       {loading ? (
         <div className="loader">Loading...</div>
       ) : (
-        <div className="message text-center text-lg font-bold">{message}</div>
+        <div className="text-center text-lg font-bold">{message}</div>
       )}
     </div>
   );

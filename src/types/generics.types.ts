@@ -29,6 +29,12 @@ export type TInputProps = {
   name?: string;
 };
 
+export enum Roles {
+  ADMINISTRATOR = "Administrator",
+  USER = "User",
+  OWNER = "Owner"
+}
+
 export type User = {
   _id: string;
   name: string;
@@ -41,7 +47,7 @@ export type User = {
     url: string;
   };
   googleId?: string;
-  role: "user" | "admin";
+  role: string;
   resetPasswordToken?: string;
   resetPasswordExpire?: Date;
   createdAt: Date;
@@ -58,6 +64,7 @@ export type ProjectsType = {
   teammates?: User[];
   sshKeys?: ISSH[];
   paymentMethods?: PaymentMethodsType[];
+  defaultPaymentMethod?: string;
   invoices?: InvoiceType[];
 };
 

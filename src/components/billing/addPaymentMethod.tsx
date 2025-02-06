@@ -28,6 +28,7 @@ const AddPaymentMethod = ({ reFetch }: { reFetch: () => void }) => {
     city: "",
     state: "",
     country: "",
+    zipCode: "",
   });
 
   const handleInputChange = (field: string, value: string) => {
@@ -40,6 +41,9 @@ const AddPaymentMethod = ({ reFetch }: { reFetch: () => void }) => {
   const handleAddPayment = async () => {
     if (isLoading) return;
     setIsLoading(true);
+
+    const { addressLine1, addressLine2, city, country, name, state, zipCode } =
+      userData;
 
     const token = localStorage.getItem("token");
     if (!token) {
@@ -64,13 +68,7 @@ const AddPaymentMethod = ({ reFetch }: { reFetch: () => void }) => {
       return;
     }
 
-    if (
-      !userData.name ||
-      !userData.addressLine1 ||
-      !userData.city ||
-      !userData.state ||
-      !userData.country
-    ) {
+    if (!name || !addressLine1 || !city || !state || !country || !zipCode) {
       toast.error("Please fill in all required fields");
       setIsLoading(false);
       return;
@@ -81,13 +79,14 @@ const AddPaymentMethod = ({ reFetch }: { reFetch: () => void }) => {
         type: "card",
         card: cardNumberElement,
         billing_details: {
-          name: userData.name,
+          name: name,
           address: {
-            line1: userData.addressLine1,
-            line2: userData.addressLine2,
-            city: userData.city,
-            state: userData.state,
-            country: userData.country,
+            line1: addressLine1,
+            line2: addressLine2,
+            city: city,
+            state: state,
+            country: country,
+            postal_code: zipCode,
           },
         },
       });

@@ -28,7 +28,6 @@ export const AddPaymentForm = ({
   onSave,
   loading,
 }: AddPaymentFormType) => {
-  console.log({ userData });
   return (
     <div className="flex flex-col gap-3">
       {/* User Details */}
@@ -101,17 +100,29 @@ export const AddPaymentForm = ({
           onChange={(e) => handleInputChange("addressLine2", e.target.value)}
         />
       </span>
+      <span>
+        <Label htmlFor="city" className="font-normal text-gray-500">
+          City
+        </Label>
+        <Input
+          id="city"
+          placeholder="City"
+          className="px-4 mt-1"
+          value={userData.city}
+          onChange={(e) => handleInputChange("city", e.target.value)}
+        />
+      </span>
       <div className="flex gap-3 items-center">
         <span>
           <Label htmlFor="city" className="font-normal text-gray-500">
-            City
+            Zip Code
           </Label>
           <Input
-            id="city"
-            placeholder="City"
+            id="zipCode"
+            placeholder="Zip Code"
             className="px-4 mt-1"
-            value={userData.city}
-            onChange={(e) => handleInputChange("city", e.target.value)}
+            value={userData.zipCode}
+            onChange={(e) => handleInputChange("zipCode", e.target.value)}
           />
         </span>
         <span>

@@ -38,8 +38,6 @@ export const AddTeam = ({ isModalOpen, setIsModalOpen }: AddTeamProps) => {
       });
 
       if (response.status === 200) {
-        console.log(response.data?.projects);
-        toast.success("Projects fetched successfully");
         dispatch(setUserProjects(response.data?.projects));
       }
     } catch (error) {

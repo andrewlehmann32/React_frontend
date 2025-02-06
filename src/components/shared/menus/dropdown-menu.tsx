@@ -20,6 +20,7 @@ interface DropdownMenuProps {
   value?: string;
   direction?: DROPDOWN_DIRECTION;
   onChange?: (value: string) => void;
+  disabled?: boolean;
 }
 
 export const RDropdownMenu = ({
@@ -29,6 +30,7 @@ export const RDropdownMenu = ({
   value,
   direction = DROPDOWN_DIRECTION.BOTTOM,
   onChange = () => {},
+  disabled = false,
 }: DropdownMenuProps & { value?: string }) => {
   const [active, setActive] = useState(value ?? defaultValue ?? placeholder);
 
@@ -44,7 +46,10 @@ export const RDropdownMenu = ({
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button className="bg-transparent border px-3 py-2 rounded text-gray-600 flex justify-between items-center gap-2 font-normal hover:bg-gray-100 focus-visible:ring-0 shadow-none min-w-60 w-full">
+        <Button
+          disabled={disabled}
+          className="bg-transparent border px-3 py-2 rounded text-gray-600 flex justify-between items-center gap-2 font-normal hover:bg-gray-100 focus-visible:ring-0 shadow-none min-w-60 w-full"
+        >
           <span>{active}</span>
           <ChevronDown />
         </Button>

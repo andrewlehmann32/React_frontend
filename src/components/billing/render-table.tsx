@@ -1,0 +1,45 @@
+import { InvoiceStatus } from "../../constants/constants";
+import { useAppSelector } from "../../hooks/redux";
+import { selectActiveProject } from "../../redux/selectors/userSelector";
+import { Table } from "../shared/table";
+
+type TableData = {
+  headers: string[];
+  body: { [key: string]: string | number | any }[];
+};
+
+export const RenderInvoicesTable = () => {
+  const activeProject = useAppSelector(selectActiveProject);
+
+  const tableData: TableData = {
+    headers: ["Invoice Number", "Amount", "  Date  ", "Status"],
+    body:
+      activeProject?.invoices?.map((invoice) => ({
+        invoicenumber: invoice.invoiceNumber,
+        amount: `$${invoice.amount}`,
+        date: "March 10,2024",
+        status: (
+          <p
+            className={`px-2 py-1 rounded-full ${
+              invoice.status === InvoiceStatus.PAID
+                ? "bg-green-200 text-green-700"
+                : invoice.status === InvoiceStatus.OVERDUE
+                ? "bg-red-200 text-red-700"
+                : "bg-gray-200 text-gray-700"
+            }  text-center my-0 w-full max-w-20`}
+          >
+            {invoice.status}
+          </p>
+        ),
+      })) || [],
+  };
+
+  return (
+    <div className="flex flex-col h-full w-full gap-2 pt-4">
+      <div className="flex text-gray-800 font-medium gap-1 items-center">
+        <h1>Latest Invoices</h1>
+      </div>
+      <Table {...tableData} />
+    </div>
+  );
+};

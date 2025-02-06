@@ -1,14 +1,12 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import toast from "react-hot-toast";
 import { MdOutlineArrowOutward } from "react-icons/md";
 import { environment } from "../../config/environment";
 import { useAppSelector } from "../../hooks/redux";
-import { useDebounce } from "../../hooks/use-debounce";
 import { selectActiveProject } from "../../redux/selectors/userSelector";
-import { User } from "../../types/generics.types";
 import { Modal } from "../shared/popups/modal-box";
 import { Input } from "../ui/input";
-import { ListUsers } from "./list-users";
 
 const token = localStorage.getItem("token");
 
@@ -23,44 +21,38 @@ export const InviteMembers = ({
 }: InviteMembersProps) => {
   if (!isActive) return null;
   const [searchValue, setSearchValue] = useState("");
-  const [users, setUsers] = useState<User[]>([]);
   const activeProject = useAppSelector(selectActiveProject);
 
-  const debouncedSearchValue = useDebounce(searchValue, 100);
-
-  const fetchUsers = async () => {
+  const sendInvite = async (email: string) => {
     try {
       const config = {
-        url: `${environment.VITE_API_URL}/members/search-member`,
-        method: "GET",
+        url: `${environment.VITE_API_URL}/members/sendInvite`,
+        method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        params: {
-          email: debouncedSearchValue.trim(),
+        data: {
+          email,
+          projectId: activeProject?._id,
         },
       };
 
       const response = await axios(config);
 
       if (response.status === 200) {
-        setUsers(response.data.users);
+        setIsActive(false);
+        toast.success("Invitation sent successfully");
+        // await fetchAndDispatchProject();
       }
     } catch (err) {
       console.error(err);
     }
   };
 
-  useEffect(() => {
-    if (debouncedSearchValue || searchValue === "") {
-      fetchUsers();
-    }
-  }, [debouncedSearchValue]);
-
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
-      fetchUsers();
+      sendInvite(searchValue);
     }
   };
 
@@ -77,7 +69,7 @@ export const InviteMembers = ({
         <div className="flex flex-col gap-2">
           <div className="flex  items-center text-gray-500">
             <p className="text-gray-700 text-sm font-medium">
-              People with access
+              Invite Team Member
             </p>
           </div>
           <div className="relative">
@@ -87,22 +79,17 @@ export const InviteMembers = ({
               value={searchValue}
               onChange={(e) => setSearchValue(e.target.value)}
               onKeyDown={handleKeyDown}
+              type="email"
             />
-            <span
+            <button
               className="rounded-md bg-black text-white px-3 py-2 cursor-pointer active:scale-90 absolute right-1 top-1/2 -translate-y-1/2"
-              onClick={() => fetchUsers()}
+              onClick={() => sendInvite(searchValue)}
+              disabled={!activeProject}
             >
               <MdOutlineArrowOutward />
-            </span>
+            </button>
           </div>
         </div>
-        {activeProject && (
-          <ListUsers
-            users={users}
-            projectId={activeProject._id}
-            setModal={setIsActive}
-          />
-        )}
       </div>
     </Modal>
   );
