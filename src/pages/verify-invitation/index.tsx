@@ -13,7 +13,7 @@ const VerifyInvite = () => {
       try {
         const token = searchParams.get("token");
         const projectId = searchParams.get("projectId");
-        const inviteLink = `${environment.VITE_API_URL}/api/v1/members/verify-invite?token=${token}&projectId=${projectId}`;
+        const inviteLink = `${environment.VITE_API_URL}/members/verify-invite?token=${token}&projectId=${projectId}`;
 
         const response = await axios.get(inviteLink, {
           headers: {
