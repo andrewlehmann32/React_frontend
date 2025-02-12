@@ -1,4 +1,6 @@
-import { useEffect } from "react";
+import axios from "axios";
+import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 import { useSearchParams } from "react-router-dom";
 import { svgDrawer } from "../../lib/helpers/svgDrawer";
 import { Table } from "../shared/table";
@@ -6,7 +8,29 @@ import { RenderDetails } from "./detailsPage";
 
 export const Main = () => {
   const [params, setParams] = useSearchParams();
+  const [devices, setDevices] = useState([]);
+
+  const fetchDevices = async () => {
+    try {
+      const response = await axios.get(`http://162.254.7.83/api/v2/device`, {
+        headers: {
+          // Authorization: `Bearer ${token}`,
+          apiKey: "Q0ZDOSSdvtYGiwsOWSyHa4s0",
+        },
+      });
+
+      if (response.status === 200) {
+        console.log(response.data);
+        setDevices(response.data.result);
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to fetch devices");
+    }
+  };
+
   useEffect(() => {
+    fetchDevices();
     () => {
       setParams("");
     };
@@ -141,7 +165,7 @@ export const Main = () => {
       },
     ],
   };
-
+  console.log(devices);
   const RenderTables = () => {
     return (
       <div className="py-2 gap-2 flex flex-col pr-0 lg:pr-6 w-full mb-20 sm:mb-0">

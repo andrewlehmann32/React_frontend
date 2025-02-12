@@ -4,6 +4,7 @@ import toast from "react-hot-toast";
 import { MdOutlineArrowOutward } from "react-icons/md";
 import { environment } from "../../config/environment";
 import { useAppSelector } from "../../hooks/redux";
+import { handleAxiosError } from "../../lib/helpers/utils";
 import { selectActiveProject } from "../../redux/selectors/userSelector";
 import { Modal } from "../shared/popups/modal-box";
 import { Input } from "../ui/input";
@@ -43,10 +44,9 @@ export const InviteMembers = ({
       if (response.status === 200) {
         setIsActive(false);
         toast.success("Invitation sent successfully");
-        // await fetchAndDispatchProject();
       }
     } catch (err) {
-      console.error(err);
+      handleAxiosError(err);
     }
   };
 

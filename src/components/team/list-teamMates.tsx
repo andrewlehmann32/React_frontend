@@ -24,9 +24,13 @@ export const ListTeamMembers = ({
   currentProject: ProjectsType | null;
 }) => {
   if (!currentProject) return;
+  // const { user } = useAppSelector(selectUser);
+
   const { createdBy } = currentProject;
   const dispatch = useAppDispatch();
-
+  // const calculatedRole = (role: string) => {
+  //   return user?._id === createdBy ? Roles.OWNER : role;
+  // };
   const handleDeleteMember = async (email: string, isOwner: boolean) => {
     if (isOwner) return;
     try {
@@ -62,7 +66,7 @@ export const ListTeamMembers = ({
         setActiveProject({
           ...currentProject,
           teammates: currentProject.teammates?.map((member) =>
-            member._id === userId ? { ...member, role: newRole } : member
+            member.user._id === userId ? { ...member, role: newRole } : member
           ),
         })
       );
@@ -70,19 +74,21 @@ export const ListTeamMembers = ({
   };
 
   const tableData = {
-    headers: ["User", "Role", "Created", "Last", "Action"],
+    headers: ["User", "Role", "Created", "Last Login", "Action"],
     body: currentProject?.teammates?.length
       ? currentProject?.teammates.map((member, index) => ({
           user: (
             <div className="flex gap-3 items-center">
               <img
-                src={member.avatar?.url}
-                alt={member.email}
+                src={member.user.avatar?.url}
+                alt={member.user.email}
                 className="h-7 w-7 rounded-full"
               />
               <div className="py-1 text-xs text-gray-500">
-                <div className="font-medium text-gray-600">{member.name}</div>
-                <div>{member.email}</div>
+                <div className="font-medium text-gray-600">
+                  {member.user.name}
+                </div>
+                <div>{member.user.email}</div>
               </div>
             </div>
           ),
@@ -90,24 +96,27 @@ export const ListTeamMembers = ({
             <RDropdownMenu
               items={menuItems}
               value={member.role}
-              onChange={(e) => handleRoleChange(member._id, e)}
-              disabled={member._id === createdBy}
+              onChange={(e) => handleRoleChange(member.user._id, e)}
+              disabled={member.user._id === createdBy}
             />
           ),
-          created: formatTimestamp(member.createdAt),
-          last: formatTimestamp(member.updatedAt),
+          created: formatTimestamp(member.user.createdAt),
+          lastlogin: formatTimestamp(member.user.updatedAt),
           action: (
             <DotsDropdown
               items={[
                 <div
                   className={`flex gap-3 items-center ${
-                    member._id === createdBy
+                    member.user._id === createdBy
                       ? "text-gray-400 cursor-not-allowed"
                       : "text-red-500"
                   } `}
                   key="remove"
                   onClick={() =>
-                    handleDeleteMember(member.email, member._id === createdBy)
+                    handleDeleteMember(
+                      member.user.email,
+                      member.user._id === createdBy
+                    )
                   }
                 >
                   <FaRegTrashCan />
@@ -124,8 +133,8 @@ export const ListTeamMembers = ({
 
   const updateUserRole = async (userId: string, newRole: string) => {
     try {
-      const response = await axios.patch(
-        `${environment.VITE_API_URL}/users/update-role`,
+      const response = await axios.post(
+        `${environment.VITE_API_URL}/user/update-role`,
         { userId, newRole },
         {
           headers: {
