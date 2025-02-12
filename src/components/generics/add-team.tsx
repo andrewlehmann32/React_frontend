@@ -19,7 +19,6 @@ export const AddTeam = ({ isModalOpen, setIsModalOpen }: AddTeamProps) => {
   const [teamInfo, setTeamInfo] = useState({
     name: "",
     icon: "",
-    teamMates: [],
   });
 
   const handleInputChange = (field: string, value: string) => {
@@ -96,7 +95,7 @@ export const AddTeam = ({ isModalOpen, setIsModalOpen }: AddTeamProps) => {
             onChange={(e) => handleInputChange("name", e.target.value)}
           />
         </div>
-        <div className="flex flex-col gap-2">
+        {/* <div className="flex flex-col gap-2">
           <Label className="text-gray-500">Icon URL</Label>
           <Input
             placeholder="Icon URL"
@@ -104,7 +103,7 @@ export const AddTeam = ({ isModalOpen, setIsModalOpen }: AddTeamProps) => {
             value={teamInfo.icon}
             onChange={(e) => handleInputChange("icon", e.target.value)}
           />
-        </div>
+        </div> */}
       </div>
     </Modal>
   );

@@ -1,5 +1,7 @@
 // Imports:
+import axios from "axios";
 import { clsx, type ClassValue } from "clsx";
+import toast from "react-hot-toast";
 import { twMerge } from "tailwind-merge";
 
 export const mergeClasses = (...inputs: ClassValue[]) => {
@@ -27,4 +29,45 @@ export const formatTimestamp = (timestamp: Date) => {
     day: "numeric",
     year: "numeric",
   });
+};
+
+
+export const handleAxiosError = (error: any) => {
+  if (axios.isAxiosError(error)) {
+    if (error.response) {
+      console.log(error)
+      const status = error.response.status;
+      const message = error.response.data?.error;
+
+      switch (status) {
+        case 400:
+          toast.error(message ?? `Bad Request: ${message}`);
+          break;
+        case 401:
+          toast.error(message ?? "Unauthorized. Please log in again.");
+          break;
+        case 403:
+          toast.error(message ?? "Access denied. You don't have permission to perform this action.");
+          break;
+        case 404:
+          toast.error(message ?? "Resource not found.");
+          break;
+        case 500:
+          toast.error(message ?? "Internal server error. Please try again later.");
+          break;
+        default:
+          toast.error(message);
+          break;
+      }
+    } else if (error.request) {
+      // Request made but no response received
+      toast.error("No response from the server. Please check your network.");
+    } else {
+      // Something else happened
+      toast.error(`Error: ${error.message}`);
+    }
+  } else {
+    // Non-Axios errors
+    toast.error(error?.message ?? "An unexpected error occurred.");
+  }
 };
