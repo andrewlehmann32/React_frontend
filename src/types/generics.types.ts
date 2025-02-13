@@ -55,13 +55,18 @@ export type User = {
   projects: ProjectsType[];
 };
 
+interface teamMember {
+  user: User;
+  role: string;
+}
+
 export type ProjectsType = {
   _id: string;
   name: string;
   icon: string;
   createdBy: string;
   createdAt: Date;
-  teammates?: User[];
+  teammates?: teamMember[];
   sshKeys?: ISSH[];
   paymentMethods?: PaymentMethodsType[];
   defaultPaymentMethod?: string;
