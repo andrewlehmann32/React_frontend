@@ -16,7 +16,7 @@ const combinedData: ResourcDataType = {
     { title: "Location", value: "Chicago CHI" },
     { title: "Status", value: "On" },
     { title: "OS", value: "Ubuntu 24.04" },
-    { title: "Tags", value: "Add tags" },
+    { title: "Tags", value: "Add tags..." },
   ],
   hardware: [
     { title: "CPU", value: "Xeon E-2286G CPU ..." },

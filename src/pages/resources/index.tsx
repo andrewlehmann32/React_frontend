@@ -40,9 +40,9 @@ const Resources = () => {
   const [selectedId, setSelectedId] = useState<number | null>(1);
 
   return (
-    <div className="flex">
-      <div className="w-[25%] p-3">
-        <div className="flex flex-col p-3 border-l min-h-full">
+    <div className="flex flex-col lg:flex-row">
+      <div className="w-[100%] lg:w-[24%] xl:w-[27%] p-3">
+        <div className="flex flex-col p-3 lg:border-l min-h-full">
           <Button className="w-1/6">+</Button>
           <h1 className="mt-4 mb-1 text-gray-500 text-sm">
             Active Servers (5)
@@ -60,8 +60,9 @@ const Resources = () => {
                     ? "border-b"
                     : "border-b border-transparent"
                 } ${selectedId !== server.id ? "rounded-t-lg" : ""}`}
-                onClick={() => setSelectedId(server.id)}>
-                <div className="flex justify-between items-center text-xs px-2">
+                onClick={() => setSelectedId(server.id)}
+              >
+                <div className="flex lg:flex-col lg:gap-2 xl:flex-row justify-between items-center text-xs px-2">
                   <div>
                     <p className="text-md font-semibold mb-1">{server.name}</p>
                     <p className="text-gray-600">{server.ip}</p>
@@ -75,7 +76,7 @@ const Resources = () => {
           </div>
         </div>
       </div>
-      <div className="w-[75%]">
+      <div className="w-[100%] lg:w-[76%] xl:w-[73%]">
         <PageLayout>
           <Main />
         </PageLayout>

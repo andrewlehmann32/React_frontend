@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { CiPlay1, CiStop1 } from "react-icons/ci";
 import { FaRegTrashAlt, FaTv } from "react-icons/fa";
 import { FiDownload } from "react-icons/fi";
@@ -20,7 +20,6 @@ type Item = {
   label: string;
   value: string;
   icon: React.ReactNode;
-  onClick?: () => void;
 };
 
 const items: Item[] = [
@@ -107,6 +106,11 @@ type ModalPropsType = {
   modalData: ModalDataType;
 };
 
+type DeleteModalPropsType = {
+  setIsDeleteModalOpen: (value: boolean) => void;
+  isDeleteModalOpen: boolean;
+};
+
 const RenderModal = ({
   setIsModalOpen,
   isModalOpen,
@@ -119,8 +123,14 @@ const RenderModal = ({
       isOpen={isModalOpen}
       setIsOpen={setIsModalOpen}
       onSave={() => {}}
-      actionButtonText="Reinstall"
-      actionButtonStyles="w-full border">
+      actionButtonText={
+        <>
+          <FiDownload size={14} />
+          Reinstall Server
+        </>
+      }
+      actionButtonStyles="w-full border"
+    >
       <div className="w-full flex flex-col gap-4 ">
         <div>
           <p className="text-gray-500 text-sm font-medium mb-2">
@@ -165,7 +175,8 @@ const RenderModal = ({
                     : "border-gray-200 border"
                 }`}
                 key={index}
-                onClick={() => setRaid(item.title)}>
+                onClick={() => setRaid(item.title)}
+              >
                 <div className="flex flex-col justify-center gap-1">
                   <div>{item.title}</div>
                   <p className="text-xs tracking-tighter">{item.subTitle}</p>
@@ -189,17 +200,73 @@ const RenderModal = ({
   );
 };
 
+const RenderDeleteModal = ({
+  setIsDeleteModalOpen,
+  isDeleteModalOpen,
+}: DeleteModalPropsType) => {
+  return (
+    <Modal
+      title="Destroy Server"
+      isOpen={isDeleteModalOpen}
+      setIsOpen={setIsDeleteModalOpen}
+      onSave={() => {}}
+      actionButtonText={
+        <>
+          <FaRegTrashAlt size={16} />
+          Destroy Server
+        </>
+      }
+      actionButtonStyles="w-full border text-red-500"
+    >
+      <div className="flex flex-col p-1 gap-1">
+        <p className="text-xs text-gray-500 mt-1">
+          Please type: c2-small-x86-chi-1 to confirm
+        </p>
+        <input
+          type="text"
+          className="mt-1 w-full border rounded-md py-2 px-4 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          placeholder="Type here"
+        />
+      </div>
+    </Modal>
+  );
+};
+
 const RenderServerActions = ({
   setIsModalOpen,
+  setIsDeleteModalOpen,
 }: // setResourceData,
 {
   setIsModalOpen: (value: boolean) => void;
+  setIsDeleteModalOpen: (value: boolean) => void;
   setResourceData: (value: ResourcDataType) => void;
 }) => {
   const [isActive, setIsActive] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setIsActive(false);
+      }
+    };
+
+    if (isActive) {
+      document.addEventListener("click", handleClickOutside);
+    } else {
+      document.removeEventListener("click", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("click", handleClickOutside);
+    };
+  }, [isActive]);
 
   return (
-    <div className="relative">
+    <div className="relative" ref={dropdownRef}>
       <Button onClick={() => setIsActive(!isActive)}>
         Server Actions <IoIosArrowDown />
       </Button>
@@ -214,9 +281,11 @@ const RenderServerActions = ({
               onClick={() => {
                 if (item.label === "Reinstall Server") {
                   setIsModalOpen(true);
+                } else if (item.label === "Destroy Server") {
+                  setIsDeleteModalOpen(true);
                 }
-                // item?.onClick();
-              }}>
+              }}
+            >
               <span>{item.icon}</span>
               <p>{item.label}</p>
             </div>
@@ -233,6 +302,7 @@ export const DisplayPageHeader = ({
   setResourceData: (value: ResourcDataType) => void;
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   return (
     <div className="flex items-start justify-between flex-wrap ">
@@ -242,12 +312,17 @@ export const DisplayPageHeader = ({
       </div>
       <RenderServerActions
         setIsModalOpen={setIsModalOpen}
+        setIsDeleteModalOpen={setIsDeleteModalOpen}
         setResourceData={setResourceData}
       />
       <RenderModal
         isModalOpen={isModalOpen}
         setIsModalOpen={setIsModalOpen}
         modalData={modalData}
+      />
+      <RenderDeleteModal
+        isDeleteModalOpen={isDeleteModalOpen}
+        setIsDeleteModalOpen={setIsDeleteModalOpen}
       />
     </div>
   );
