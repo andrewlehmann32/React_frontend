@@ -66,7 +66,7 @@ export const ListTeamMembers = ({
         setActiveProject({
           ...currentProject,
           teammates: currentProject.teammates?.map((member) =>
-            member.user._id === userId ? { ...member, role: newRole } : member
+            member.user?._id === userId ? { ...member, role: newRole } : member
           ),
         })
       );
@@ -80,15 +80,15 @@ export const ListTeamMembers = ({
           user: (
             <div className="flex gap-3 items-center">
               <img
-                src={member.user.avatar?.url}
-                alt={member.user.email}
+                src={member.user?.avatar?.url}
+                alt={member.user?.email}
                 className="h-7 w-7 rounded-full"
               />
               <div className="py-1 text-xs text-gray-500">
                 <div className="font-medium text-gray-600">
-                  {member.user.name}
+                  {member.user?.name}
                 </div>
-                <div>{member.user.email}</div>
+                <div>{member.user?.email}</div>
               </div>
             </div>
           ),
@@ -96,26 +96,26 @@ export const ListTeamMembers = ({
             <RDropdownMenu
               items={menuItems}
               value={member.role}
-              onChange={(e) => handleRoleChange(member.user._id, e)}
-              disabled={member.user._id === createdBy}
+              onChange={(e) => handleRoleChange(member.user?._id, e)}
+              disabled={member.user?._id === createdBy}
             />
           ),
-          created: formatTimestamp(member.user.createdAt),
-          lastlogin: formatTimestamp(member.user.updatedAt),
+          created: formatTimestamp(member.user?.createdAt),
+          lastlogin: formatTimestamp(member.user?.updatedAt),
           action: (
             <DotsDropdown
               items={[
                 <div
                   className={`flex gap-3 items-center ${
-                    member.user._id === createdBy
+                    member.user?._id === createdBy
                       ? "text-gray-400 cursor-not-allowed"
                       : "text-red-500"
                   } `}
                   key="remove"
                   onClick={() =>
                     handleDeleteMember(
-                      member.user.email,
-                      member.user._id === createdBy
+                      member.user?.email,
+                      member.user?._id === createdBy
                     )
                   }
                 >
