@@ -5,23 +5,31 @@ import { useSearchParams } from "react-router-dom";
 import { svgDrawer } from "../../lib/helpers/svgDrawer";
 import { Table } from "../shared/table";
 import { RenderDetails } from "./detailsPage";
+import { environment } from "../../config/environment";
 
 export const Main = () => {
   const [params, setParams] = useSearchParams();
-  const [devices, setDevices] = useState([]);
+  interface Device {
+    name: string;
+    cpu: string;
+    storage: string;
+    status: string;
+  }
+
+  const [devices, setDevices] = useState<Device[]>([]);
+  const token = localStorage.getItem("token");
 
   const fetchDevices = async () => {
     try {
-      const response = await axios.get(`http://162.254.7.83/api/v2/device`, {
+      const response = await axios.get(`${environment.VITE_API_URL}/ordering`, {
         headers: {
-          // Authorization: `Bearer ${token}`,
-          apiKey: "Q0ZDOSSdvtYGiwsOWSyHa4s0",
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
       });
 
       if (response.status === 200) {
-        console.log(response.data);
-        setDevices(response.data.result);
+        setDevices(response.data.data);
       }
     } catch (error) {
       console.error(error);
@@ -36,136 +44,45 @@ export const Main = () => {
     };
   }, []);
 
+  console.log("Devices", devices);
   const tableData = {
     headers: ["Name", "CPU", "RAM", "Storage", "Network", "Price", "Status"],
-    body: [
-      {
-        name: (
-          <p
-            className="font-semibold cursor-pointer hover:underline"
-            onClick={() => setParams({ page: "Metal" })}
-          >
-            c2.small.x86
-          </p>
-        ),
-        cpu: (
-          <div className="flex flex-col text-[10px]">
-            <p className="font-semibold text-xs">E-2173G</p>
-            <p>6 Cores @ 3.7 GHz</p>
-          </div>
-        ),
-        ram: <p className="font-semibold">32 GB</p>,
-        storage: <p className="font-semibold">500 GB SSD</p>,
-        network: (
-          <div className="flex flex-col text-[10px]">
-            <p className="font-semibold text-xs">1 Gbps</p>
-            <p> 20 TB</p>
-          </div>
-        ),
-        price: (
-          <div className="flex flex-col text-[10px]">
-            <p className="font-semibold text-xs">$92/mo</p>
-            <p> $0.13/hr</p>
-          </div>
-        ),
-        status: <p className="font-semibold">Available</p>,
-      },
-      {
-        name: (
-          <p
-            className="font-semibold cursor-pointer hover:underline"
-            onClick={() => setParams({ page: "Metal" })}
-          >
-            c2.small.x86
-          </p>
-        ),
-        cpu: (
-          <div className="flex flex-col text-[10px]">
-            <p className="font-semibold text-xs">E-2173G</p>
-            <p>6 Cores @ 3.7 GHz</p>
-          </div>
-        ),
-        ram: <p className="font-semibold">32 GB</p>,
-        storage: <p className="font-semibold">500 GB SSD</p>,
-        network: (
-          <div className="flex flex-col text-[10px]">
-            <p className="font-semibold text-xs">1 Gbps</p>
-            <p> 20 TB</p>
-          </div>
-        ),
-        price: (
-          <div className="flex flex-col text-[10px]">
-            <p className="font-semibold text-xs">$92/mo</p>
-            <p> $0.13/hr</p>
-          </div>
-        ),
-        status: <p className="font-semibold">Available</p>,
-      },
-      {
-        name: (
-          <p
-            className="font-semibold cursor-pointer hover:underline"
-            onClick={() => setParams({ page: "Metal" })}
-          >
-            c2.small.x86
-          </p>
-        ),
-        cpu: (
-          <div className="flex flex-col text-[10px]">
-            <p className="font-semibold text-xs">E-2173G</p>
-            <p>6 Cores @ 3.7 GHz</p>
-          </div>
-        ),
-        ram: <p className="font-semibold">32 GB</p>,
-        storage: <p className="font-semibold">500 GB SSD</p>,
-        network: (
-          <div className="flex flex-col text-[10px]">
-            <p className="font-semibold text-xs">1 Gbps</p>
-            <p> 20 TB</p>
-          </div>
-        ),
-        price: (
-          <div className="flex flex-col text-[10px]">
-            <p className="font-semibold text-xs">$92/mo</p>
-            <p> $0.13/hr</p>
-          </div>
-        ),
-        status: <p className="font-semibold">Available</p>,
-      },
-      {
-        name: (
-          <p
-            className="font-semibold cursor-pointer hover:underline"
-            onClick={() => setParams({ page: "Metal" })}
-          >
-            c2.small.x86
-          </p>
-        ),
-        cpu: (
-          <div className="flex flex-col text-[10px]">
-            <p className="font-semibold text-xs">E-2173G</p>
-            <p>6 Cores @ 3.7 GHz</p>
-          </div>
-        ),
-        ram: <p className="font-semibold">32 GB</p>,
-        storage: <p className="font-semibold">500 GB SSD</p>,
-        network: (
-          <div className="flex flex-col text-[10px]">
-            <p className="font-semibold text-xs">1 Gbps</p>
-            <p> 20 TB</p>
-          </div>
-        ),
-        price: (
-          <div className="flex flex-col text-[10px]">
-            <p className="font-semibold text-xs">$92/mo</p>
-            <p> $0.13/hr</p>
-          </div>
-        ),
-        status: <p className="font-semibold">Available</p>,
-      },
-    ],
+    body: devices.map((device) => ({
+      name: (
+        <p
+          className="font-semibold cursor-pointer hover:underline"
+          onClick={() => setParams({ page: "Metal" })}
+        >
+          {device.name}
+        </p>
+      ),
+      cpu: (
+        <div className="flex flex-col text-[10px]">
+          <p className="font-semibold text-xs">{device.cpu}</p>
+        </div>
+      ),
+      ram: <p className="font-semibold">32 GB</p>,
+      storage: <p className="font-semibold">{device.storage}</p>,
+      network: (
+        <div className="flex flex-col text-[10px]">
+          <p className="font-semibold text-xs">1 Gbps</p>
+          <p>20 TB</p>
+        </div>
+      ),
+      price: (
+        <div className="flex flex-col text-[10px]">
+          <p className="font-semibold text-xs">$92/mo</p>
+          <p>$0.13/hr</p>
+        </div>
+      ),
+      status: (
+        <p className="font-semibold">
+          {device.status.charAt(0).toUpperCase() + device.status.slice(1)}
+        </p>
+      ),
+    })),
   };
-  console.log(devices);
+
   const RenderTables = () => {
     return (
       <div className="py-2 gap-2 flex flex-col pr-0 lg:pr-6 w-full mb-20 sm:mb-0">

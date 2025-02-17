@@ -1,13 +1,17 @@
+import axios from "axios";
 import { useEffect, useRef, useState } from "react";
+import toast from "react-hot-toast";
 import { CiPlay1, CiStop1 } from "react-icons/ci";
 import { FaRegTrashAlt, FaTv } from "react-icons/fa";
 import { FiDownload } from "react-icons/fi";
 import { IoIosArrowDown, IoMdRefresh } from "react-icons/io";
+import { environment } from "../../config/environment";
 import { svgDrawer } from "../../lib/helpers/svgDrawer";
 import { RDropdownMenu } from "../shared/menus/dropdown-menu";
 import { Modal } from "../shared/popups/modal-box";
 import { Button } from "../ui/button";
 import { ResourcDataType } from "./main";
+const serverId = 1;
 
 // Define types for OS and Item
 type OSItem = {
@@ -20,36 +24,8 @@ type Item = {
   label: string;
   value: string;
   icon: React.ReactNode;
+  onClick: () => void;
 };
-
-const items: Item[] = [
-  {
-    value: "Start Server",
-    icon: <CiPlay1 size={14} />,
-    label: "Start Server",
-  },
-  {
-    label: "Stop Server",
-    value: "Stop Server",
-    icon: <CiStop1 size={16} />,
-  },
-  {
-    label: "Reboot Server",
-    value: "Reboot Server",
-    icon: <IoMdRefresh size={14} />,
-  },
-  {
-    label: "Reinstall Server",
-    value: "Reinstall Server",
-    icon: <FiDownload size={14} />,
-  },
-  { label: "Novnc", value: "Novnc", icon: <FaTv size={14} /> },
-  {
-    label: "Destroy Server",
-    value: "Destroy Server",
-    icon: <FaRegTrashAlt size={14} />,
-  },
-];
 
 const raid = [
   { title: "No RAID", subTitle: "" },
@@ -241,8 +217,96 @@ const RenderServerActions = ({
   setIsDeleteModalOpen: (value: boolean) => void;
   setResourceData: (value: ResourcDataType) => void;
 }) => {
+  const token = localStorage.getItem("token");
   const [isActive, setIsActive] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+
+  const handleApiCall = async (value: string) => {
+    try {
+      let apiUrl;
+      let successMessage;
+      if (value === "Start") {
+        apiUrl = `${environment.VITE_API_URL}/ordering/${serverId}/boot`;
+        successMessage = "Server started successfully";
+      } else if (value === "Stop") {
+        apiUrl = `${environment.VITE_API_URL}/ordering/${serverId}/shutdown`;
+        successMessage = "Server stopped successfully";
+      } else {
+        apiUrl = `${environment.VITE_API_URL}/ordering/${serverId}/reboot`;
+        successMessage = "Server rebooted successfully";
+      }
+
+      const config = {
+        url: apiUrl,
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      };
+
+      const response = await axios(config);
+
+      if (response.status === 200) {
+        toast.success(successMessage);
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Something went wrong");
+    }
+  };
+
+  const items: Item[] = [
+    {
+      value: "Start Server",
+      icon: <CiPlay1 size={14} />,
+      label: "Start Server",
+      onClick: () => handleApiCall("Start"),
+    },
+    {
+      label: "Stop Server",
+      value: "Stop Server",
+      icon: <CiStop1 size={16} />,
+      onClick: () => handleApiCall("Stop"),
+    },
+    {
+      label: "Reboot Server",
+      value: "Reboot Server",
+      icon: <IoMdRefresh size={14} />,
+      onClick: () => handleApiCall("Reboot"),
+    },
+    {
+      label: "Reinstall Server",
+      value: "Reinstall Server",
+      icon: <FiDownload size={14} />,
+      onClick: () => {},
+    },
+    {
+      label: "Novnc",
+      value: "Novnc",
+      icon: <FaTv size={14} />,
+      onClick: () => {},
+    },
+    {
+      label: "Destroy Server",
+      value: "Destroy Server",
+      icon: <FaRegTrashAlt size={14} />,
+      onClick: () => {},
+    },
+  ];
+
+  const handleSelection = (item: Item) => {
+    if (!item) return;
+    const { label, onClick } = item;
+
+    if (label === "Reinstall Server") {
+      setIsModalOpen(true);
+    } else if (label === "Destroy Server") {
+      setIsDeleteModalOpen(true);
+    } else {
+      onClick();
+    }
+  };
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -278,13 +342,7 @@ const RenderServerActions = ({
                 item.label === "Destroy Server" ? "text-red-500" : ""
               }`}
               key={index}
-              onClick={() => {
-                if (item.label === "Reinstall Server") {
-                  setIsModalOpen(true);
-                } else if (item.label === "Destroy Server") {
-                  setIsDeleteModalOpen(true);
-                }
-              }}
+              onClick={() => handleSelection(item)}
             >
               <span>{item.icon}</span>
               <p>{item.label}</p>
