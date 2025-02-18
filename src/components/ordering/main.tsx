@@ -47,40 +47,166 @@ export const Main = () => {
   console.log("Devices", devices);
   const tableData = {
     headers: ["Name", "CPU", "RAM", "Storage", "Network", "Price", "Status"],
-    body: devices.map((device) => ({
-      name: (
-        <p
-          className="font-semibold cursor-pointer hover:underline"
-          onClick={() => setParams({ page: "Metal" })}
-        >
-          {device.name}
-        </p>
-      ),
-      cpu: (
-        <div className="flex flex-col text-[10px]">
-          <p className="font-semibold text-xs">{device.cpu}</p>
-        </div>
-      ),
-      ram: <p className="font-semibold">32 GB</p>,
-      storage: <p className="font-semibold">{device.storage}</p>,
-      network: (
-        <div className="flex flex-col text-[10px]">
-          <p className="font-semibold text-xs">1 Gbps</p>
-          <p>20 TB</p>
-        </div>
-      ),
-      price: (
-        <div className="flex flex-col text-[10px]">
-          <p className="font-semibold text-xs">$92/mo</p>
-          <p>$0.13/hr</p>
-        </div>
-      ),
-      status: (
-        <p className="font-semibold">
-          {device.status.charAt(0).toUpperCase() + device.status.slice(1)}
-        </p>
-      ),
-    })),
+    // body: devices.map((device) => ({
+    //   name: (
+    //     <p
+    //       className="font-semibold cursor-pointer hover:underline"
+    //       onClick={() => setParams({ page: "Metal" })}
+    //     >
+    //       {device.name}
+    //     </p>
+    //   ),
+    //   cpu: (
+    //     <div className="flex flex-col text-[10px]">
+    //       <p className="font-semibold text-xs">{device.cpu}</p>
+    //     </div>
+    //   ),
+    //   ram: <p className="font-semibold">32 GB</p>,
+    //   storage: <p className="font-semibold">{device.storage}</p>,
+    //   network: (
+    //     <div className="flex flex-col text-[10px]">
+    //       <p className="font-semibold text-xs">1 Gbps</p>
+    //       <p>20 TB</p>
+    //     </div>
+    //   ),
+    //   price: (
+    //     <div className="flex flex-col text-[10px]">
+    //       <p className="font-semibold text-xs">$92/mo</p>
+    //       <p>$0.13/hr</p>
+    //     </div>
+    //   ),
+    //   status: (
+    //     <p className="font-semibold">
+    //       {device.status.charAt(0).toUpperCase() + device.status.slice(1)}
+    //     </p>
+    //   ),
+    // })),
+    body: [
+      {
+        name: (
+          <p
+            className="font-semibold cursor-pointer hover:underline"
+            onClick={() => setParams({ page: "Metal" })}
+          >
+            c2.small.x86
+          </p>
+        ),
+        cpu: (
+          <div className="flex flex-col text-[10px]">
+            <p className="font-semibold text-xs">E-2173G</p>
+            <p>6 Cores @ 3.7 GHz</p>
+          </div>
+        ),
+        ram: <p className="font-semibold">32 GB</p>,
+        storage: <p className="font-semibold">500 GB SSD</p>,
+        network: (
+          <div className="flex flex-col text-[10px]">
+            <p className="font-semibold text-xs">1 Gbps</p>
+            <p> 20 TB</p>
+          </div>
+        ),
+        price: (
+          <div className="flex flex-col text-[10px]">
+            <p className="font-semibold text-xs">$92/mo</p>
+            <p> $0.13/hr</p>
+          </div>
+        ),
+        status: <p className="font-semibold">Available</p>,
+      },
+      {
+        name: (
+          <p
+            className="font-semibold cursor-pointer hover:underline"
+            onClick={() => setParams({ page: "Metal" })}
+          >
+            c2.small.x86
+          </p>
+        ),
+        cpu: (
+          <div className="flex flex-col text-[10px]">
+            <p className="font-semibold text-xs">E-2173G</p>
+            <p>6 Cores @ 3.7 GHz</p>
+          </div>
+        ),
+        ram: <p className="font-semibold">32 GB</p>,
+        storage: <p className="font-semibold">500 GB SSD</p>,
+        network: (
+          <div className="flex flex-col text-[10px]">
+            <p className="font-semibold text-xs">1 Gbps</p>
+            <p> 20 TB</p>
+          </div>
+        ),
+        price: (
+          <div className="flex flex-col text-[10px]">
+            <p className="font-semibold text-xs">$92/mo</p>
+            <p> $0.13/hr</p>
+          </div>
+        ),
+        status: <p className="font-semibold">Available</p>,
+      },
+      {
+        name: (
+          <p
+            className="font-semibold cursor-pointer hover:underline"
+            onClick={() => setParams({ page: "Metal" })}
+          >
+            c2.small.x86
+          </p>
+        ),
+        cpu: (
+          <div className="flex flex-col text-[10px]">
+            <p className="font-semibold text-xs">E-2173G</p>
+            <p>6 Cores @ 3.7 GHz</p>
+          </div>
+        ),
+        ram: <p className="font-semibold">32 GB</p>,
+        storage: <p className="font-semibold">500 GB SSD</p>,
+        network: (
+          <div className="flex flex-col text-[10px]">
+            <p className="font-semibold text-xs">1 Gbps</p>
+            <p> 20 TB</p>
+          </div>
+        ),
+        price: (
+          <div className="flex flex-col text-[10px]">
+            <p className="font-semibold text-xs">$92/mo</p>
+            <p> $0.13/hr</p>
+          </div>
+        ),
+        status: <p className="font-semibold">Available</p>,
+      },
+      {
+        name: (
+          <p
+            className="font-semibold cursor-pointer hover:underline"
+            onClick={() => setParams({ page: "Metal" })}
+          >
+            c2.small.x86
+          </p>
+        ),
+        cpu: (
+          <div className="flex flex-col text-[10px]">
+            <p className="font-semibold text-xs">E-2173G</p>
+            <p>6 Cores @ 3.7 GHz</p>
+          </div>
+        ),
+        ram: <p className="font-semibold">32 GB</p>,
+        storage: <p className="font-semibold">500 GB SSD</p>,
+        network: (
+          <div className="flex flex-col text-[10px]">
+            <p className="font-semibold text-xs">1 Gbps</p>
+            <p> 20 TB</p>
+          </div>
+        ),
+        price: (
+          <div className="flex flex-col text-[10px]">
+            <p className="font-semibold text-xs">$92/mo</p>
+            <p> $0.13/hr</p>
+          </div>
+        ),
+        status: <p className="font-semibold">Available</p>,
+      },
+    ],
   };
 
   const RenderTables = () => {
