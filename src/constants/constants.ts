@@ -85,3 +85,36 @@ export enum InvoiceStatus {
   PAID = "paid",
   OVERDUE = "overdue",
 }
+
+export const serversList = [
+  {
+    id: 1,
+    name: "Ubuntu_webdav",
+    ip: "174.193.182.199",
+    specs: "1 Core, 12 GB",
+  },
+  {
+    id: 2,
+    name: "Ubuntu_webdav",
+    ip: "174.193.182.199",
+    specs: "1 Core, 12 GB",
+  },
+  {
+    id: 3,
+    name: "Ubuntu_webdav",
+    ip: "174.193.182.199",
+    specs: "1 Core, 12 GB",
+  },
+  {
+    id: 4,
+    name: "Ubuntu_webdav",
+    ip: "174.193.182.199",
+    specs: "1 Core, 12 GB",
+  },
+  {
+    id: 5,
+    name: "Ubuntu_webdav",
+    ip: "174.193.182.199",
+    specs: "1 Core, 12 GB",
+  },
+];

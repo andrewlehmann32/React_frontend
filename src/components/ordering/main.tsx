@@ -1,86 +1,97 @@
-import axios from "axios";
-import { useEffect, useState } from "react";
-import toast from "react-hot-toast";
+import { useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import { svgDrawer } from "../../lib/helpers/svgDrawer";
 import { Table } from "../shared/table";
 import { RenderDetails } from "./detailsPage";
-import { environment } from "../../config/environment";
+
+const menuItems = [
+  " c2.small.x86",
+  " c2.small.x86",
+  " c2.small.x86",
+  " c2.small.x86",
+];
 
 export const Main = () => {
   const [params, setParams] = useSearchParams();
-  interface Device {
-    name: string;
-    cpu: string;
-    storage: string;
-    status: string;
-  }
-
-  const [devices, setDevices] = useState<Device[]>([]);
-  const token = localStorage.getItem("token");
-
-  const fetchDevices = async () => {
-    try {
-      const response = await axios.get(`${environment.VITE_API_URL}/ordering`, {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      if (response.status === 200) {
-        setDevices(response.data.data);
-      }
-    } catch (error) {
-      console.error(error);
-      toast.error("Failed to fetch devices");
-    }
-  };
 
   useEffect(() => {
-    fetchDevices();
     () => {
       setParams("");
     };
   }, []);
 
-  console.log("Devices", devices);
-  const tableData = {
-    headers: ["Name", "CPU", "RAM", "Storage", "Network", "Price", "Status"],
-    body: devices.map((device) => ({
+  const renderTableItem = () => {
+    const data = menuItems.map((item) => ({
       name: (
         <p
           className="font-semibold cursor-pointer hover:underline"
           onClick={() => setParams({ page: "Metal" })}
         >
-          {device.name}
+          {item}
         </p>
       ),
       cpu: (
         <div className="flex flex-col text-[10px]">
-          <p className="font-semibold text-xs">{device.cpu}</p>
+          <p className="font-semibold text-xs">E-2173G</p>
+          <p>6 Cores @ 3.7 GHz</p>
         </div>
       ),
       ram: <p className="font-semibold">32 GB</p>,
-      storage: <p className="font-semibold">{device.storage}</p>,
+      storage: <p className="font-semibold">500 GB SSD</p>,
       network: (
         <div className="flex flex-col text-[10px]">
           <p className="font-semibold text-xs">1 Gbps</p>
-          <p>20 TB</p>
+          <p> 20 TB</p>
         </div>
       ),
       price: (
         <div className="flex flex-col text-[10px]">
           <p className="font-semibold text-xs">$92/mo</p>
-          <p>$0.13/hr</p>
+          <p> $0.13/hr</p>
         </div>
       ),
-      status: (
-        <p className="font-semibold">
-          {device.status.charAt(0).toUpperCase() + device.status.slice(1)}
-        </p>
-      ),
-    })),
+      status: <p className="font-semibold">Available</p>,
+    }));
+
+    return data;
+  };
+
+  const tableData = {
+    headers: ["Name", "CPU", "RAM", "Storage", "Network", "Price", "Status"],
+    //   name: (
+    //     <p
+    //       className="font-semibold cursor-pointer hover:underline"
+    //       onClick={() => setParams({ page: "Metal" })}
+    //     >
+    //       {device.name}
+    //     </p>
+    //   ),
+    //   cpu: (
+    //     <div className="flex flex-col text-[10px]">
+    //       <p className="font-semibold text-xs">{device.cpu}</p>
+    //     </div>
+    //   ),
+    //   ram: <p className="font-semibold">32 GB</p>,
+    //   storage: <p className="font-semibold">{device.storage}</p>,
+    //   network: (
+    //     <div className="flex flex-col text-[10px]">
+    //       <p className="font-semibold text-xs">1 Gbps</p>
+    //       <p>20 TB</p>
+    //     </div>
+    //   ),
+    //   price: (
+    //     <div className="flex flex-col text-[10px]">
+    //       <p className="font-semibold text-xs">$92/mo</p>
+    //       <p>$0.13/hr</p>
+    //     </div>
+    //   ),
+    //   status: (
+    //     <p className="font-semibold">
+    //       {device.status.charAt(0).toUpperCase() + device.status.slice(1)}
+    //     </p>
+    //   ),
+    // })),
+    body: renderTableItem(),
   };
 
   const RenderTables = () => {

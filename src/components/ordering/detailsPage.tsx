@@ -1,5 +1,8 @@
+import axios from "axios";
 import { Check, ChevronDownIcon } from "lucide-react";
 import React, { useReducer } from "react";
+import toast from "react-hot-toast";
+import { environment } from "../../config/environment";
 import { svgDrawer } from "../../lib/helpers/svgDrawer";
 import { ToggleButton } from "../shared/buttons/buttons";
 import { Button } from "../ui/button";
@@ -7,18 +10,25 @@ import { Button } from "../ui/button";
 type OSItem = {
   icon: React.ReactNode;
   title: string;
+  version: string;
+};
+
+type RegionItem = {
+  icon: React.ReactNode;
+  title: string;
+  id: number;
 };
 
 type State = {
   os: OSItem | null;
-  region: OSItem | null;
+  region: RegionItem | null;
   raid: string | null;
   billing: string | null;
 };
 
 type Action =
   | { type: "SET_OS"; payload: OSItem }
-  | { type: "SET_REGION"; payload: OSItem }
+  | { type: "SET_REGION"; payload: RegionItem }
   | { type: "SET_RAID"; payload: string }
   | { type: "SET_BILLING"; payload: string };
 
@@ -48,26 +58,32 @@ const OS: OSItem[] = [
   {
     icon: svgDrawer.centOS,
     title: "CentOS",
+    version: "20.04 LTS",
   },
   {
     icon: svgDrawer.rocky,
     title: "Rocky",
+    version: "20.04 LTS",
   },
   {
     icon: svgDrawer.ubuntu,
     title: "Ubuntu",
+    version: "20.04 LTS",
   },
   {
     icon: svgDrawer.debian,
     title: "Debian",
+    version: "20.04 LTS",
   },
   {
     icon: svgDrawer.redHat,
     title: "Red Hat",
+    version: "20.04 LTS",
   },
   {
     icon: svgDrawer.windows,
     title: "Windows",
+    version: "20.04 LTS",
   },
 ];
 
@@ -75,26 +91,32 @@ const countryFlags = [
   {
     icon: svgDrawer.usaFlag,
     title: "Ashburn, VA",
+    id: 1,
   },
   {
     icon: svgDrawer.usaFlag,
     title: "New York, NY",
+    id: 1,
   },
   {
     icon: svgDrawer.usaFlag,
     title: "Los Angeles, CA",
+    id: 1,
   },
   {
     icon: svgDrawer.hongKongFlag,
     title: "Hong Kong",
+    id: 1,
   },
   {
     icon: svgDrawer.germanyFlag,
     title: "Germany",
+    id: 1,
   },
   {
     icon: svgDrawer.ukFlag,
     title: "United Kingdom",
+    id: 1,
   },
 ];
 
@@ -143,6 +165,48 @@ export const RenderDetails = () => {
       </div>
     );
   };
+
+  const handleDeployment = async () => {
+  try {
+    const token = localStorage.getItem("token");
+
+    const payload = {
+      data: {
+        label: "c2-large-x8687", 
+        type_id: 4,
+        location_id: state.region?.id || 1, 
+        buy_price: 10,
+      },
+      metadata: {
+        Hostname: "Client Server", 
+        "SNMP Public Community": "public", 
+        "SNMP Private Community": "private", 
+        OS: state.os ? `${state.os.title} ${state.os.version}` : "Unknown OS", 
+        "IP Address": "149.51.229.634",
+      },
+    };
+
+    const config = {
+      url: `${environment.VITE_API_URL}/ordering`,
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+        apiKey: "",
+      },
+      data: payload,
+    };
+
+    const response = await axios(config);
+
+    if (response.status === 200 || response.status === 201) {
+      toast.success("Successfully Deployed!")
+    }
+  } catch (error) {
+    console.error("Error deploying server:", error);
+    toast.error("Something went wrong!")
+  }
+};
 
   return (
     <div className="py-2 gap-2 flex flex-col pr-0 lg:pr-6 w-full mb-20 sm:mb-0">
@@ -197,7 +261,9 @@ export const RenderDetails = () => {
               <p className="text-xs text-gray-500">My Total</p>
               <p className="font-medium">$0.14/hr</p>
             </div>
-            <Button className="lg:text-sm text-xs">Deploy Server</Button>
+            <Button className="lg:text-sm text-xs" onClick={handleDeployment}>
+              Deploy Server
+            </Button>
           </div>
         </div>
         <div className="w-full lg:w-8/12 flex flex-col px-0 xl:px-6 text-xs text-gray-500 gap-3">
