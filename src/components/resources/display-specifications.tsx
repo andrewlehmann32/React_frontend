@@ -6,6 +6,7 @@ import { svgDrawer } from "../../lib/helpers/svgDrawer";
 import { Chart } from "../generics/chart";
 import { ToggleButton } from "../shared/buttons/buttons";
 import { ResourcDataType } from "./main";
+import toast from "react-hot-toast";
 
 export const DisplayChart = () => {
   const [selected, setSelected] = useState("Total Transfer");
@@ -59,7 +60,7 @@ export const DisplaySpecificaions = ({
 }) => {
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
-    alert("Copied to clipboard");
+    toast.success("Copied to clipboard");
   };
 
   return (
