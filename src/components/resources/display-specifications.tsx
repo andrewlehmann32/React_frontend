@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import toast from "react-hot-toast";
 import { CiCalendar } from "react-icons/ci";
 import { IoIosArrowDown } from "react-icons/io";
 import { IoCopyOutline } from "react-icons/io5";
@@ -6,7 +7,6 @@ import { svgDrawer } from "../../lib/helpers/svgDrawer";
 import { Chart } from "../generics/chart";
 import { ToggleButton } from "../shared/buttons/buttons";
 import { ResourcDataType } from "./main";
-import toast from "react-hot-toast";
 
 export const DisplayChart = () => {
   const [selected, setSelected] = useState("Total Transfer");

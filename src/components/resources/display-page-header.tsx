@@ -10,7 +10,6 @@ import { svgDrawer } from "../../lib/helpers/svgDrawer";
 import { RDropdownMenu } from "../shared/menus/dropdown-menu";
 import { Modal } from "../shared/popups/modal-box";
 import { Button } from "../ui/button";
-import { ResourcDataType } from "./main";
 const serverId = 1;
 
 // Define types for OS and Item
@@ -211,11 +210,9 @@ const RenderDeleteModal = ({
 const RenderServerActions = ({
   setIsModalOpen,
   setIsDeleteModalOpen,
-}: // setResourceData,
-{
+}: {
   setIsModalOpen: (value: boolean) => void;
   setIsDeleteModalOpen: (value: boolean) => void;
-  setResourceData: (value: ResourcDataType) => void;
 }) => {
   const token = localStorage.getItem("token");
   const [isActive, setIsActive] = useState(false);
@@ -354,24 +351,24 @@ const RenderServerActions = ({
   );
 };
 
-export const DisplayPageHeader = ({
-  setResourceData,
-}: {
-  setResourceData: (value: ResourcDataType) => void;
-}) => {
+interface DisplayPageHeaderProps {
+  name: string;
+  ip: string;
+}
+
+export const DisplayPageHeader = ({ name, ip }: DisplayPageHeaderProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   return (
     <div className="flex items-start justify-between flex-wrap ">
       <div className="flex flex-col gap-1 text-xs text-gray-500">
-        <h1 className="text-base font-semibold text-gray-800">Ubuntu_webdav</h1>
-        <p>174.193.182.199</p>
+        <h1 className="text-base font-semibold text-gray-800">{name}</h1>
+        <p>{ip}</p>
       </div>
       <RenderServerActions
         setIsModalOpen={setIsModalOpen}
         setIsDeleteModalOpen={setIsDeleteModalOpen}
-        setResourceData={setResourceData}
       />
       <RenderModal
         isModalOpen={isModalOpen}
