@@ -13,6 +13,7 @@ interface ServerItemProps {
   setSelectedId: (id: number) => void;
   isLastItem: boolean;
   isFirstItem: boolean;
+  previousItemSelected: boolean;
 }
 
 const ServerItem = memo(
@@ -21,18 +22,25 @@ const ServerItem = memo(
     selectedId,
     setSelectedId,
     isLastItem,
-    isFirstItem,
+    previousItemSelected,
   }: ServerItemProps) => {
     const isSelected = selectedId === server.id;
-    const selectedItemStyles = isSelected ? "bg-white rounded-lg" : "";
+
+    const getStyles = () => {
+      const baseStyles = "py-5 min-h-[80px]";
+      const selectedStyles = isSelected ? "bg-white rounded-lg" : "";
+      const borderStyles =
+        !isLastItem && !isSelected && !previousItemSelected
+          ? "border-b"
+          : "border-b border-transparent";
+      const roundedStyles = !isSelected ? "rounded-t-lg" : "";
+
+      return `${baseStyles} ${selectedStyles} ${borderStyles} ${roundedStyles}`;
+    };
 
     return (
       <div
-        key={server.id}
-        className={`py-5 min-h-[80px] ${selectedItemStyles}  ${
-          !isFirstItem && !isLastItem && !isSelected ? "border-y" : ""
-        }
-        `}
+        className={getStyles()}
         onClick={() => setSelectedId(server.id)}
         role="button"
         aria-selected={isSelected}
@@ -52,7 +60,7 @@ const ServerItem = memo(
 );
 
 interface ServersListProps {
-  devices: { id: number; name: string; ip: string }[];
+  devices: Server[];
   selectedId: number | null;
   setSelectedId: (id: number) => void;
 }
@@ -78,6 +86,7 @@ export const ServersList = ({
               setSelectedId={setSelectedId}
               isLastItem={index === devices.length - 1}
               isFirstItem={index === 0}
+              previousItemSelected={selectedId === devices[index + 1]?.id}
             />
           ))}
         </div>
