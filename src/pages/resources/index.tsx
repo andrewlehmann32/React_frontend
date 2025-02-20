@@ -24,6 +24,8 @@ const Resources = () => {
   const token = localStorage.getItem("token");
 
   useEffect(() => {
+    const controller = new AbortController();
+    const signal = controller.signal;
     const fetchDevices = async () => {
       try {
         const response = await axios.get(
@@ -33,12 +35,13 @@ const Resources = () => {
               "Content-Type": "application/json",
               Authorization: `Bearer ${token}`,
             },
+            signal,
           }
         );
 
         if (response.status === 200) {
           // Append unique IDs dynamically
-          const devicesWithIds = response.data.data.map(
+          const devicesWithIds = response.data?.data?.map(
             (device: Device, index: number) => ({
               id: index + 1,
               name: device.name,
@@ -61,16 +64,26 @@ const Resources = () => {
     };
 
     fetchDevices();
+
+    // Cleanup function: Abort the request if the component unmounts
+    return () => {
+      controller.abort();
+    };
   }, []);
 
+  const filteredDevices = () => {
+    if (!devices.length) return [];
+    const filtered = devices.map((device) => ({
+      id: device.id,
+      name: device.name,
+      ip: device.ip,
+    }));
+    return filtered;
+  };
   return (
     <div className="flex flex-col lg:flex-row">
       <ServersList
-        devices={devices.map((device) => ({
-          id: device.id,
-          name: device.name,
-          ip: device.ip,
-        }))}
+        devices={filteredDevices()}
         selectedId={selectedId}
         setSelectedId={setSelectedId}
       />{" "}

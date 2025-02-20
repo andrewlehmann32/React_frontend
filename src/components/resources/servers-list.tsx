@@ -14,6 +14,11 @@ interface ServerItemProps {
   isLastItem: boolean;
   isFirstItem: boolean;
 }
+interface ServersListProps {
+  devices: { id: number; name: string; ip: string }[];
+  selectedId: number | null;
+  setSelectedId: (id: number) => void;
+}
 
 const ServerItem = memo(
   ({
@@ -50,12 +55,6 @@ const ServerItem = memo(
     );
   }
 );
-
-interface ServersListProps {
-  devices: { id: number; name: string; ip: string }[];
-  selectedId: number | null;
-  setSelectedId: (id: number) => void;
-}
 
 export const ServersList = ({
   devices,

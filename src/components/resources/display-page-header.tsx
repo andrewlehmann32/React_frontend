@@ -6,10 +6,10 @@ import { FaRegTrashAlt, FaTv } from "react-icons/fa";
 import { FiDownload } from "react-icons/fi";
 import { IoIosArrowDown, IoMdRefresh } from "react-icons/io";
 import { environment } from "../../config/environment";
-import { svgDrawer } from "../../lib/helpers/svgDrawer";
 import { RDropdownMenu } from "../shared/menus/dropdown-menu";
 import { Modal } from "../shared/popups/modal-box";
 import { Button } from "../ui/button";
+import { OS, raid } from "../../constants/constants";
 const serverId = 1;
 
 // Define types for OS and Item
@@ -26,44 +26,10 @@ type Item = {
   onClick: () => void;
 };
 
-const raid = [
-  { title: "No RAID", subTitle: "" },
-  { title: "RAID 0", subTitle: "Distributes data evenly" },
-  { title: "RAID 1", subTitle: "Mirrors data across disks" },
-];
-
-const OS = [
-  {
-    icon: svgDrawer.centOS,
-    title: "CentOS 24.04",
-    label: "CentOS 24.04",
-  },
-  {
-    icon: svgDrawer.rocky,
-    title: "Rocky 24.04",
-    label: "Rocky 24.04",
-  },
-  {
-    icon: svgDrawer.ubuntu,
-    title: "Ubuntu 24.04",
-    label: "Ubuntu 24.04",
-  },
-  {
-    icon: svgDrawer.debian,
-    title: "Debian 24.04",
-    label: "Debian 24.04",
-  },
-  {
-    icon: svgDrawer.redHat,
-    title: "Red Hat 24.04",
-    label: "Red Hat 24.04",
-  },
-  {
-    icon: svgDrawer.windows,
-    title: "Windows 24.04",
-    label: "Windows 24.04",
-  },
-];
+interface DisplayPageHeaderProps {
+  name: string;
+  ip: string;
+}
 
 type ModalDataType = {
   raid: { title: string; subTitle: string }[];
@@ -293,7 +259,6 @@ const RenderServerActions = ({
   ];
 
   const handleSelection = (item: Item) => {
-    if (!item) return;
     const { label, onClick } = item;
 
     if (label === "Reinstall Server") {
@@ -315,11 +280,10 @@ const RenderServerActions = ({
       }
     };
 
-    if (isActive) {
-      document.addEventListener("click", handleClickOutside);
-    } else {
+    if (!isActive) {
       document.removeEventListener("click", handleClickOutside);
     }
+    document.addEventListener("click", handleClickOutside);
 
     return () => {
       document.removeEventListener("click", handleClickOutside);
@@ -350,11 +314,6 @@ const RenderServerActions = ({
     </div>
   );
 };
-
-interface DisplayPageHeaderProps {
-  name: string;
-  ip: string;
-}
 
 export const DisplayPageHeader = ({ name, ip }: DisplayPageHeaderProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);

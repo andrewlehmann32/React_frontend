@@ -10,6 +10,7 @@ import {
   PiShoppingCartSimpleDuotone,
 } from "react-icons/pi";
 import { RiTeamLine } from "react-icons/ri";
+import { svgDrawer } from "../lib/helpers/svgDrawer";
 // Menu items.
 
 interface MenuItem {
@@ -116,5 +117,44 @@ export const serversList = [
     name: "Ubuntu_webdav",
     ip: "174.193.182.199",
     specs: "1 Core, 12 GB",
+  },
+];
+
+export const raid = [
+  { title: "No RAID", subTitle: "" },
+  { title: "RAID 0", subTitle: "Distributes data evenly" },
+  { title: "RAID 1", subTitle: "Mirrors data across disks" },
+];
+
+export const OS = [
+  {
+    icon: svgDrawer.centOS,
+    title: "CentOS 24.04",
+    label: "CentOS 24.04",
+  },
+  {
+    icon: svgDrawer.rocky,
+    title: "Rocky 24.04",
+    label: "Rocky 24.04",
+  },
+  {
+    icon: svgDrawer.ubuntu,
+    title: "Ubuntu 24.04",
+    label: "Ubuntu 24.04",
+  },
+  {
+    icon: svgDrawer.debian,
+    title: "Debian 24.04",
+    label: "Debian 24.04",
+  },
+  {
+    icon: svgDrawer.redHat,
+    title: "Red Hat 24.04",
+    label: "Red Hat 24.04",
+  },
+  {
+    icon: svgDrawer.windows,
+    title: "Windows 24.04",
+    label: "Windows 24.04",
   },
 ];

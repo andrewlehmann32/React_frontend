@@ -1,5 +1,5 @@
-import { useState } from "react";
 import { Switch } from "@radix-ui/react-switch";
+import { useState } from "react";
 
 export const ToggleButton = ({
   enabledColor = "bg-white",
