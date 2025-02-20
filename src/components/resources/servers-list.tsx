@@ -13,6 +13,7 @@ interface ServerItemProps {
   setSelectedId: (id: number) => void;
   isLastItem: boolean;
   isFirstItem: boolean;
+  previousItemSelected: boolean;
 }
 interface ServersListProps {
   devices: { id: number; name: string; ip: string }[];
@@ -26,18 +27,25 @@ const ServerItem = memo(
     selectedId,
     setSelectedId,
     isLastItem,
-    isFirstItem,
+    previousItemSelected,
   }: ServerItemProps) => {
     const isSelected = selectedId === server.id;
-    const selectedItemStyles = isSelected ? "bg-white rounded-lg" : "";
+
+    const getStyles = () => {
+      const baseStyles = "py-5 min-h-[80px]";
+      const selectedStyles = isSelected ? "bg-white rounded-lg" : "";
+      const borderStyles =
+        !isLastItem && !isSelected && !previousItemSelected
+          ? "border-b"
+          : "border-b border-transparent";
+      const roundedStyles = !isSelected ? "rounded-t-lg" : "";
+
+      return `${baseStyles} ${selectedStyles} ${borderStyles} ${roundedStyles}`;
+    };
 
     return (
       <div
-        key={server.id}
-        className={`py-5 min-h-[80px] ${selectedItemStyles}  ${
-          !isFirstItem && !isLastItem && !isSelected ? "border-y" : ""
-        }
-        `}
+        className={getStyles()}
         onClick={() => setSelectedId(server.id)}
         role="button"
         aria-selected={isSelected}
@@ -62,7 +70,7 @@ export const ServersList = ({
   setSelectedId,
 }: ServersListProps) => {
   return (
-    <div className="w-[100%] lg:w-[24%] xl:w-[27%] p-3">
+    <div className="w-[100%] lg:w-[24%] xl:w-[27%] p-3 overflow-y-auto">
       <div className="flex flex-col p-3 lg:border-l min-h-full">
         <Button className="max-w-12">+</Button>
         <h1 className="mt-4 mb-1 text-gray-500 text-sm">
@@ -77,6 +85,7 @@ export const ServersList = ({
               setSelectedId={setSelectedId}
               isLastItem={index === devices.length - 1}
               isFirstItem={index === 0}
+              previousItemSelected={selectedId === devices[index + 1]?.id}
             />
           ))}
         </div>

@@ -81,12 +81,12 @@ const Resources = () => {
     return filtered;
   };
   return (
-    <div className="flex flex-col lg:flex-row">
+    <div className="flex flex-col lg:flex-row h-screen">
       <ServersList
         devices={filteredDevices()}
         selectedId={selectedId}
         setSelectedId={setSelectedId}
-      />{" "}
+      />
       <div className="w-[100%] lg:w-[76%] xl:w-[73%]">
         <PageLayout>
           <Main devices={devices} selectedId={selectedId} />
