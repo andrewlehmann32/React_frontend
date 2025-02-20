@@ -63,7 +63,7 @@ export const ServersList = ({
   setSelectedId,
 }: ServersListProps) => {
   return (
-    <div className="w-[100%] lg:w-[24%] xl:w-[27%] p-3">
+    <div className="w-[100%] lg:w-[24%] xl:w-[27%] p-3 overflow-y-auto">
       <div className="flex flex-col p-3 lg:border-l min-h-full">
         <Button className="max-w-12">+</Button>
         <h1 className="mt-4 mb-1 text-gray-500 text-sm">

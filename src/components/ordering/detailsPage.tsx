@@ -1,6 +1,6 @@
 import axios from "axios";
 import { Check, ChevronDownIcon } from "lucide-react";
-import React, { useReducer } from "react";
+import React, { useReducer, useState } from "react";
 import toast from "react-hot-toast";
 import { environment } from "../../config/environment";
 import { svgDrawer } from "../../lib/helpers/svgDrawer";
@@ -133,6 +133,7 @@ const raid = [
 
 export const RenderDetails = () => {
   const [state, dispatch] = useReducer(reducer, initialState);
+  const [hostname, setHostname] = useState<string>("");
 
   const RegionSelector = ({ value }: any) => {
     return (
@@ -167,46 +168,46 @@ export const RenderDetails = () => {
   };
 
   const handleDeployment = async () => {
-  try {
-    const token = localStorage.getItem("token");
+    try {
+      const token = localStorage.getItem("token");
 
-    const payload = {
-      data: {
-        label: "c2-large-x8687", 
-        type_id: 4,
-        location_id: state.region?.id || 1, 
-        buy_price: 10,
-      },
-      metadata: {
-        Hostname: "Client Server", 
-        "SNMP Public Community": "public", 
-        "SNMP Private Community": "private", 
-        OS: state.os ? `${state.os.title} ${state.os.version}` : "Unknown OS", 
-        "IP Address": "149.51.229.634",
-      },
-    };
+      const payload = {
+        data: {
+          label: hostname,
+          type_id: 4,
+          location_id: state.region?.id || 1,
+          buy_price: 10,
+        },
+        metadata: {
+          Hostname: hostname,
+          "SNMP Public Community": "public",
+          "SNMP Private Community": "private",
+          OS: state.os ? `${state.os.title} ${state.os.version}` : "Unknown OS",
+          "IP Address": "149.51.229.634",
+        },
+      };
 
-    const config = {
-      url: `${environment.VITE_API_URL}/ordering`,
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-        apiKey: "",
-      },
-      data: payload,
-    };
+      const config = {
+        url: `${environment.VITE_API_URL}/ordering`,
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+          apiKey: "",
+        },
+        data: payload,
+      };
 
-    const response = await axios(config);
+      const response = await axios(config);
 
-    if (response.status === 200 || response.status === 201) {
-      toast.success("Successfully Deployed!")
+      if (response.status === 200 || response.status === 201) {
+        toast.success("Successfully Deployed!");
+      }
+    } catch (error) {
+      console.error("Error deploying server:", error);
+      toast.error("Something went wrong!");
     }
-  } catch (error) {
-    console.error("Error deploying server:", error);
-    toast.error("Something went wrong!")
-  }
-};
+  };
 
   return (
     <div className="py-2 gap-2 flex flex-col pr-0 lg:pr-6 w-full mb-20 sm:mb-0">
@@ -360,7 +361,8 @@ export const RenderDetails = () => {
               type="text"
               className="mt-4 w-full border rounded-md p-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               placeholder="c2-small-x86-chi-1"
-              defaultValue="c2-small-x86-chi-1"
+              value={hostname}
+              onChange={(e) => setHostname(e.target.value)}
             />
           </div>
         </div>
