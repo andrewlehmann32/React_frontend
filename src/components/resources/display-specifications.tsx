@@ -62,7 +62,6 @@ export const DisplaySpecificaions = ({
     navigator.clipboard.writeText(text);
     toast.success("Copied to clipboard");
   };
-
   return (
     <div className="flex flex-col md:grid md:grid-cols-2 xl:grid-cols-3 gap-6 py-2">
       <div className="rounded-md p-4 bg-gray-100 order-1 md:order-none">
@@ -120,16 +119,13 @@ export const DisplaySpecificaions = ({
                     <p>{property.value}</p>
                   </div>
                 )}
-
                 {property.title === "Status" && (
                   <div className="flex items-center gap-2">
                     <ToggleButton
-                      enabledColor="bg-green-500"
-                      enabledBgColor="bg-white"
-                      disabledBgColor="bg-white"
                       showLabel={true}
+                      disabled={true}
+                      isChecked={property.value === "running"}
                     />
-                    {/* <p>{property.value}</p> */}
                   </div>
                 )}
                 {property.title !== "Main IP" &&

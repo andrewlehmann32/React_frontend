@@ -6,11 +6,10 @@ import { FaRegTrashAlt, FaTv } from "react-icons/fa";
 import { FiDownload } from "react-icons/fi";
 import { IoIosArrowDown, IoMdRefresh } from "react-icons/io";
 import { environment } from "../../config/environment";
+import { OS, raid } from "../../constants/constants";
 import { RDropdownMenu } from "../shared/menus/dropdown-menu";
 import { Modal } from "../shared/popups/modal-box";
 import { Button } from "../ui/button";
-import { OS, raid } from "../../constants/constants";
-const serverId = 1;
 
 // Define types for OS and Item
 type OSItem = {
@@ -29,6 +28,7 @@ type Item = {
 interface DisplayPageHeaderProps {
   name: string;
   ip: string;
+  id: number;
 }
 
 type ModalDataType = {
@@ -48,6 +48,8 @@ type ModalPropsType = {
 };
 
 type DeleteModalPropsType = {
+  id: number;
+  name: string;
   setIsDeleteModalOpen: (value: boolean) => void;
   isDeleteModalOpen: boolean;
 };
@@ -142,15 +144,57 @@ const RenderModal = ({
 };
 
 const RenderDeleteModal = ({
+  id,
+  name,
   setIsDeleteModalOpen,
   isDeleteModalOpen,
 }: DeleteModalPropsType) => {
+  const [inputValue, setInputValue] = useState("");
+  const isDisabled = inputValue !== name;
+  const token = localStorage.getItem("token");
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setInputValue(e.target.value);
+  };
+
+  const handleDelete = async () => {
+    try {
+      if (!token) {
+        toast.error("Authorization token is missing");
+        return;
+      }
+
+      const apiUrl = `${environment.VITE_API_URL}/ordering/${id}`;
+      const successMessage = "Server Deleted successfully";
+
+      const config = {
+        url: apiUrl,
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      };
+
+      const response = await axios(config);
+
+      if (response.status === 200) {
+        toast.success(successMessage);
+      }
+      setIsDeleteModalOpen(false);
+    } catch (error) {
+      setIsDeleteModalOpen(false);
+      console.error(error);
+      toast.error("Something went wrong");
+    }
+  };
   return (
     <Modal
       title="Destroy Server"
       isOpen={isDeleteModalOpen}
       setIsOpen={setIsDeleteModalOpen}
-      onSave={() => {}}
+      disabled={isDisabled}
+      onSave={handleDelete}
       actionButtonText={
         <>
           <FaRegTrashAlt size={16} />
@@ -160,13 +204,14 @@ const RenderDeleteModal = ({
       actionButtonStyles="w-full border text-red-500"
     >
       <div className="flex flex-col p-1 gap-1">
-        <p className="text-xs text-gray-500 mt-1">
-          Please type: c2-small-x86-chi-1 to confirm
+        <p className="text-xs text-gray-500 my-1">
+          Please type: {name} to confirm
         </p>
         <input
           type="text"
           className="mt-1 w-full border rounded-md py-2 px-4 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           placeholder="Type here"
+          onChange={handleInputChange}
         />
       </div>
     </Modal>
@@ -174,9 +219,11 @@ const RenderDeleteModal = ({
 };
 
 const RenderServerActions = ({
+  id,
   setIsModalOpen,
   setIsDeleteModalOpen,
 }: {
+  id: number;
   setIsModalOpen: (value: boolean) => void;
   setIsDeleteModalOpen: (value: boolean) => void;
 }) => {
@@ -189,13 +236,13 @@ const RenderServerActions = ({
       let apiUrl;
       let successMessage;
       if (value === "Start") {
-        apiUrl = `${environment.VITE_API_URL}/ordering/${serverId}/boot`;
+        apiUrl = `${environment.VITE_API_URL}/ordering/${id}/boot`;
         successMessage = "Server started successfully";
       } else if (value === "Stop") {
-        apiUrl = `${environment.VITE_API_URL}/ordering/${serverId}/shutdown`;
+        apiUrl = `${environment.VITE_API_URL}/ordering/${id}/shutdown`;
         successMessage = "Server stopped successfully";
       } else {
-        apiUrl = `${environment.VITE_API_URL}/ordering/${serverId}/reboot`;
+        apiUrl = `${environment.VITE_API_URL}/ordering/${id}/reboot`;
         successMessage = "Server rebooted successfully";
       }
 
@@ -315,7 +362,7 @@ const RenderServerActions = ({
   );
 };
 
-export const DisplayPageHeader = ({ name, ip }: DisplayPageHeaderProps) => {
+export const DisplayPageHeader = ({ name, ip, id }: DisplayPageHeaderProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
@@ -326,6 +373,7 @@ export const DisplayPageHeader = ({ name, ip }: DisplayPageHeaderProps) => {
         <p>{ip}</p>
       </div>
       <RenderServerActions
+        id={id}
         setIsModalOpen={setIsModalOpen}
         setIsDeleteModalOpen={setIsDeleteModalOpen}
       />
@@ -335,6 +383,8 @@ export const DisplayPageHeader = ({ name, ip }: DisplayPageHeaderProps) => {
         modalData={modalData}
       />
       <RenderDeleteModal
+        id={id}
+        name={name}
         isDeleteModalOpen={isDeleteModalOpen}
         setIsDeleteModalOpen={setIsDeleteModalOpen}
       />

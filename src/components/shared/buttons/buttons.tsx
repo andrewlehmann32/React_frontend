@@ -1,22 +1,33 @@
 import { Switch } from "@radix-ui/react-switch";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export const ToggleButton = ({
-  enabledColor = "bg-white",
-  disabledColor = "bg-gray-300",
-  enabledBgColor = "bg-blue-500",
-  disabledBgColor = "bg-gray-100",
   showLabel = false,
+  disabled = false,
+  isChecked = false,
+}: {
+  showLabel?: boolean;
+  disabled?: boolean;
+  isChecked?: boolean;
 }) => {
-  const [isEnabled, setIsEnabled] = useState(false);
+  const [isEnabled, setIsEnabled] = useState(isChecked);
+  const enabledColor = "bg-white";
+  const disabledColor = "bg-gray-300";
+  const enabledBgColor = "bg-blue-500";
+  const disabledBgColor = "bg-gray-50";
 
   const handleToggle = () => setIsEnabled(!isEnabled);
+
+  useEffect(() => {
+    setIsEnabled(isChecked);
+  }, [isChecked]);
 
   return (
     <div className="flex items-center space-x-2 pt-1">
       <Switch
         id="toggle"
-        checked={isEnabled}
+        checked={false}
+        disabled={disabled}
         onCheckedChange={handleToggle}
         className={`w-10 h-6 rounded-full relative transition-colors ${
           isEnabled ? enabledBgColor : disabledBgColor
