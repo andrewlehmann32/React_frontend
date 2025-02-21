@@ -1,13 +1,16 @@
-import { useState } from "react";
+import axios from "axios";
+import { useEffect, useRef, useState } from "react";
+import toast from "react-hot-toast";
 import { CiPlay1, CiStop1 } from "react-icons/ci";
 import { FaRegTrashAlt, FaTv } from "react-icons/fa";
 import { FiDownload } from "react-icons/fi";
 import { IoIosArrowDown, IoMdRefresh } from "react-icons/io";
-import { svgDrawer } from "../../lib/helpers/svgDrawer";
+import { environment } from "../../config/environment";
 import { RDropdownMenu } from "../shared/menus/dropdown-menu";
 import { Modal } from "../shared/popups/modal-box";
 import { Button } from "../ui/button";
-import { ResourcDataType } from "./main";
+import { OS, raid } from "../../constants/constants";
+const serverId = 1;
 
 // Define types for OS and Item
 type OSItem = {
@@ -20,76 +23,13 @@ type Item = {
   label: string;
   value: string;
   icon: React.ReactNode;
-  onClick?: () => void;
+  onClick: () => void;
 };
 
-const items: Item[] = [
-  {
-    value: "Start Server",
-    icon: <CiPlay1 size={14} />,
-    label: "Start Server",
-  },
-  {
-    label: "Stop Server",
-    value: "Stop Server",
-    icon: <CiStop1 size={16} />,
-  },
-  {
-    label: "Reboot Server",
-    value: "Reboot Server",
-    icon: <IoMdRefresh size={14} />,
-  },
-  {
-    label: "Reinstall Server",
-    value: "Reinstall Server",
-    icon: <FiDownload size={14} />,
-  },
-  { label: "Novnc", value: "Novnc", icon: <FaTv size={14} /> },
-  {
-    label: "Destroy Server",
-    value: "Destroy Server",
-    icon: <FaRegTrashAlt size={14} />,
-  },
-];
-
-const raid = [
-  { title: "No RAID", subTitle: "" },
-  { title: "RAID 0", subTitle: "Distributes data evenly" },
-  { title: "RAID 1", subTitle: "Mirrors data across disks" },
-];
-
-const OS = [
-  {
-    icon: svgDrawer.centOS,
-    title: "CentOS 24.04",
-    label: "CentOS 24.04",
-  },
-  {
-    icon: svgDrawer.rocky,
-    title: "Rocky 24.04",
-    label: "Rocky 24.04",
-  },
-  {
-    icon: svgDrawer.ubuntu,
-    title: "Ubuntu 24.04",
-    label: "Ubuntu 24.04",
-  },
-  {
-    icon: svgDrawer.debian,
-    title: "Debian 24.04",
-    label: "Debian 24.04",
-  },
-  {
-    icon: svgDrawer.redHat,
-    title: "Red Hat 24.04",
-    label: "Red Hat 24.04",
-  },
-  {
-    icon: svgDrawer.windows,
-    title: "Windows 24.04",
-    label: "Windows 24.04",
-  },
-];
+interface DisplayPageHeaderProps {
+  name: string;
+  ip: string;
+}
 
 type ModalDataType = {
   raid: { title: string; subTitle: string }[];
@@ -107,6 +47,11 @@ type ModalPropsType = {
   modalData: ModalDataType;
 };
 
+type DeleteModalPropsType = {
+  setIsDeleteModalOpen: (value: boolean) => void;
+  isDeleteModalOpen: boolean;
+};
+
 const RenderModal = ({
   setIsModalOpen,
   isModalOpen,
@@ -119,8 +64,14 @@ const RenderModal = ({
       isOpen={isModalOpen}
       setIsOpen={setIsModalOpen}
       onSave={() => {}}
-      actionButtonText="Reinstall"
-      actionButtonStyles="w-full border">
+      actionButtonText={
+        <>
+          <FiDownload size={14} />
+          Reinstall Server
+        </>
+      }
+      actionButtonStyles="w-full border"
+    >
       <div className="w-full flex flex-col gap-4 ">
         <div>
           <p className="text-gray-500 text-sm font-medium mb-2">
@@ -165,7 +116,8 @@ const RenderModal = ({
                     : "border-gray-200 border"
                 }`}
                 key={index}
-                onClick={() => setRaid(item.title)}>
+                onClick={() => setRaid(item.title)}
+              >
                 <div className="flex flex-col justify-center gap-1">
                   <div>{item.title}</div>
                   <p className="text-xs tracking-tighter">{item.subTitle}</p>
@@ -189,17 +141,157 @@ const RenderModal = ({
   );
 };
 
+const RenderDeleteModal = ({
+  setIsDeleteModalOpen,
+  isDeleteModalOpen,
+}: DeleteModalPropsType) => {
+  return (
+    <Modal
+      title="Destroy Server"
+      isOpen={isDeleteModalOpen}
+      setIsOpen={setIsDeleteModalOpen}
+      onSave={() => {}}
+      actionButtonText={
+        <>
+          <FaRegTrashAlt size={16} />
+          Destroy Server
+        </>
+      }
+      actionButtonStyles="w-full border text-red-500"
+    >
+      <div className="flex flex-col p-1 gap-1">
+        <p className="text-xs text-gray-500 mt-1">
+          Please type: c2-small-x86-chi-1 to confirm
+        </p>
+        <input
+          type="text"
+          className="mt-1 w-full border rounded-md py-2 px-4 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          placeholder="Type here"
+        />
+      </div>
+    </Modal>
+  );
+};
+
 const RenderServerActions = ({
   setIsModalOpen,
-}: // setResourceData,
-{
+  setIsDeleteModalOpen,
+}: {
   setIsModalOpen: (value: boolean) => void;
-  setResourceData: (value: ResourcDataType) => void;
+  setIsDeleteModalOpen: (value: boolean) => void;
 }) => {
+  const token = localStorage.getItem("token");
   const [isActive, setIsActive] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  const handleApiCall = async (value: string) => {
+    try {
+      let apiUrl;
+      let successMessage;
+      if (value === "Start") {
+        apiUrl = `${environment.VITE_API_URL}/ordering/${serverId}/boot`;
+        successMessage = "Server started successfully";
+      } else if (value === "Stop") {
+        apiUrl = `${environment.VITE_API_URL}/ordering/${serverId}/shutdown`;
+        successMessage = "Server stopped successfully";
+      } else {
+        apiUrl = `${environment.VITE_API_URL}/ordering/${serverId}/reboot`;
+        successMessage = "Server rebooted successfully";
+      }
+
+      const config = {
+        url: apiUrl,
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      };
+
+      const response = await axios(config);
+
+      if (response.status === 200) {
+        toast.success(successMessage);
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Something went wrong");
+    }
+  };
+
+  const items: Item[] = [
+    {
+      value: "Start Server",
+      icon: <CiPlay1 size={14} />,
+      label: "Start Server",
+      onClick: () => handleApiCall("Start"),
+    },
+    {
+      label: "Stop Server",
+      value: "Stop Server",
+      icon: <CiStop1 size={16} />,
+      onClick: () => handleApiCall("Stop"),
+    },
+    {
+      label: "Reboot Server",
+      value: "Reboot Server",
+      icon: <IoMdRefresh size={14} />,
+      onClick: () => handleApiCall("Reboot"),
+    },
+    {
+      label: "Reinstall Server",
+      value: "Reinstall Server",
+      icon: <FiDownload size={14} />,
+      onClick: () => {},
+    },
+    {
+      label: "Novnc",
+      value: "Novnc",
+      icon: <FaTv size={14} />,
+      onClick: () => {},
+    },
+    {
+      label: "Destroy Server",
+      value: "Destroy Server",
+      icon: <FaRegTrashAlt size={14} />,
+      onClick: () => {},
+    },
+  ];
+
+  const handleSelection = (item: Item) => {
+    const { label, onClick } = item;
+
+    if (label === "Reinstall Server") {
+      setIsModalOpen(true);
+    } else if (label === "Destroy Server") {
+      setIsDeleteModalOpen(true);
+    } else {
+      onClick();
+    }
+  };
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setIsActive(false);
+      }
+    };
+
+    if (!isActive) {
+      document.removeEventListener("click", handleClickOutside);
+    }
+    document.addEventListener("click", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("click", handleClickOutside);
+    };
+  }, [isActive]);
 
   return (
-    <div className="relative">
+    <div className="relative" ref={dropdownRef}>
       <Button onClick={() => setIsActive(!isActive)}>
         Server Actions <IoIosArrowDown />
       </Button>
@@ -211,12 +303,8 @@ const RenderServerActions = ({
                 item.label === "Destroy Server" ? "text-red-500" : ""
               }`}
               key={index}
-              onClick={() => {
-                if (item.label === "Reinstall Server") {
-                  setIsModalOpen(true);
-                }
-                // item?.onClick();
-              }}>
+              onClick={() => handleSelection(item)}
+            >
               <span>{item.icon}</span>
               <p>{item.label}</p>
             </div>
@@ -227,27 +315,28 @@ const RenderServerActions = ({
   );
 };
 
-export const DisplayPageHeader = ({
-  setResourceData,
-}: {
-  setResourceData: (value: ResourcDataType) => void;
-}) => {
+export const DisplayPageHeader = ({ name, ip }: DisplayPageHeaderProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   return (
     <div className="flex items-start justify-between flex-wrap ">
       <div className="flex flex-col gap-1 text-xs text-gray-500">
-        <h1 className="text-base font-semibold text-gray-800">Ubuntu_webdav</h1>
-        <p>174.193.182.199</p>
+        <h1 className="text-base font-semibold text-gray-800">{name}</h1>
+        <p>{ip}</p>
       </div>
       <RenderServerActions
         setIsModalOpen={setIsModalOpen}
-        setResourceData={setResourceData}
+        setIsDeleteModalOpen={setIsDeleteModalOpen}
       />
       <RenderModal
         isModalOpen={isModalOpen}
         setIsModalOpen={setIsModalOpen}
         modalData={modalData}
+      />
+      <RenderDeleteModal
+        isDeleteModalOpen={isDeleteModalOpen}
+        setIsDeleteModalOpen={setIsDeleteModalOpen}
       />
     </div>
   );

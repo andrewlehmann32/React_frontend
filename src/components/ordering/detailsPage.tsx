@@ -1,100 +1,55 @@
+import axios from "axios";
+import React from "react";
+import toast from "react-hot-toast";
+import { environment } from "../../config/environment";
+
 import { Check, ChevronDownIcon } from "lucide-react";
-import React, { useReducer } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { OSOrdering } from "../../constants/constants";
 import { svgDrawer } from "../../lib/helpers/svgDrawer";
+import {
+  RegionItem,
+  setBilling,
+  setHostname,
+  setOS,
+  setRaid,
+  setRegion,
+} from "../../redux/reducer/resourcesReducer";
+import { RootState } from "../../redux/store";
 import { ToggleButton } from "../shared/buttons/buttons";
 import { Button } from "../ui/button";
 
-type OSItem = {
-  icon: React.ReactNode;
-  title: string;
-};
-
-type State = {
-  os: OSItem | null;
-  region: OSItem | null;
-  raid: string | null;
-  billing: string | null;
-};
-
-type Action =
-  | { type: "SET_OS"; payload: OSItem }
-  | { type: "SET_REGION"; payload: OSItem }
-  | { type: "SET_RAID"; payload: string }
-  | { type: "SET_BILLING"; payload: string };
-
-const initialState: State = {
-  os: null,
-  region: null,
-  raid: null,
-  billing: null,
-};
-
-const reducer = (state: State, action: Action): State => {
-  switch (action.type) {
-    case "SET_OS":
-      return { ...state, os: action.payload };
-    case "SET_REGION":
-      return { ...state, region: action.payload };
-    case "SET_RAID":
-      return { ...state, raid: action.payload };
-    case "SET_BILLING":
-      return { ...state, billing: action.payload };
-    default:
-      return state;
-  }
-};
-
-const OS: OSItem[] = [
-  {
-    icon: svgDrawer.centOS,
-    title: "CentOS",
-  },
-  {
-    icon: svgDrawer.rocky,
-    title: "Rocky",
-  },
-  {
-    icon: svgDrawer.ubuntu,
-    title: "Ubuntu",
-  },
-  {
-    icon: svgDrawer.debian,
-    title: "Debian",
-  },
-  {
-    icon: svgDrawer.redHat,
-    title: "Red Hat",
-  },
-  {
-    icon: svgDrawer.windows,
-    title: "Windows",
-  },
-];
-
-const countryFlags = [
+const countryFlags: RegionItem[] = [
   {
     icon: svgDrawer.usaFlag,
     title: "Ashburn, VA",
+    id: 1,
   },
   {
     icon: svgDrawer.usaFlag,
     title: "New York, NY",
+    id: 1,
   },
   {
     icon: svgDrawer.usaFlag,
     title: "Los Angeles, CA",
+    id: 1,
   },
   {
     icon: svgDrawer.hongKongFlag,
     title: "Hong Kong",
+    id: 1,
   },
   {
     icon: svgDrawer.germanyFlag,
     title: "Germany",
+    id: 1,
   },
   {
     icon: svgDrawer.ukFlag,
     title: "United Kingdom",
+    id: 1,
   },
 ];
 
@@ -110,8 +65,9 @@ const raid = [
 ];
 
 export const RenderDetails = () => {
-  const [state, dispatch] = useReducer(reducer, initialState);
-
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const details = useSelector((state: RootState) => state.renderDetails);
   const RegionSelector = ({ value }: any) => {
     return (
       <div className="flex items-center justify-between border rounded-lg px-4 py-2 mt-2 ">
@@ -144,6 +100,51 @@ export const RenderDetails = () => {
     );
   };
 
+  const handleDeployment = async () => {
+    try {
+      const token = localStorage.getItem("token");
+
+      const payload = {
+        data: {
+          label: details.hostname,
+          type_id: 4,
+          location_id: details.region?.id || 1,
+          buy_price: 10,
+        },
+        metadata: {
+          Hostname: details.hostname,
+          "SNMP Public Community": "public",
+          "SNMP Private Community": "private",
+          OS: details.os
+            ? `${details.os.title} ${details.os.version}`
+            : "Unknown OS",
+          "IP Address": "149.51.229.634",
+        },
+      };
+
+      const config = {
+        url: `${environment.VITE_API_URL}/ordering`,
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+          apiKey: "",
+        },
+        data: payload,
+      };
+
+      const response = await axios(config);
+
+      if (response.status === 200 || response.status === 201) {
+        toast.success("Successfully Deployed!");
+        navigate("/resources");
+      }
+    } catch (error: any) {
+      console.error("Error deploying server:", error);
+      toast.error(error?.response?.data?.message);
+    }
+  };
+
   return (
     <div className="py-2 gap-2 flex flex-col pr-0 lg:pr-6 w-full mb-20 sm:mb-0">
       <h1 className="text-lg font-medium py-1">c2.small.x86</h1>
@@ -151,15 +152,15 @@ export const RenderDetails = () => {
         <div className="w-full sm:w-2/6 flex flex-col gap-4">
           <p className="text-xs text-gray-500">Select Operating System</p>
           <div className="grid grid-cols-2 gap-4">
-            {OS.map((item, index) => (
+            {OSOrdering.map((item, index) => (
               <div
                 className={`flex flex-col gap-4 border rounded-lg px-3 py-4  justify-center items-center text-xs cursor-pointer ${
-                  state.os?.title === item.title
+                  details.os?.title === item.title
                     ? "border-sky-600"
                     : "border-gray-200"
                 }`}
                 key={index}
-                onClick={() => dispatch({ type: "SET_OS", payload: item })}
+                onClick={() => dispatch(setOS(item))}
               >
                 <div>{item.icon}</div>
                 <p>{item.title}</p>
@@ -170,9 +171,9 @@ export const RenderDetails = () => {
             <p className="text-xs text-gray-500">OS Version:</p>
             <div className="flex flex-wrap items-center gap-3">
               <div className="w-5 h-5 flex items-center justify-center">
-                {state.os?.icon && React.isValidElement(state.os.icon)
+                {details.os?.icon && React.isValidElement(details.os.icon)
                   ? React.cloneElement(
-                      state.os.icon as React.ReactElement<
+                      details.os.icon as React.ReactElement<
                         React.SVGProps<SVGSVGElement>
                       >,
                       {
@@ -182,7 +183,7 @@ export const RenderDetails = () => {
                     )
                   : null}
               </div>
-              <p className="text-xs flex">{state.os?.title} 24.03</p>
+              <p className="text-xs flex">{details.os?.title} 24.03</p>
             </div>
           </div>
           <div className=" text-xs text-gray-500">
@@ -197,7 +198,9 @@ export const RenderDetails = () => {
               <p className="text-xs text-gray-500">My Total</p>
               <p className="font-medium">$0.14/hr</p>
             </div>
-            <Button className="lg:text-sm text-xs">Deploy Server</Button>
+            <Button className="lg:text-sm text-xs" onClick={handleDeployment}>
+              Deploy Server
+            </Button>
           </div>
         </div>
         <div className="w-full lg:w-8/12 flex flex-col px-0 xl:px-6 text-xs text-gray-500 gap-3">
@@ -207,18 +210,16 @@ export const RenderDetails = () => {
               {countryFlags.map((item, index) => (
                 <div
                   className={`flex gap-2 sm:gap-4 rounded-lg pl-2 lg:pl-4 xl:pl-8 py-3 items-center text-xs cursor-pointer ${
-                    state.region?.title === item.title
+                    details.region?.title === item.title
                       ? " bg-gray-100"
                       : "border-gray-200 border"
                   }`}
                   key={index}
-                  onClick={() =>
-                    dispatch({ type: "SET_REGION", payload: item })
-                  }
+                  onClick={() => dispatch(setRegion(item))}
                 >
                   <div>{item.icon}</div>
                   <p>{item.title}</p>
-                  {state.region?.title === item.title && (
+                  {details.region?.title === item.title && (
                     <div className="ml-4 w-5 h-5 p-1 bg-blue-500 rounded-full flex items-center justify-center">
                       <Check size={16} className="text-white" />
                     </div>
@@ -226,7 +227,7 @@ export const RenderDetails = () => {
                 </div>
               ))}
             </div>
-            <RegionSelector value={state.region} />
+            <RegionSelector value={details.region} />
           </div>
           <div className="flex flex-col gap-2">
             <p className="font-medium text-sm">RAID</p>
@@ -234,20 +235,18 @@ export const RenderDetails = () => {
               {raid.map((item, index) => (
                 <div
                   className={`flex rounded-lg py-2 px-3 lg:px-6 items-center justify-between text-sm cursor-pointer ${
-                    state.raid === item.title
+                    details.raid === item.title
                       ? " bg-gray-100"
                       : "border-gray-200 border"
                   }`}
                   key={index}
-                  onClick={() =>
-                    dispatch({ type: "SET_RAID", payload: item.title })
-                  }
+                  onClick={() => dispatch(setRaid(item.title))}
                 >
                   <div className="flex flex-col justify-center ">
                     <div>{item.title}</div>
                     <p className=" text-[10px] ">{item.subTitle}</p>
                   </div>
-                  {state.raid === item.title && (
+                  {details.raid === item.title && (
                     <div className="ml-4 w-5 h-5 p-1 bg-blue-500 rounded-full flex items-center justify-center">
                       <Check size={16} className="text-white" />
                     </div>
@@ -262,20 +261,18 @@ export const RenderDetails = () => {
               {billing.map((item, index) => (
                 <div
                   className={`flex rounded-lg py-2 px-3 lg:px-6 items-center justify-between text-sm cursor-pointer ${
-                    state.billing === item.title
+                    details.billing === item.title
                       ? " bg-gray-100"
                       : "border-gray-200 border"
                   }`}
                   key={index}
-                  onClick={() =>
-                    dispatch({ type: "SET_BILLING", payload: item.title })
-                  }
+                  onClick={() => dispatch(setBilling(item.title))}
                 >
                   <div className="flex flex-col justify-center ">
                     <div>{item.title}</div>
                     <p className=" text-[10px] ">{item.subTitle}</p>
                   </div>
-                  {state.billing === item.title && (
+                  {details.billing === item.title && (
                     <div className=" w-5 h-5 p-1 bg-blue-500 rounded-full flex items-center justify-center">
                       <Check size={16} className="text-white" />
                     </div>
@@ -294,7 +291,8 @@ export const RenderDetails = () => {
               type="text"
               className="mt-4 w-full border rounded-md p-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               placeholder="c2-small-x86-chi-1"
-              defaultValue="c2-small-x86-chi-1"
+              value={details.hostname}
+              onChange={(e) => dispatch(setHostname(e.target.value))}
             />
           </div>
         </div>

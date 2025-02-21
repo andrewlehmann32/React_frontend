@@ -10,6 +10,7 @@ import {
   PiShoppingCartSimpleDuotone,
 } from "react-icons/pi";
 import { RiTeamLine } from "react-icons/ri";
+import { svgDrawer } from "../lib/helpers/svgDrawer";
 // Menu items.
 
 interface MenuItem {
@@ -85,3 +86,117 @@ export enum InvoiceStatus {
   PAID = "paid",
   OVERDUE = "overdue",
 }
+
+export const serversList = [
+  {
+    id: 1,
+    name: "Ubuntu_webdav",
+    ip: "174.193.182.199",
+    specs: "1 Core, 12 GB",
+  },
+  {
+    id: 2,
+    name: "Ubuntu_webdav",
+    ip: "174.193.182.199",
+    specs: "1 Core, 12 GB",
+  },
+  {
+    id: 3,
+    name: "Ubuntu_webdav",
+    ip: "174.193.182.199",
+    specs: "1 Core, 12 GB",
+  },
+  {
+    id: 4,
+    name: "Ubuntu_webdav",
+    ip: "174.193.182.199",
+    specs: "1 Core, 12 GB",
+  },
+  {
+    id: 5,
+    name: "Ubuntu_webdav",
+    ip: "174.193.182.199",
+    specs: "1 Core, 12 GB",
+  },
+];
+
+export const raid = [
+  { title: "No RAID", subTitle: "" },
+  { title: "RAID 0", subTitle: "Distributes data evenly" },
+  { title: "RAID 1", subTitle: "Mirrors data across disks" },
+];
+
+export const OS = [
+  {
+    icon: svgDrawer.centOS,
+    title: "CentOS 24.04",
+    label: "CentOS 24.04",
+  },
+  {
+    icon: svgDrawer.rocky,
+    title: "Rocky 24.04",
+    label: "Rocky 24.04",
+  },
+  {
+    icon: svgDrawer.ubuntu,
+    title: "Ubuntu 24.04",
+    label: "Ubuntu 24.04",
+  },
+  {
+    icon: svgDrawer.debian,
+    title: "Debian 24.04",
+    label: "Debian 24.04",
+  },
+  {
+    icon: svgDrawer.redHat,
+    title: "Red Hat 24.04",
+    label: "Red Hat 24.04",
+  },
+  {
+    icon: svgDrawer.windows,
+    title: "Windows 24.04",
+    label: "Windows 24.04",
+  },
+];
+
+
+
+type OSItem = {
+  icon: React.ReactNode;
+  title: string;
+  version: string;
+};
+
+
+export const OSOrdering: OSItem[] = [
+  {
+    icon: svgDrawer.centOS,
+    title: "CentOS",
+    version: "20.04 LTS",
+  },
+  {
+    icon: svgDrawer.rocky,
+    title: "Rocky",
+    version: "20.04 LTS",
+  },
+  {
+    icon: svgDrawer.ubuntu,
+    title: "Ubuntu",
+    version: "20.04 LTS",
+  },
+  {
+    icon: svgDrawer.debian,
+    title: "Debian",
+    version: "20.04 LTS",
+  },
+  {
+    icon: svgDrawer.redHat,
+    title: "Red Hat",
+    version: "20.04 LTS",
+  },
+  {
+    icon: svgDrawer.windows,
+    title: "Windows",
+    version: "20.04 LTS",
+  },
+];

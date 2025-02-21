@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import toast from "react-hot-toast";
 import { CiCalendar } from "react-icons/ci";
 import { IoIosArrowDown } from "react-icons/io";
 import { IoCopyOutline } from "react-icons/io5";
@@ -14,15 +15,15 @@ export const DisplayChart = () => {
 
   return (
     <div className="w-full">
-      <div className="flex justify-between items-center text-gray-500 text-xs">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-0 text-gray-500 text-xs">
         <div className="flex flex-col gap-1 text-gray-800">
           <h1 className="text-sm">Aggregate Traffic</h1>
           <p>
             1.27 GB / <span className="text-gray-500">8 GB</span>
           </p>
         </div>
-        <div className="flex gap-3">
-          <div className="px-2 py-1 bg-gray-100 rounded-md flex">
+        <div className="flex flex-col md:flex-row gap-3  w-full sm:w-fit">
+          <div className="px-2 py-1 bg-gray-100 rounded-md flex justify-end">
             <div className="flex gap-1">
               {items.map((item, index) => (
                 <div
@@ -30,17 +31,20 @@ export const DisplayChart = () => {
                     selected === item ? selectedStyles : ""
                   } w-[6.5rem] text-center py-1 px-2 cursor-pointer  hover:bg-gray-200 text-xs rounded-md flex items-center justify-center`}
                   key={index}
-                  onClick={() => setSelected(item)}>
+                  onClick={() => setSelected(item)}
+                >
                   {item}
                 </div>
               ))}
             </div>
           </div>
-          <div className="flex items-center bg-gray-100 py-1 gap-2 px-4 rounded-md">
-            Current Billing Cycle <IoIosArrowDown />
-          </div>
-          <div className="bg-gray-100 p-2 rounded-md">
-            <CiCalendar className="text-xl" />
+          <div className="flex gap-2 justify-end">
+            <div className="flex items-center bg-gray-100 py-1 gap-2 px-4 rounded-md justify-end">
+              Current Billing Cycle <IoIosArrowDown />
+            </div>
+            <div className="bg-gray-100 p-2 rounded-md">
+              <CiCalendar className="text-xl" />
+            </div>
           </div>
         </div>
       </div>
@@ -56,18 +60,19 @@ export const DisplaySpecificaions = ({
 }) => {
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
-    alert("Copied to clipboard");
+    toast.success("Copied to clipboard");
   };
 
   return (
-    <div className="grid grid-cols-3 gap-6 py-2">
-      <div className="rounded-md p-4 bg-gray-100 col-span-1">
+    <div className="flex flex-col md:grid md:grid-cols-2 xl:grid-cols-3 gap-6 py-2">
+      <div className="rounded-md p-4 bg-gray-100 order-1 md:order-none">
         <h1 className="font-medium pb-2">Properties</h1>
         <div className="flex flex-col gap-3 text-xs">
           {resourcData.properties.map((property, index) => (
             <div
               className="flex justify-between items-center text-gray-500"
-              key={index}>
+              key={index}
+            >
               <p className="w-2/5">{property.title}</p>
               <div className="w-3/5 flex items-center gap-2">
                 {property.title === "Host name" && (
@@ -122,8 +127,9 @@ export const DisplaySpecificaions = ({
                       enabledColor="bg-green-500"
                       enabledBgColor="bg-white"
                       disabledBgColor="bg-white"
+                      showLabel={true}
                     />
-                    <p>{property.value}</p>
+                    {/* <p>{property.value}</p> */}
                   </div>
                 )}
                 {property.title !== "Main IP" &&
@@ -136,7 +142,7 @@ export const DisplaySpecificaions = ({
           ))}
         </div>
       </div>
-      <div className="flex flex-col gap-4 text-xs col-span-2">
+      <div className="flex flex-col gap-4 text-xs order-3 md:order-none xl:col-span-2">
         <div className="border rounded-md p-2 divide-y">
           <div className="flex flex-wrap items-center gap-2 p-1 pb-2">
             <h1 className="font-medium text-sm">Billing Information</h1>
@@ -173,20 +179,21 @@ export const DisplaySpecificaions = ({
           </div>
         </div>
       </div>
-      <div className="rounded-md p-4 bg-gray-100 col-span-1">
+      <div className="rounded-md p-4 bg-gray-100 order-2 md:order-none">
         <h1 className="font-medium pb-2">Hardware</h1>
         <div className="flex flex-col gap-3 text-xs">
           {resourcData.hardware.map((hardwares, index) => (
             <div
               className="flex justify-between items-center text-gray-500"
-              key={index}>
+              key={index}
+            >
               <p className="w-2/5 ">{hardwares.title}</p>
               <p className="w-3/5  ">{hardwares.value}</p>
             </div>
           ))}
         </div>
       </div>
-      <div className="text-xs col-span-2">
+      <div className="text-xs order-4 md:order-none xl:col-span-2">
         <div className="pb-3">
           <h1 className="font-medium py-1">Bandwidth Information</h1>
           <p className="text-gray-500">View your bandwidth information here</p>

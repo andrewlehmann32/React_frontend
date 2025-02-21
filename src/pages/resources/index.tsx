@@ -1,83 +1,103 @@
-import { useState } from "react";
+import axios from "axios";
+import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 import { PageLayout } from "../../components/layouts/pageLayout";
-import { Button } from "../../components/ui/button";
 import { Main } from "../../components/resources/main";
+import { ServersList } from "../../components/resources/servers-list";
+import { environment } from "../../config/environment";
 
-const serverList = [
-  {
-    id: 1,
-    name: "Ubuntu_webdav",
-    ip: "174.193.182.199",
-    specs: "1 Core, 12 GB",
-  },
-  {
-    id: 2,
-    name: "Ubuntu_webdav",
-    ip: "174.193.182.199",
-    specs: "1 Core, 12 GB",
-  },
-  {
-    id: 3,
-    name: "Ubuntu_webdav",
-    ip: "174.193.182.199",
-    specs: "1 Core, 12 GB",
-  },
-  {
-    id: 4,
-    name: "Ubuntu_webdav",
-    ip: "174.193.182.199",
-    specs: "1 Core, 12 GB",
-  },
-  {
-    id: 5,
-    name: "Ubuntu_webdav",
-    ip: "174.193.182.199",
-    specs: "1 Core, 12 GB",
-  },
-];
+export interface Device {
+  id: number;
+  name: string;
+  password: string;
+  ip: string;
+  price: string;
+  status: string;
+  username: string;
+  hostname: string;
+  os: string;
+}
 
 const Resources = () => {
+  const [devices, setDevices] = useState<Device[]>([]);
   const [selectedId, setSelectedId] = useState<number | null>(1);
+  const [selectedDevice, setSelectedDevice] = useState<Device | null>(null);
+
+  const token = localStorage.getItem("token");
+
+  useEffect(() => {
+    const controller = new AbortController();
+    const signal = controller.signal;
+    const fetchDevices = async () => {
+      try {
+        const response = await axios.get(
+          `${environment.VITE_API_URL}/ordering`,
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            signal,
+          }
+        );
+
+        if (response.status === 200) {
+          // Append unique IDs dynamically
+          const devicesWithIds = response.data?.data?.map(
+            (device: Device, index: number) => ({
+              id: index + 1,
+              name: device.name,
+              password: device.password,
+              ip: device.ip,
+              price: device.price,
+              status: device.status,
+              username: device.username,
+              hostname: device.hostname,
+              os: device.os,
+            })
+          );
+
+          setDevices(devicesWithIds);
+        }
+      } catch (error) {
+        console.error(error);
+        toast.error("Failed to fetch devices");
+      }
+    };
+
+    fetchDevices();
+
+    // Cleanup function: Abort the request if the component unmounts
+    return () => {
+      controller.abort();
+    };
+  }, []);
+
+  const filteredDevices = () => {
+    if (!devices.length) return [];
+    const filtered = devices.map((device) => ({
+      id: device?.id,
+      name: device?.name,
+      ip: device?.ip,
+    }));
+    return filtered;
+  };
 
   return (
-    <div className="flex">
-      <div className="w-[25%] p-3">
-        <div className="flex flex-col p-3 border-l min-h-full">
-          <Button className="w-1/6">+</Button>
-          <h1 className="mt-4 mb-1 text-gray-500 text-sm">
-            Active Servers (5)
-          </h1>
-          <div className="flex flex-col">
-            {serverList.map((server, index) => (
-              <div
-                key={server.id}
-                className={`py-5 min-h-[80px] ${
-                  selectedId === server.id ? "bg-white rounded-lg" : ""
-                } ${
-                  index < serverList.length - 1 &&
-                  selectedId !== server.id &&
-                  selectedId !== serverList[index + 1]?.id
-                    ? "border-b"
-                    : "border-b border-transparent"
-                } ${selectedId !== server.id ? "rounded-t-lg" : ""}`}
-                onClick={() => setSelectedId(server.id)}>
-                <div className="flex justify-between items-center text-xs px-2">
-                  <div>
-                    <p className="text-md font-semibold mb-1">{server.name}</p>
-                    <p className="text-gray-600">{server.ip}</p>
-                  </div>
-                  <div className="mt-2 px-3 py-1 text-gray-500 bg-gray-200 rounded-lg inline-block text-xs font-medium">
-                    {server.specs}
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-      <div className="w-[75%]">
+    <div className="flex flex-col lg:flex-row max-h-screen">
+      <ServersList
+        devices={filteredDevices()}
+        selectedId={selectedId}
+        setSelectedId={setSelectedId}
+      />
+      <div className="w-[100%] lg:w-[76%] xl:w-[73%]">
         <PageLayout>
-          <Main />
+          <Main
+            devices={devices}
+            selectedId={selectedId}
+            selectedDevice={selectedDevice}
+            setSelectedDevice={setSelectedDevice}
+          />
         </PageLayout>
       </div>
     </div>
