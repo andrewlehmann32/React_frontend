@@ -7,6 +7,7 @@ import { Check, ChevronDownIcon } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { OSOrdering } from "../../constants/constants";
+import { useAppSelector } from "../../hooks/redux";
 import { svgDrawer } from "../../lib/helpers/svgDrawer";
 import {
   RegionItem,
@@ -16,6 +17,7 @@ import {
   setRaid,
   setRegion,
 } from "../../redux/reducer/resourcesReducer";
+import { selectActiveProject } from "../../redux/selectors/userSelector";
 import { RootState } from "../../redux/store";
 import { ToggleButton } from "../shared/buttons/buttons";
 import { Button } from "../ui/button";
@@ -68,6 +70,8 @@ export const RenderDetails = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const details = useSelector((state: RootState) => state.renderDetails);
+  const currentProject = useAppSelector(selectActiveProject);
+
   const RegionSelector = ({ value }: any) => {
     return (
       <div className="flex items-center justify-between border rounded-lg px-4 py-2 mt-2 ">
@@ -110,6 +114,7 @@ export const RenderDetails = () => {
           type_id: 4,
           location_id: details.region?.id || 1,
           buy_price: 10,
+          projectId: currentProject?._id,
         },
         metadata: {
           Hostname: details.hostname,
@@ -128,7 +133,6 @@ export const RenderDetails = () => {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
-          apiKey: "",
         },
         data: payload,
       };
