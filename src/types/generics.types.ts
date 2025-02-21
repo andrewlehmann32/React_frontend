@@ -60,6 +60,11 @@ interface teamMember {
   role: string;
 }
 
+export type ResourcesType = {
+  resourceId: string;
+  projectId: string;
+}
+
 export type ProjectsType = {
   _id: string;
   name: string;
@@ -71,6 +76,7 @@ export type ProjectsType = {
   paymentMethods?: PaymentMethodsType[];
   defaultPaymentMethod?: string;
   invoices?: InvoiceType[];
+  resources?: ResourcesType[];
 };
 
 export type ISSH = {

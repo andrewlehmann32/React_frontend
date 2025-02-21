@@ -5,6 +5,8 @@ import { PageLayout } from "../../components/layouts/pageLayout";
 import { Main } from "../../components/resources/main";
 import { ServersList } from "../../components/resources/servers-list";
 import { environment } from "../../config/environment";
+import { useAppSelector } from "../../hooks/redux";
+import { selectActiveProject } from "../../redux/selectors/userSelector";
 
 export interface Device {
   id: number;
@@ -22,7 +24,7 @@ const Resources = () => {
   const [devices, setDevices] = useState<Device[]>([]);
   const [selectedId, setSelectedId] = useState<number | null>(1);
   const [selectedDevice, setSelectedDevice] = useState<Device | null>(null);
-
+  const currentProject = useAppSelector(selectActiveProject);
   const token = localStorage.getItem("token");
 
   useEffect(() => {
@@ -31,7 +33,7 @@ const Resources = () => {
     const fetchDevices = async () => {
       try {
         const response = await axios.get(
-          `${environment.VITE_API_URL}/ordering`,
+          `${environment.VITE_API_URL}/ordering/${currentProject?._id}`,
           {
             headers: {
               "Content-Type": "application/json",
