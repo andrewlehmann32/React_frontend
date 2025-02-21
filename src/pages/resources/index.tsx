@@ -40,25 +40,7 @@ const Resources = () => {
             signal,
           }
         );
-
-        if (response.status === 200) {
-          // Append unique IDs dynamically
-          const devicesWithIds = response.data?.data?.map(
-            (device: Device, index: number) => ({
-              id: index + 1,
-              name: device.name,
-              password: device.password,
-              ip: device.ip,
-              price: device.price,
-              status: device.status,
-              username: device.username,
-              hostname: device.hostname,
-              os: device.os,
-            })
-          );
-
-          setDevices(devicesWithIds);
-        }
+        setDevices(response.data?.data);
       } catch (error) {
         console.error(error);
         toast.error("Failed to fetch devices");

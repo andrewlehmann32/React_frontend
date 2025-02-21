@@ -17,6 +17,7 @@ type ModalProps = {
   buttonIcon?: ReactNode;
   children?: ReactNode;
   button?: boolean;
+  disabled?: boolean;
   actionButtonStyles?: string;
   actionButtonText?: string | ReactNode;
   isOpen: boolean;
@@ -34,6 +35,7 @@ export const Modal = ({
   actionButtonStyles,
   actionButtonText,
   setIsOpen,
+  disabled = false,
   isOpen,
   button = true,
 }: ModalProps) => {
@@ -50,6 +52,7 @@ export const Modal = ({
             <Button
               type="button"
               onClick={onSave}
+              disabled={disabled}
               className={mergeClasses(defaultButtonStyles, actionButtonStyles)}
             >
               {actionButtonText}
