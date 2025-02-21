@@ -3,13 +3,11 @@ import React from "react";
 import toast from "react-hot-toast";
 import { environment } from "../../config/environment";
 
-import { Button } from "../ui/button";
-import { svgDrawer } from "../../lib/helpers/svgDrawer";
-import { useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../../redux/store";
-import { ToggleButton } from "../shared/buttons/buttons";
 import { Check, ChevronDownIcon } from "lucide-react";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { OSOrdering } from "../../constants/constants";
+import { svgDrawer } from "../../lib/helpers/svgDrawer";
 import {
   RegionItem,
   setBilling,
@@ -18,7 +16,9 @@ import {
   setRaid,
   setRegion,
 } from "../../redux/reducer/resourcesReducer";
-import { OS, OSOrdering } from "../../constants/constants";
+import { RootState } from "../../redux/store";
+import { ToggleButton } from "../shared/buttons/buttons";
+import { Button } from "../ui/button";
 
 const countryFlags: RegionItem[] = [
   {
