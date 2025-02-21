@@ -158,3 +158,45 @@ export const OS = [
     label: "Windows 24.04",
   },
 ];
+
+
+
+type OSItem = {
+  icon: React.ReactNode;
+  title: string;
+  version: string;
+};
+
+
+export const OSOrdering: OSItem[] = [
+  {
+    icon: svgDrawer.centOS,
+    title: "CentOS",
+    version: "20.04 LTS",
+  },
+  {
+    icon: svgDrawer.rocky,
+    title: "Rocky",
+    version: "20.04 LTS",
+  },
+  {
+    icon: svgDrawer.ubuntu,
+    title: "Ubuntu",
+    version: "20.04 LTS",
+  },
+  {
+    icon: svgDrawer.debian,
+    title: "Debian",
+    version: "20.04 LTS",
+  },
+  {
+    icon: svgDrawer.redHat,
+    title: "Red Hat",
+    version: "20.04 LTS",
+  },
+  {
+    icon: svgDrawer.windows,
+    title: "Windows",
+    version: "20.04 LTS",
+  },
+];

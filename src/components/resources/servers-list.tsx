@@ -12,7 +12,6 @@ interface ServerItemProps {
   selectedId: number | null;
   setSelectedId: (id: number) => void;
   isLastItem: boolean;
-  isFirstItem: boolean;
   previousItemSelected: boolean;
 }
 interface ServersListProps {
@@ -30,9 +29,8 @@ const ServerItem = memo(
     previousItemSelected,
   }: ServerItemProps) => {
     const isSelected = selectedId === server.id;
-
     const getStyles = () => {
-      const baseStyles = "py-5 min-h-[80px]";
+      const baseStyles = "py-3 px-2 min-h-[80px] flex ";
       const selectedStyles = isSelected ? "bg-white rounded-lg" : "";
       const borderStyles =
         !isLastItem && !isSelected && !previousItemSelected
@@ -50,10 +48,10 @@ const ServerItem = memo(
         role="button"
         aria-selected={isSelected}
       >
-        <div className="flex lg:flex-col lg:gap-2 xl:flex-row justify-between items-center text-xs px-2">
+        <div className="flex lg:flex-col lg:gap-2 xl:flex-row justify-between w-full items-center text-xs px-2">
           <div>
-            <p className="text-md font-semibold mb-1">{server.name}</p>
-            <p className="text-gray-600">{server.ip}</p>
+            <p className="text-md font-semibold mb-1">{server?.name}</p>
+            <p className="text-gray-600">{server?.ip}</p>
           </div>
           <div className="mt-2 px-3 py-1 text-gray-500 bg-gray-200 rounded-lg inline-block text-xs font-medium">
             1 Core, 12 GB
@@ -69,22 +67,28 @@ export const ServersList = ({
   selectedId,
   setSelectedId,
 }: ServersListProps) => {
+  const DisplayLoader = () => {
+    if (!devices.length) {
+      return <div className="w-full text-center"> Loading...</div>;
+    }
+  };
+
   return (
-    <div className="w-[100%] lg:w-[24%] xl:w-[27%] p-3 overflow-y-auto">
-      <div className="flex flex-col p-3 lg:border-l min-h-full">
+    <div className="w-[100%] lg:w-[24%] xl:w-[27%] p-3">
+      <div className="flex flex-col p-3 lg:border-l h-screen">
         <Button className="max-w-12">+</Button>
         <h1 className="mt-4 mb-1 text-gray-500 text-sm">
           Active Servers ({devices.length})
         </h1>
-        <div className="flex flex-col">
+        <div className="flex flex-col flex-grow overflow-y-auto">
+          <DisplayLoader />
           {devices.map((server, index) => (
             <ServerItem
-              key={server.id}
+              key={server?.id}
               server={server}
               selectedId={selectedId}
               setSelectedId={setSelectedId}
               isLastItem={index === devices.length - 1}
-              isFirstItem={index === 0}
               previousItemSelected={selectedId === devices[index + 1]?.id}
             />
           ))}

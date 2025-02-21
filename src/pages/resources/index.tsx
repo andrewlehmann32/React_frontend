@@ -21,6 +21,8 @@ export interface Device {
 const Resources = () => {
   const [devices, setDevices] = useState<Device[]>([]);
   const [selectedId, setSelectedId] = useState<number | null>(1);
+  const [selectedDevice, setSelectedDevice] = useState<Device | null>(null);
+
   const token = localStorage.getItem("token");
 
   useEffect(() => {
@@ -74,14 +76,15 @@ const Resources = () => {
   const filteredDevices = () => {
     if (!devices.length) return [];
     const filtered = devices.map((device) => ({
-      id: device.id,
-      name: device.name,
-      ip: device.ip,
+      id: device?.id,
+      name: device?.name,
+      ip: device?.ip,
     }));
     return filtered;
   };
+
   return (
-    <div className="flex flex-col lg:flex-row h-screen">
+    <div className="flex flex-col lg:flex-row max-h-screen">
       <ServersList
         devices={filteredDevices()}
         selectedId={selectedId}
@@ -89,7 +92,12 @@ const Resources = () => {
       />
       <div className="w-[100%] lg:w-[76%] xl:w-[73%]">
         <PageLayout>
-          <Main devices={devices} selectedId={selectedId} />
+          <Main
+            devices={devices}
+            selectedId={selectedId}
+            selectedDevice={selectedDevice}
+            setSelectedDevice={setSelectedDevice}
+          />
         </PageLayout>
       </div>
     </div>
