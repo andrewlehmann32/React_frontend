@@ -63,7 +63,11 @@ export const Main = ({
 
   return (
     <div className="py-2 gap-2 flex flex-col pr-0 lg:pr-6 w-full max-h-full h-[45rem] overflow-scroll">
-      <DisplayPageHeader name={selectedDevice.name} ip={selectedDevice.ip} />
+      <DisplayPageHeader
+        id={selectedDevice.id}
+        name={selectedDevice.name}
+        ip={selectedDevice.ip}
+      />
       <DisplaySpecificaions resourcData={dynamicData} />
       <DisplayChart />
     </div>
