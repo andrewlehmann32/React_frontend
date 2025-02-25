@@ -150,14 +150,16 @@ const SidebarHead = ({
               </DropdownMenuItem>
             );
           })}
-          <DropdownMenuItem className="px-0 lg:px-1">
+          {/* TODO: Feature for Later */}
+
+          {/* <DropdownMenuItem className="px-0 lg:px-1">
             <p
               className="text-center text-sm font-medium text-gray-500 cursor-pointer px-2"
               onClick={() => setIsModalOpen(true)}
             >
               + Create new team
             </p>
-          </DropdownMenuItem>
+          </DropdownMenuItem> */}
         </DropdownMenuContent>
       </DropdownMenu>
 
