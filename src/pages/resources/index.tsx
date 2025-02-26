@@ -7,23 +7,17 @@ import { ServersList } from "../../components/resources/servers-list";
 import { environment } from "../../config/environment";
 import { useAppSelector } from "../../hooks/redux";
 import { selectActiveProject } from "../../redux/selectors/userSelector";
+import { Resource } from "../../types/generics.types";
 
 export interface Device {
-  id: number;
-  name: string;
-  password: string;
-  ip: string;
-  price: string;
-  status: string;
-  username: string;
-  hostname: string;
-  os: string;
+  resource: Resource;
+  projectId: string;
 }
 
 const Resources = () => {
   const [devices, setDevices] = useState<Device[]>([]);
   const [selectedId, setSelectedId] = useState<number | null>(1);
-  const [selectedDevice, setSelectedDevice] = useState<Device | null>(null);
+  const [selectedDevice, setSelectedDevice] = useState<Device>();
   const currentProject = useAppSelector(selectActiveProject);
   const token = localStorage.getItem("token");
 
@@ -43,6 +37,7 @@ const Resources = () => {
           }
         );
         setDevices(response.data?.data);
+        setSelectedDevice(response.data.data[0]);
       } catch (error) {
         console.error(error);
         toast.error("Failed to fetch devices");
@@ -60,9 +55,9 @@ const Resources = () => {
   const filteredDevices = () => {
     if (!devices.length) return [];
     const filtered = devices.map((device) => ({
-      id: device?.id,
-      name: device?.name,
-      ip: device?.ip,
+      id: Number(device?.resource?.resourceId),
+      name: device?.resource?.name,
+      ip: device?.resource?.ip,
     }));
     return filtered;
   };

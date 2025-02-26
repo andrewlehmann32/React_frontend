@@ -60,8 +60,21 @@ interface teamMember {
   role: string;
 }
 
+export interface Resource {
+  resourceId: number | string;
+  name: string;
+  status: string;
+  price: number;
+  ip: string;
+  password: string;
+  username: string;
+  hostname: string;
+  os: string;
+  projectId: string;
+}
+
 export type ResourcesType = {
-  resourceId: string;
+  resource: Resource;
   projectId: string;
 }
 
