@@ -113,6 +113,8 @@ export const RenderDetails = () => {
         ip: "192.168.346.235",
         hostname: details.hostname,
         template: details.os?.id,
+        raid: "",
+        billing: "",
       };
 
       const config = {
