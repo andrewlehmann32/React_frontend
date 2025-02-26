@@ -13,6 +13,7 @@ import { Button } from "../ui/button";
 
 // Define types for OS and Item
 type OSItem = {
+  id?: number;
   icon: React.ReactNode;
   title: string;
   label: string;
