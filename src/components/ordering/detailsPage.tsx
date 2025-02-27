@@ -109,22 +109,12 @@ export const RenderDetails = () => {
       const token = localStorage.getItem("token");
 
       const payload = {
-        data: {
-          label: details.hostname,
-          type_id: 4,
-          location_id: details.region?.id || 1,
-          buy_price: 10,
-          projectId: currentProject?._id,
-        },
-        metadata: {
-          Hostname: details.hostname,
-          "SNMP Public Community": "public",
-          "SNMP Private Community": "private",
-          OS: details.os
-            ? `${details.os.title} ${details.os.version}`
-            : "Unknown OS",
-          "IP Address": "149.51.229.634",
-        },
+        location: details.region?.id || 1,
+        ip: "192.168.346.235",
+        hostname: details.hostname,
+        template: details.os?.id,
+        raid: "",
+        billing: "",
       };
 
       const config = {

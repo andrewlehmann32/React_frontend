@@ -159,42 +159,46 @@ export const OS = [
   },
 ];
 
-
-
 type OSItem = {
+  id?: number;
   icon: React.ReactNode;
   title: string;
   version: string;
 };
 
-
 export const OSOrdering: OSItem[] = [
   {
+    id: 33,
     icon: svgDrawer.centOS,
     title: "CentOS",
     version: "20.04 LTS",
   },
   {
+    id: 36,
     icon: svgDrawer.rocky,
     title: "Rocky",
     version: "20.04 LTS",
   },
   {
+    id: 47,
     icon: svgDrawer.ubuntu,
     title: "Ubuntu",
     version: "20.04 LTS",
   },
   {
+    id: 3,
     icon: svgDrawer.debian,
     title: "Debian",
     version: "20.04 LTS",
   },
   {
+    id: 33,
     icon: svgDrawer.redHat,
     title: "Red Hat",
     version: "20.04 LTS",
   },
   {
+    id: 33,
     icon: svgDrawer.windows,
     title: "Windows",
     version: "20.04 LTS",
