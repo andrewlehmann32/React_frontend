@@ -114,6 +114,7 @@ export const RenderDetails = () => {
         template: details.os?.id,
         raid: "",
         billing: "",
+        projectId: currentProject?._id,
       };
 
       const config = {
