@@ -1,4 +1,4 @@
-import { ChevronDown } from "lucide-react";
+import { PlusIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { BiSupport } from "react-icons/bi";
@@ -75,8 +75,12 @@ const SidebarHead = ({
   const RenderWorkSpace = () => {
     if (!isWorkspaceActive)
       return (
-        <div className="lg:flex hidden px-2 justify-between w-full items-center">
-          Select a workspace <ChevronDown className="ml-auto" />
+        <div
+          className="lg:flex hidden px-2 justify-between w-full items-center"
+          onClick={() => setIsModalOpen(true)}
+        >
+          <PlusIcon className="mr-auto h-5 text-gray-600" />
+          Create a workspace{/* <ChevronDown className="ml-auto" /> */}
         </div>
       );
 
