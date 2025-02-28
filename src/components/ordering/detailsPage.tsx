@@ -2,7 +2,6 @@ import axios from "axios";
 import React from "react";
 import toast from "react-hot-toast";
 import { environment } from "../../config/environment";
-
 import { Check, ChevronDownIcon } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -109,22 +108,13 @@ export const RenderDetails = () => {
       const token = localStorage.getItem("token");
 
       const payload = {
-        data: {
-          label: details.hostname,
-          type_id: 4,
-          location_id: details.region?.id || 1,
-          buy_price: 10,
-          projectId: currentProject?._id,
-        },
-        metadata: {
-          Hostname: details.hostname,
-          "SNMP Public Community": "public",
-          "SNMP Private Community": "private",
-          OS: details.os
-            ? `${details.os.title} ${details.os.version}`
-            : "Unknown OS",
-          "IP Address": "149.51.229.634",
-        },
+        location: details.region?.id || 1,
+        ip: "192.168.346.235",
+        hostname: details.hostname,
+        template: details.os?.id,
+        raid: "",
+        billing: "",
+        projectId: currentProject?._id,
       };
 
       const config = {
