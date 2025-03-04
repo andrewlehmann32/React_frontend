@@ -1,20 +1,21 @@
 // Imports:
-import { createBrowserRouter } from 'react-router-dom';
-import App from '../App';
-import Activity from '../pages/activity-log';
-import Billing from '../pages/billing';
-import Dashboard from '../pages/dashboard';
-import Home from '../pages/home';
-import Ordering from '../pages/ordering';
-import SSHkeys from '../pages/ssh-keys';
-import Resources from '../pages/resources';
-import Team from '../pages/team';
-import VerifyInvite from '../pages/verify-invitation';
-import { ProtectedRoute } from './protect-route';
+import { createBrowserRouter } from "react-router-dom";
+import App from "../App";
+import Activity from "../pages/activity-log";
+import AdminDashboard from "../pages/admin-dashboard";
+import Billing from "../pages/billing";
+import Dashboard from "../pages/dashboard";
+import Home from "../pages/home";
+import Ordering from "../pages/ordering";
+import Resources from "../pages/resources";
+import SSHkeys from "../pages/ssh-keys";
+import Team from "../pages/team";
+import VerifyInvite from "../pages/verify-invitation";
+import { ProtectedRoute } from "./protect-route";
 
 const router = createBrowserRouter([
   {
-    path: '/',
+    path: "/",
     element: <App />,
     children: [
       {
@@ -22,7 +23,7 @@ const router = createBrowserRouter([
         element: <Home />,
       },
       {
-        path: '/home',
+        path: "/home",
         element: (
           <ProtectedRoute isAdmin={false}>
             <Dashboard />
@@ -30,7 +31,15 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: '/team',
+        path: "/admin-home",
+        element: (
+          <ProtectedRoute isAdmin={true}>
+            <AdminDashboard />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "/team",
         element: (
           <ProtectedRoute isAdmin={false}>
             <Team />
@@ -38,7 +47,7 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: '/ordering',
+        path: "/ordering",
         element: (
           <ProtectedRoute isAdmin={false}>
             <Ordering />
@@ -46,7 +55,7 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: '/billing',
+        path: "/billing",
         element: (
           <ProtectedRoute isAdmin={false}>
             <Billing />
@@ -54,7 +63,7 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: '/activity',
+        path: "/activity",
         element: (
           <ProtectedRoute isAdmin={false}>
             <Activity />
@@ -62,11 +71,11 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: '/verify-invite',
+        path: "/verify-invite",
         element: <VerifyInvite />,
       },
       {
-        path: '/sshkeys',
+        path: "/sshkeys",
         element: (
           <ProtectedRoute isAdmin={false}>
             <SSHkeys />
@@ -74,7 +83,7 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: '/resources',
+        path: "/resources",
         element: (
           <ProtectedRoute isAdmin={false}>
             <Resources />

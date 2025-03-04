@@ -76,11 +76,18 @@ const SidebarHead = ({
     if (!isWorkspaceActive)
       return (
         <div
-          className="lg:flex hidden px-2 justify-between w-full items-center"
+          className={`lg:flex hidden px-2   ${
+            isSidebarCollapsed ? "justify-center" : "justify-between"
+          }  w-full items-center ${isSidebarCollapsed ? "py-2" : ""}`}
           onClick={() => setIsModalOpen(true)}
         >
-          <PlusIcon className="mr-auto h-5 text-gray-600" />
-          Create a workspace{/* <ChevronDown className="ml-auto" /> */}
+          <PlusIcon
+            className={`${
+              isSidebarCollapsed ? "" : "mr-auto"
+            }  h-5 text-gray-600`}
+          />
+          {!isSidebarCollapsed && "Create a workspace"}
+          {/* <ChevronDown className="ml-auto" /> */}
         </div>
       );
 
