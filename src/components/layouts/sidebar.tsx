@@ -1,4 +1,4 @@
-import { ChevronDown } from "lucide-react";
+import { PlusIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { BiSupport } from "react-icons/bi";
@@ -23,15 +23,10 @@ import {
 import { ProjectsType } from "../../types/generics.types";
 import { AddTeam } from "../generics/add-team";
 import { DotsDropdown } from "../shared/menus/simple-dropdown";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "../ui/dropdown-menu";
+import { DropdownMenu, DropdownMenuTrigger } from "../ui/dropdown-menu";
 
 type SidebarHeaderProps = {
-  userProjects: any;
+  userProjects: ProjectsType[];
   activeProject: ProjectsType;
   isSidebarCollapsed: boolean;
 };
@@ -67,21 +62,25 @@ const SidebarHead = ({
     }
   }, [activeProject, userProjects, dispatch]);
 
-  const handleWorkspace = (item: any) => {
-    setIsWorkspaceActive(true);
-    setActiveWorkspace({
-      icon: item?.icon ?? "https://i.pravatar.cc/150?img=62",
-      name: item.name,
-      createdAt: `Created ${calculateDaysFromDate(item.createdAt)} days ago`,
-    });
-    dispatch(setActiveProject(item));
-  };
+  // const handleWorkspace = (item: any) => {
+  //   setIsWorkspaceActive(true);
+  //   setActiveWorkspace({
+  //     icon: item?.icon ?? "https://i.pravatar.cc/150?img=62",
+  //     name: item.name,
+  //     createdAt: `Created ${calculateDaysFromDate(item.createdAt)} days ago`,
+  //   });
+  //   dispatch(setActiveProject(item));
+  // };
 
   const RenderWorkSpace = () => {
     if (!isWorkspaceActive)
       return (
-        <div className="lg:flex hidden px-2 justify-between w-full items-center">
-          Select a workspace <ChevronDown className="ml-auto" />
+        <div
+          className="lg:flex hidden px-2 justify-between w-full items-center"
+          onClick={() => setIsModalOpen(true)}
+        >
+          <PlusIcon className="mr-auto h-5 text-gray-600" />
+          Create a workspace{/* <ChevronDown className="ml-auto" /> */}
         </div>
       );
 
@@ -125,7 +124,10 @@ const SidebarHead = ({
             <RenderWorkSpace />
           </div>
         </DropdownMenuTrigger>
-        <DropdownMenuContent className="w-[--radix-popper-anchor-width] divide-y min-w-48">
+
+        {/* TODO: Feature for Later */}
+
+        {/* <DropdownMenuContent className="w-[--radix-popper-anchor-width] divide-y min-w-48">
           {userProjects.map((item: any, index: number) => {
             const daysSinceCreated = calculateDaysFromDate(item.createdAt);
             return (
@@ -150,6 +152,7 @@ const SidebarHead = ({
               </DropdownMenuItem>
             );
           })}
+
           <DropdownMenuItem className="px-0 lg:px-1">
             <p
               className="text-center text-sm font-medium text-gray-500 cursor-pointer px-2"
@@ -158,7 +161,7 @@ const SidebarHead = ({
               + Create new team
             </p>
           </DropdownMenuItem>
-        </DropdownMenuContent>
+        </DropdownMenuContent> */}
       </DropdownMenu>
 
       <AddTeam isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} />
@@ -190,8 +193,9 @@ const Sidebar = () => {
           replace: true,
         });
       }
-    } catch (error) {
+    } catch (e) {
       toast.error("Something went wrong.");
+      console.error(e);
     }
   };
 
@@ -260,7 +264,7 @@ const Sidebar = () => {
         {/* Sidebar Header */}
         <>
           <SidebarHead
-            userProjects={userProjects}
+            userProjects={userProjects as ProjectsType[]}
             activeProject={activeProject as ProjectsType}
             isSidebarCollapsed={isCollapsed}
           />
