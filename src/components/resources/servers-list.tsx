@@ -73,9 +73,12 @@ export const ServersList = ({
 
   const DisplayLoader = () => {
     if (!currentProject) return;
-    if (!devices.length) {
-      return <div className="w-full text-center"> Loading...</div>;
-    }
+    if (!devices.length)
+      return (
+        <p className="text-center text-gray-500 mt-80 text-xl font-medium">
+          Nothing to show here
+        </p>
+      );
   };
 
   return (
