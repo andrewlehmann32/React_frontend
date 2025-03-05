@@ -2,9 +2,16 @@
 import { Home } from "lucide-react";
 import { ComponentType } from "react";
 import { BsQuestionSquare } from "react-icons/bs";
+import {
+  FaClipboardList,
+  FaProjectDiagram,
+  FaShoppingCart,
+  FaUserFriends,
+} from "react-icons/fa";
 import { GiHouseKeys } from "react-icons/gi";
 import { HiServerStack } from "react-icons/hi2";
 import { LuSquareActivity } from "react-icons/lu";
+import { MdAdminPanelSettings, MdAttachMoney } from "react-icons/md";
 import {
   PiCreditCardDuotone,
   PiShoppingCartSimpleDuotone,
@@ -56,6 +63,51 @@ export const menuItems: MenuItem[] = [
     title: "SSH Keys",
     url: "/sshkeys",
     icon: GiHouseKeys,
+  },
+];
+
+export const adminMenuItems: MenuItem[] = [
+  {
+    identifier: "admin-home",
+    title: "Home",
+    url: "/admin-home",
+    icon: MdAdminPanelSettings,
+  },
+  {
+    identifier: "projects",
+    title: "Projects",
+    url: "/admin/projects",
+    icon: FaProjectDiagram,
+  },
+  {
+    identifier: "clients",
+    title: "Clients",
+    url: "/admin/clients",
+    icon: FaUserFriends,
+  },
+  {
+    identifier: "credit",
+    title: "Credit",
+    url: "/admin/credit",
+    icon: MdAttachMoney,
+  },
+  {
+    identifier: "orders",
+    title: "Orders",
+    url: "/admin/orders",
+    icon: FaShoppingCart,
+  },
+  {
+    identifier: "plans",
+    title: "Plans",
+    url: "/admin/plans",
+    icon: FaClipboardList,
+  },
+  {
+    identifier: "servers",
+    title: "Manage Servers",
+    url: "/admin/servers",
+    icon: HiServerStack,
   },
 ];
 
