@@ -25,7 +25,9 @@ export const Main = () => {
             </p>
           </div>
         </div>
-        <Button onClick={() => setInvite(true)}>Invite Members</Button>
+        <Button onClick={() => setInvite(true)} disabled={!currentProject}>
+          Invite Members
+        </Button>
       </div>
       <ListTeamMembers currentProject={currentProject} />
       <InviteMembers isActive={invite} setIsActive={setInvite} />

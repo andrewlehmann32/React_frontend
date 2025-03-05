@@ -1,4 +1,6 @@
 import { memo } from "react";
+import { useAppSelector } from "../../hooks/redux";
+import { selectActiveProject } from "../../redux/selectors/userSelector";
 import { Button } from "../ui/button";
 
 interface Server {
@@ -67,10 +69,16 @@ export const ServersList = ({
   selectedId,
   setSelectedId,
 }: ServersListProps) => {
+  const currentProject = useAppSelector(selectActiveProject);
+
   const DisplayLoader = () => {
-    if (!devices.length) {
-      return <div className="w-full text-center"> Loading...</div>;
-    }
+    if (!currentProject) return;
+    if (!devices.length)
+      return (
+        <p className="text-center text-gray-500 mt-80 text-xl font-medium">
+          Nothing to show here
+        </p>
+      );
   };
 
   return (

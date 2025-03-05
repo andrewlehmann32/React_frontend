@@ -1,5 +1,7 @@
 import { useEffect } from "react";
+import { useAppSelector } from "../../hooks/redux";
 import { Device } from "../../pages/resources";
+import { selectActiveProject } from "../../redux/selectors/userSelector";
 import { DisplayPageHeader } from "./display-page-header";
 import { DisplayChart, DisplaySpecificaions } from "./display-specifications";
 
@@ -20,6 +22,15 @@ export const Main = ({
   selectedDevice: Device | undefined;
   setSelectedDevice: (device: Device) => void;
 }) => {
+  const currentProject = useAppSelector(selectActiveProject);
+
+  if (!currentProject) return;
+  if (!devices.length)
+    return (
+      <p className="text-center text-gray-500 mt-80 text-xl font-medium">
+        Nothing to show here
+      </p>
+    );
   const dynamicData = {
     properties: [
       {
@@ -29,7 +40,10 @@ export const Main = ({
       { title: "Main IP", value: selectedDevice?.resource?.ip || "Unknown" },
       { title: "Created", value: "May 10th, 2023" },
       { title: "Location", value: "Chicago CHI" },
-      { title: "Status", value: selectedDevice?.resource?.status || "Unknown" },
+      {
+        title: "Status",
+        value: selectedDevice?.resource?.status || "Unknown",
+      },
       { title: "OS", value: selectedDevice?.resource?.os || "Unknown" },
       { title: "Tags", value: "Add tags..." },
     ],
