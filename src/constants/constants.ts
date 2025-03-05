@@ -68,19 +68,19 @@ export const menuItems: MenuItem[] = [
 
 export const adminMenuItems: MenuItem[] = [
   {
-    identifier: "admin-home",
+    identifier: "admin/home",
     title: "Home",
-    url: "/admin-home",
+    url: "/admin/home",
     icon: MdAdminPanelSettings,
   },
   {
-    identifier: "projects",
+    identifier: "admin/projects",
     title: "Projects",
     url: "/admin/projects",
     icon: FaProjectDiagram,
   },
   {
-    identifier: "clients",
+    identifier: "admin/clients",
     title: "Clients",
     url: "/admin/clients",
     icon: FaUserFriends,
@@ -92,7 +92,7 @@ export const adminMenuItems: MenuItem[] = [
     icon: MdAttachMoney,
   },
   {
-    identifier: "orders",
+    identifier: "admin/orders",
     title: "Orders",
     url: "/admin/orders",
     icon: FaShoppingCart,

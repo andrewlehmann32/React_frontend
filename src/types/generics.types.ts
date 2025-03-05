@@ -32,7 +32,7 @@ export type TInputProps = {
 export enum Roles {
   ADMINISTRATOR = "Administrator",
   USER = "User",
-  OWNER = "Owner"
+  OWNER = "Owner",
 }
 
 export type User = {
@@ -48,6 +48,7 @@ export type User = {
   };
   googleId?: string;
   role: string;
+  dcimUserId?: string;
   resetPasswordToken?: string;
   resetPasswordExpire?: Date;
   createdAt: Date;
@@ -76,7 +77,7 @@ export interface Resource {
 export type ResourcesType = {
   resource: Resource;
   projectId: string;
-}
+};
 
 export type ProjectsType = {
   _id: string;

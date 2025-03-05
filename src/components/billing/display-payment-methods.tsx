@@ -10,7 +10,10 @@ import {
   setActiveProject,
   setUserProjects,
 } from "../../redux/reducer/userSlice";
-import { selectActiveProject } from "../../redux/selectors/userSelector";
+import {
+  selectActiveProject,
+  selectUser,
+} from "../../redux/selectors/userSelector";
 import { ProjectsType } from "../../types/generics.types";
 import { AddPaymentMethod } from "./addPaymentMethod";
 import { PaymentMethods } from "./payment-methods";
@@ -20,6 +23,7 @@ const stripePromise = loadStripe(environment.STRIPE_PUBLISHABLE_KEY!);
 export const DisplayPaymentMethods = () => {
   const [defaultPaymentMethod, setDefaultPaymentMethod] = useState("");
   const activeProject = useAppSelector(selectActiveProject);
+  const { user } = useAppSelector(selectUser);
   const dispatch = useAppDispatch();
   const token = localStorage.getItem("token");
 
@@ -35,6 +39,9 @@ export const DisplayPaymentMethods = () => {
           headers: {
             Authorization: `Bearer ${token}`,
           },
+          params: {
+            userId: user?._id,
+          },
         }
       );
 
@@ -44,7 +51,6 @@ export const DisplayPaymentMethods = () => {
           (project: ProjectsType) => project._id === activeProject?._id
         );
 
-        console.log(response.data?.projects, currentProject);
         dispatch(setActiveProject(currentProject));
         setDefaultPaymentMethod(currentProject?.defaultPaymentMethod || null);
       }
@@ -145,7 +151,6 @@ export const DisplayPaymentMethods = () => {
         const cardNumber = `${brand} **** ${last4}`;
         const expiry = `Expires ${exp_month}/${exp_year}`;
         const isDefault = item._id === defaultPaymentMethod;
-        console.log(item._id, defaultPaymentMethod);
         return (
           <PaymentMethods
             cardNumber={cardNumber}

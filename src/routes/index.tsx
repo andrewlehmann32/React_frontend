@@ -2,7 +2,10 @@
 import { createBrowserRouter } from "react-router-dom";
 import App from "../App";
 import Activity from "../pages/activity-log";
+import AdminClients from "../pages/admin-clients";
 import AdminDashboard from "../pages/admin-dashboard";
+import AdminOrders from "../pages/admin-orders";
+import AdminProjects from "../pages/admin-projects";
 import Billing from "../pages/billing";
 import Dashboard from "../pages/dashboard";
 import Home from "../pages/home";
@@ -31,10 +34,34 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: "/admin-home",
+        path: "/admin/home",
         element: (
           <ProtectedRoute isAdmin={true}>
             <AdminDashboard />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "/admin/projects",
+        element: (
+          <ProtectedRoute isAdmin={true}>
+            <AdminProjects />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "/admin/clients",
+        element: (
+          <ProtectedRoute isAdmin={true}>
+            <AdminClients />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "/admin/orders",
+        element: (
+          <ProtectedRoute isAdmin={true}>
+            <AdminOrders />
           </ProtectedRoute>
         ),
       },

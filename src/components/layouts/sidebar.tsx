@@ -288,7 +288,9 @@ const Sidebar = () => {
                 </h1>
               )}
               <nav
-                className={`flex flex-col ${!isAdmin ? "mt-4" : ""} space-y-2`}
+                className={`flex flex-col ${
+                  !isAdmin ? "mt-4" : "mt-10"
+                } space-y-2`}
               >
                 {sidebarMenu.map((item, index) => (
                   <Link
