@@ -12,8 +12,9 @@ import {
 } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 import { userAPI } from "./api/user-api";
-import { userSlice } from "./reducer/userSlice";
+import { notificationsSlice } from "./reducer/notificationsSlice";
 import { renderDetailsSlice } from "./reducer/resourcesReducer";
+import { userSlice } from "./reducer/userSlice";
 
 
 const persistConfig = {
@@ -26,6 +27,7 @@ const rootReducer = combineReducers({
   [userSlice.name]: userSlice.reducer,
   [userAPI.reducerPath]: userAPI.reducer,
   renderDetails: renderDetailsSlice.reducer,
+  notifications: notificationsSlice.reducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

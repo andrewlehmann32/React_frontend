@@ -4,7 +4,10 @@ import toast from "react-hot-toast";
 import { environment } from "../../config/environment";
 import { useAppDispatch, useAppSelector } from "../../hooks/redux";
 import { setActiveProject } from "../../redux/reducer/userSlice";
-import { selectActiveProject } from "../../redux/selectors/userSelector";
+import {
+  selectActiveProject,
+  selectUser,
+} from "../../redux/selectors/userSelector";
 import { Modal } from "../shared/popups/modal-box";
 import { Table } from "../shared/table";
 import { Button } from "../ui/button";
@@ -12,7 +15,13 @@ import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 const token = localStorage.getItem("token");
 
-const AddKey = ({ currentProject }: { currentProject: any }) => {
+const AddKey = ({
+  currentProject,
+  dcimUserId,
+}: {
+  currentProject: any;
+  dcimUserId: number;
+}) => {
   const dispatch = useAppDispatch();
   const [name, setName] = useState("");
   const [sshKey, setSshKey] = useState("");
@@ -51,6 +60,7 @@ const AddKey = ({ currentProject }: { currentProject: any }) => {
           name,
           key: sshKey,
           projectId: currentProject._id,
+          dcimUserId: dcimUserId,
         },
       };
       const response = await axios(config);
@@ -62,8 +72,9 @@ const AddKey = ({ currentProject }: { currentProject: any }) => {
         setSshKey("");
         setIsModalOpen(false);
       }
-    } catch (error) {
-      console.error("Error saving SSH Key:", error);
+    } catch (error: any) {
+      console.error("Error creating SSH Key:", error);
+      toast.error(error?.response?.data?.message);
     }
   };
 
@@ -132,9 +143,18 @@ const ListKeys = ({ sshKeys }: any) => {
 
 export const Main = () => {
   const currentProject = useAppSelector(selectActiveProject);
+  const { user } = useAppSelector(selectUser);
+  if (!user || !currentProject)
+    return (
+      <div className="flex justify-center items-center pt-20 ">
+        <p className="text-gray-600 font-medium text-xl">
+          You need to create a project first
+        </p>
+      </div>
+    );
   return (
     <div className="py-2 gap-4 flex flex-col pr-0 lg:pr-6 w-full">
-      <AddKey currentProject={currentProject} />
+      <AddKey currentProject={currentProject} dcimUserId={user.dcimUserId} />
       <ListKeys sshKeys={currentProject?.sshKeys} />
     </div>
   );

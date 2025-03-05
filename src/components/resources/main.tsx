@@ -1,5 +1,7 @@
 import { useEffect } from "react";
+import { useAppSelector } from "../../hooks/redux";
 import { Device } from "../../pages/resources";
+import { selectActiveProject } from "../../redux/selectors/userSelector";
 import { DisplayPageHeader } from "./display-page-header";
 import { DisplayChart, DisplaySpecificaions } from "./display-specifications";
 
@@ -20,6 +22,10 @@ export const Main = ({
   selectedDevice: Device | undefined;
   setSelectedDevice: (device: Device) => void;
 }) => {
+  const currentProject = useAppSelector(selectActiveProject);
+
+  if (!currentProject) return;
+
   const dynamicData = {
     properties: [
       {

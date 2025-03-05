@@ -53,6 +53,7 @@ export type User = {
   createdAt: Date;
   updatedAt: Date;
   projects: ProjectsType[];
+  dcimUserId: number;
 };
 
 interface teamMember {
@@ -114,4 +115,10 @@ export type InvoiceType = {
   amount: number;
   status: InvoiceStatus;
   projectId: string;
+};
+
+export type HeadersType = {
+  Authorization: string;
+  'Content-Type'?: string;
+  'api-key'?: string;
 };

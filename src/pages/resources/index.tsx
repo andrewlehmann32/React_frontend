@@ -25,6 +25,7 @@ const Resources = () => {
     const controller = new AbortController();
     const signal = controller.signal;
     const fetchDevices = async () => {
+      if (!currentProject) return;
       try {
         const response = await axios.get(
           `${environment.VITE_API_URL}/ordering/${currentProject?._id}`,
