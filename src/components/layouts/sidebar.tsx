@@ -7,6 +7,7 @@ import { PiCaretDoubleLeftBold } from "react-icons/pi";
 import { TbLogout2 } from "react-icons/tb";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
+  adminMenuItems,
   DROPDOWN_DIRECTION,
   menuItems,
   miscItems,
@@ -76,11 +77,18 @@ const SidebarHead = ({
     if (!isWorkspaceActive)
       return (
         <div
-          className="lg:flex hidden px-2 justify-between w-full items-center"
+          className={`lg:flex hidden px-2   ${
+            isSidebarCollapsed ? "justify-center" : "justify-between"
+          }  w-full items-center ${isSidebarCollapsed ? "py-2" : ""}`}
           onClick={() => setIsModalOpen(true)}
         >
-          <PlusIcon className="mr-auto h-5 text-gray-600" />
-          Create a workspace{/* <ChevronDown className="ml-auto" /> */}
+          <PlusIcon
+            className={`${
+              isSidebarCollapsed ? "" : "mr-auto"
+            }  h-5 text-gray-600`}
+          />
+          {!isSidebarCollapsed && "Create a workspace"}
+          {/* <ChevronDown className="ml-auto" /> */}
         </div>
       );
 
@@ -175,6 +183,8 @@ const Sidebar = () => {
   const [activeItem, setActiveItem] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const { user } = useAppSelector(selectUser);
+  const isAdmin = user?.role === "admin";
+  const sidebarMenu = isAdmin ? adminMenuItems : menuItems;
   const userProjects = useAppSelector(selectUserProjects);
   const activeProject = useAppSelector(selectActiveProject);
   const location = useLocation();
@@ -263,20 +273,26 @@ const Sidebar = () => {
       >
         {/* Sidebar Header */}
         <>
-          <SidebarHead
-            userProjects={userProjects as ProjectsType[]}
-            activeProject={activeProject as ProjectsType}
-            isSidebarCollapsed={isCollapsed}
-          />
+          {!isAdmin && (
+            <SidebarHead
+              userProjects={userProjects as ProjectsType[]}
+              activeProject={activeProject as ProjectsType}
+              isSidebarCollapsed={isCollapsed}
+            />
+          )}
           <div className=" text-sm text-gray-700">
-            <div className="border-b pb-3">
-              {!isCollapsed && (
+            <div className={`${!isAdmin ? "border-b" : ""} pb-3`}>
+              {!isCollapsed && !isAdmin && (
                 <h1 className={` hidden text-xs text-gray-500 lg:block ml-1`}>
                   Application
                 </h1>
               )}
-              <nav className="flex flex-col mt-4 space-y-2">
-                {menuItems.map((item, index) => (
+              <nav
+                className={`flex flex-col ${
+                  !isAdmin ? "mt-4" : "mt-10"
+                } space-y-2`}
+              >
+                {sidebarMenu.map((item, index) => (
                   <Link
                     to={item.url}
                     className={`flex items-center gap-2 px-2 rounded-md min-h-8 h-full md:justify-center  ${
@@ -297,35 +313,37 @@ const Sidebar = () => {
                 ))}
               </nav>
             </div>
-            <div className="mt-4">
-              {!isCollapsed && (
-                <h1 className="hidden text-xs text-gray-500 lg:block ml-1">
-                  Misc
-                </h1>
-              )}
+            {!isAdmin && (
+              <div className="mt-4">
+                {!isCollapsed && (
+                  <h1 className="hidden text-xs text-gray-500 lg:block ml-1">
+                    Misc
+                  </h1>
+                )}
 
-              <nav className="flex flex-col mt-4 space-y-2">
-                {miscItems.map((item, index) => (
-                  <Link
-                    to={item.url}
-                    className={`flex items-center gap-2 px-2 rounded-md min-h-8 h-full md:justify-center  ${
-                      isCollapsed ? "justify-center" : "lg:justify-start"
-                    } ${activeItem === item.identifier ? "bg-white" : ""}`}
-                    onClick={() => setIsMobileOpen(false)}
-                    key={index}
-                  >
-                    <item.icon
-                      className={`${isCollapsed ? "w-5 h-5" : "w-4 h-4"}`}
-                    />
-                    {!isCollapsed && (
-                      <span className="block md:hidden lg:block">
-                        {item.title}
-                      </span>
-                    )}
-                  </Link>
-                ))}
-              </nav>
-            </div>
+                <nav className="flex flex-col mt-4 space-y-2">
+                  {miscItems.map((item, index) => (
+                    <Link
+                      to={item.url}
+                      className={`flex items-center gap-2 px-2 rounded-md min-h-8 h-full md:justify-center  ${
+                        isCollapsed ? "justify-center" : "lg:justify-start"
+                      } ${activeItem === item.identifier ? "bg-white" : ""}`}
+                      onClick={() => setIsMobileOpen(false)}
+                      key={index}
+                    >
+                      <item.icon
+                        className={`${isCollapsed ? "w-5 h-5" : "w-4 h-4"}`}
+                      />
+                      {!isCollapsed && (
+                        <span className="block md:hidden lg:block">
+                          {item.title}
+                        </span>
+                      )}
+                    </Link>
+                  ))}
+                </nav>
+              </div>
+            )}
           </div>
         </>
         {/* Sidebar Footer */}

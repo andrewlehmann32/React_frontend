@@ -108,7 +108,7 @@ export const Auth = ({ type, setFormState }: Home.AuthProps) => {
         dispatch(loadUser(data?.user));
         localStorage.setItem("token", token);
         localStorage.setItem("id", JSON.stringify(data?.user?._id));
-        navigate("/home", {
+        navigate(data?.user?.role === "admin" ? "/admin/home" : "/home", {
           replace: true,
         });
         return;
@@ -138,7 +138,7 @@ export const Auth = ({ type, setFormState }: Home.AuthProps) => {
         dispatch(loadUser(data?.user));
         localStorage.setItem("token", data?.token);
         localStorage.setItem("id", JSON.stringify(data?.user?._id));
-        navigate("/home", {
+        navigate(data?.user?.role === "admin" ? "/admin/home" : "/home", {
           replace: true,
         });
         loginFormHook.reset();

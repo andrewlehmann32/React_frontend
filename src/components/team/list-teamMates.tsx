@@ -12,7 +12,7 @@ import { Table } from "../shared/table";
 
 const token = localStorage.getItem("token");
 
-const menuItems = [
+export const menuItems = [
   { label: Roles.ADMINISTRATOR },
   { label: Roles.OWNER },
   { label: Roles.USER },

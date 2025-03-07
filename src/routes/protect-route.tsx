@@ -1,8 +1,7 @@
 // Imports:
 import { Navigate } from "react-router-dom";
 import AppLayout from "../components/layouts/appLayout";
-import { useAppDispatch, useAppSelector } from "../hooks/redux";
-import { logout } from "../redux/reducer/userSlice";
+import { useAppSelector } from "../hooks/redux";
 import { selectUser } from "../redux/selectors/userSelector";
 
 const ProtectedRoute = ({
@@ -12,12 +11,12 @@ const ProtectedRoute = ({
   children: React.ReactNode;
   isAdmin: boolean;
 }) => {
-  const dispatch = useAppDispatch();
+  // const dispatch = useAppDispatch();
   const { user, isAuth, isLoading } = useAppSelector(selectUser);
 
   if (user?.role !== "admin" && isAdmin) {
-    dispatch(logout());
-    return <Navigate to="/" replace />;
+    // dispatch(logout());
+    return <Navigate to="/home" replace />;
   }
 
   if (isLoading) {

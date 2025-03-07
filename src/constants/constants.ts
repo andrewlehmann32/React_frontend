@@ -2,15 +2,23 @@
 import { Home } from "lucide-react";
 import { ComponentType } from "react";
 import { BsQuestionSquare } from "react-icons/bs";
+import {
+  FaClipboardList,
+  FaProjectDiagram,
+  FaShoppingCart,
+  FaUserFriends,
+} from "react-icons/fa";
 import { GiHouseKeys } from "react-icons/gi";
 import { HiServerStack } from "react-icons/hi2";
 import { LuSquareActivity } from "react-icons/lu";
+import { MdAdminPanelSettings, MdAttachMoney } from "react-icons/md";
 import {
   PiCreditCardDuotone,
   PiShoppingCartSimpleDuotone,
 } from "react-icons/pi";
 import { RiTeamLine } from "react-icons/ri";
 import { svgDrawer } from "../lib/helpers/svgDrawer";
+import { PlanData } from "../types/generics.types";
 // Menu items.
 
 interface MenuItem {
@@ -56,6 +64,51 @@ export const menuItems: MenuItem[] = [
     title: "SSH Keys",
     url: "/sshkeys",
     icon: GiHouseKeys,
+  },
+];
+
+export const adminMenuItems: MenuItem[] = [
+  {
+    identifier: "admin/home",
+    title: "Home",
+    url: "/admin/home",
+    icon: MdAdminPanelSettings,
+  },
+  {
+    identifier: "admin/projects",
+    title: "Projects",
+    url: "/admin/projects",
+    icon: FaProjectDiagram,
+  },
+  {
+    identifier: "admin/clients",
+    title: "Clients",
+    url: "/admin/clients",
+    icon: FaUserFriends,
+  },
+  {
+    identifier: "credit",
+    title: "Credit",
+    url: "/admin/credit",
+    icon: MdAttachMoney,
+  },
+  {
+    identifier: "admin/orders",
+    title: "Orders",
+    url: "/admin/orders",
+    icon: FaShoppingCart,
+  },
+  {
+    identifier: "admin/plans",
+    title: "Plans",
+    url: "/admin/plans",
+    icon: FaClipboardList,
+  },
+  {
+    identifier: "admin/servers",
+    title: "Manage Servers",
+    url: "/admin/servers",
+    icon: HiServerStack,
   },
 ];
 
@@ -216,5 +269,122 @@ export const OSOrdering: OSItem[] = [
     icon: svgDrawer.windows,
     title: "Windows",
     version: "20.04 LTS",
+  },
+];
+
+export const initialPlan: PlanData = {
+  _id: '',
+  name: "",
+  cpu: {
+    name: "",
+    cores: 0,
+    speed: "",
+  },
+  ram: 0,
+  storage: "",
+  network: {
+    total: 0,
+    speed: "",
+  },
+  price: {
+    monthly: 0,
+    hourly: 0,
+  },
+  enabled: true,
+  regions: [
+    {
+      name: "",
+      quantity: 0,
+      keyword: "",
+    },
+  ],
+};
+
+export const initialPlansData: PlanData[] = [
+  {
+    _id: 'abc',
+    name: "c2.small.x86",
+    cpu: {
+      name: "E-2173G",
+      cores: 6,
+      speed: "3.7",
+    },
+    ram: 32,
+    storage: "500",
+    network: {
+      total: 20,
+      speed: "1",
+    },
+    price: {
+      monthly: 92,
+      hourly: 0.13,
+    },
+    enabled: true,
+    regions: [
+      {
+        name: "New York",
+        quantity: 2,
+        keyword: "NY",
+      },
+      {
+        name: "New York",
+        quantity: 2,
+        keyword: "NY",
+      },
+    ],
+  },
+  {
+    _id: 'abcd',
+    name: "c2.medium.x86",
+    cpu: {
+      name: "E-2288G",
+      cores: 8,
+      speed: "3.8",
+    },
+    ram: 64,
+    storage: "1000",
+    network: {
+      total: 40,
+      speed: "2",
+    },
+    price: {
+      monthly: 150,
+      hourly: 0.2,
+    },
+    enabled: false,
+    regions: [
+      {
+        name: "New York",
+        quantity: 2,
+        keyword: "NY",
+      },
+    ],
+  },
+  {
+    _id: 'abcde',
+    name: "c2.large.x86",
+    cpu: {
+      name: "E-2378G",
+      cores: 12,
+      speed: "3.9",
+    },
+    ram: 128,
+    storage: "2000",
+    network: {
+      total: 80,
+      speed: "4",
+    },
+    price: {
+      monthly: 300,
+      hourly: 0.4,
+    },
+    enabled: true,
+    regions: [
+      {
+        name: "New York",
+        quantity: 2,
+        keyword: "NY",
+      },
+    ],
   },
 ];

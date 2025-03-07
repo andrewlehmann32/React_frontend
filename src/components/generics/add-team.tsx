@@ -2,8 +2,9 @@ import axios from "axios";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { environment } from "../../config/environment";
-import { useAppDispatch } from "../../hooks/redux";
+import { useAppDispatch, useAppSelector } from "../../hooks/redux";
 import { setUserProjects } from "../../redux/reducer/userSlice";
+import { selectUser } from "../../redux/selectors/userSelector";
 import { Modal } from "../shared/popups/modal-box";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
@@ -16,6 +17,7 @@ export interface AddTeamProps {
 
 export const AddTeam = ({ isModalOpen, setIsModalOpen }: AddTeamProps) => {
   const dispatch = useAppDispatch();
+  const { user } = useAppSelector(selectUser);
   const [teamInfo, setTeamInfo] = useState({
     name: "",
     icon: "",
@@ -33,6 +35,9 @@ export const AddTeam = ({ isModalOpen, setIsModalOpen }: AddTeamProps) => {
       const response = await axios.get(`${environment.VITE_API_URL}/projects`, {
         headers: {
           Authorization: `Bearer ${token}`,
+        },
+        params: {
+          userId: user?._id,
         },
       });
 
