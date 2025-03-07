@@ -1,10 +1,10 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { environment } from "../../config/environment";
 import { formatTimestamp } from "../../lib/helpers/utils";
 import { User } from "../../types/generics.types";
 import { Table } from "../shared/table";
 
-const environment = import.meta.env;
 const token = localStorage.getItem("token");
 
 export const Main = () => {

@@ -273,6 +273,7 @@ export const OSOrdering: OSItem[] = [
 ];
 
 export const initialPlan: PlanData = {
+  _id: '',
   name: "",
   cpu: {
     name: "",
@@ -301,6 +302,7 @@ export const initialPlan: PlanData = {
 
 export const initialPlansData: PlanData[] = [
   {
+    _id: 'abc',
     name: "c2.small.x86",
     cpu: {
       name: "E-2173G",
@@ -324,9 +326,15 @@ export const initialPlansData: PlanData[] = [
         quantity: 2,
         keyword: "NY",
       },
+      {
+        name: "New York",
+        quantity: 2,
+        keyword: "NY",
+      },
     ],
   },
   {
+    _id: 'abcd',
     name: "c2.medium.x86",
     cpu: {
       name: "E-2288G",
@@ -353,6 +361,7 @@ export const initialPlansData: PlanData[] = [
     ],
   },
   {
+    _id: 'abcde',
     name: "c2.large.x86",
     cpu: {
       name: "E-2378G",

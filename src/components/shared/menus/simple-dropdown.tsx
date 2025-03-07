@@ -81,7 +81,7 @@ export const DotsDropdown = ({
               : { bottom: 40, left: 10 }
           }
         >
-          <ul className="py-1">
+          <ul className="py-1 divide-y">
             {items.map((item, index) => (
               <li
                 key={index}

@@ -1,5 +1,8 @@
-import { useState } from "react";
+import axios from "axios";
+import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 import { FaEye, FaPen, FaRegTrashCan } from "react-icons/fa6";
+import { environment } from "../../config/environment";
 import { initialPlansData } from "../../constants/constants";
 import { PlanData } from "../../types/generics.types";
 import { DotsDropdown } from "../shared/menus/simple-dropdown";
@@ -9,14 +12,81 @@ interface PlansTableProps {
   setIsModalOpen: (value: boolean) => void;
   setModalType: (value: string) => void;
   setPlan: (value: PlanData) => void;
+  isModalOpen: boolean;
 }
+
+const token = localStorage.getItem("token");
 
 export const PlansTable = ({
   setIsModalOpen,
   setModalType,
   setPlan,
+  isModalOpen,
 }: PlansTableProps) => {
   const [plans, setPlans] = useState(initialPlansData);
+
+  const fetchPlans = async () => {
+    try {
+      const response = await axios.get(`${environment.VITE_API_URL}/plans`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      console.log(response.data);
+      setPlans(response?.data);
+    } catch (error) {
+      console.error("Error fetching projects:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchPlans();
+  }, [isModalOpen]);
+
+  const handleDelete = async (planId: string) => {
+    try {
+      const response = await axios.delete(
+        `${environment.VITE_API_URL}/plans/${planId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      console.log("Plan deleted:", response.data);
+      toast.success(response.data.message);
+      // Update state after successful deletion
+      setPlans((prevPlans) => prevPlans.filter((plan) => plan?._id !== planId));
+    } catch (error) {
+      console.error("Error deleting plan:", error);
+    }
+  };
+
+  const togglePlanStatus = async (planId: string, currentStatus: boolean) => {
+    try {
+      const response = await axios.put(
+        `${environment.VITE_API_URL}/plans/${planId}`,
+        { enabled: !currentStatus },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      toast.success(response.data.message);
+      console.log("Plan status updated:", response.data);
+
+      // Update the state to reflect the change in UI
+      setPlans((prevPlans) =>
+        prevPlans.map((plan) =>
+          plan._id === planId ? { ...plan, enabled: !currentStatus } : plan
+        )
+      );
+    } catch (error) {
+      console.error("Error updating plan status:", error);
+    }
+  };
 
   const handleEditPlan = (plan: PlanData) => {
     setPlan(plan);
@@ -24,10 +94,11 @@ export const PlansTable = ({
     setModalType("Edit");
   };
 
-  const handleToggleEnable = (index: number) => {
+  const handleToggleEnable = (PlanId: string, index: number) => {
     const updatedPlans = [...plans];
-    updatedPlans[index].enabled = !updatedPlans[index].enabled;
-    setPlans(updatedPlans);
+    // updatedPlans[index].enabled = !updatedPlans[index].enabled;
+    // setPlans(updatedPlans);
+    togglePlanStatus(PlanId, updatedPlans[index].enabled);
   };
 
   const dropdownItems = (item: PlanData, index: number) => {
@@ -43,12 +114,16 @@ export const PlansTable = ({
       <div
         className={`flex gap-3 items-center cursor-pointer`}
         key="view"
-        onClick={() => handleToggleEnable(index)}
+        onClick={() => handleToggleEnable(item._id, index)}
       >
         <FaEye color={item.enabled ? "green" : "gray"} />
         <span>{item.enabled ? "Enabled" : "Disabled"}</span>
       </div>,
-      <div className={`flex gap-3 items-center`} key="remove">
+      <div
+        className={`flex gap-3 items-center text-red-500`}
+        key="remove"
+        onClick={() => handleDelete(item?._id)}
+      >
         <FaRegTrashCan />
         <span>Delete Plan</span>
       </div>,
@@ -102,7 +177,11 @@ export const PlansTable = ({
           <p>${item.price.hourly}/hr</p>
         </div>
       ),
-      status: <p className="font-semibold">Available</p>,
+      status: (
+        <p className="font-semibold">
+          {item.enabled ? "Available" : "Disabled"}
+        </p>
+      ),
       actions: (
         <DotsDropdown
           items={dropdownItems(item, index)}

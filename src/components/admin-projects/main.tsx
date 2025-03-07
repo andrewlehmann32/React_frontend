@@ -1,13 +1,13 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { ProjectsType } from "../../types/generics.types";
+import { PopulatedProjectsType } from "../../types/generics.types";
 import { Table } from "../shared/table";
 
 const environment = import.meta.env;
 const token = localStorage.getItem("token");
 
 export const Main = () => {
-  const [projects, setProjects] = useState<ProjectsType[]>([]);
+  const [projects, setProjects] = useState<PopulatedProjectsType[]>([]);
 
   const fetchProjects = async () => {
     try {

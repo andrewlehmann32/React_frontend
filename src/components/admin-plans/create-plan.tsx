@@ -1,147 +1,26 @@
+import axios from "axios";
+import toast from "react-hot-toast";
+import { environment } from "../../config/environment";
 import { initialPlan } from "../../constants/constants";
 import { PlanData } from "../../types/generics.types";
 import { Modal } from "../shared/popups/modal-box";
+import { RenderForm } from "./modal-form";
 
 interface CreatePlanProps {
   isModalOpen: boolean;
   setIsModalOpen: (value: boolean) => void;
   modalType: string;
-  planData: PlanData;
-  setPlanData: (value: PlanData) => void;
+  planData: any;
+  setPlanData: (value: any) => any;
 }
 
-interface FormDataProps {
-  planData: PlanData;
-  handleChange: (name: string, e: React.ChangeEvent<HTMLInputElement>) => void;
-}
-
-const RenderForm = ({ planData, handleChange }: FormDataProps) => {
-  return (
-    <div className="flex flex-col p-1 gap-3">
-      <div>
-        <p className="text-sm text-gray-700 font-medium">Plan Name</p>
-        <input
-          type="text"
-          className="mt-1 w-full border rounded-md py-2 px-4 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-          placeholder="Type here"
-          onChange={(e) => handleChange("name", e)}
-          value={planData.name}
-        />
-      </div>
-      <div className="flex gap-2">
-        <div>
-          <p className="text-sm text-gray-700 font-medium">CPU Name</p>
-          <input
-            type="text"
-            className="mt-1 w-full border rounded-md py-2 px-4 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            placeholder="Type here"
-            onChange={(e) => handleChange("cpu.name", e)}
-            value={planData.cpu.name}
-          />
-        </div>
-        <div>
-          <p className="text-sm text-gray-700 font-medium">CPU Cores</p>
-          <input
-            type="number"
-            className="mt-1 w-full border rounded-md py-2 px-4 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            placeholder="Type here"
-            onChange={(e) => handleChange("cpu.cores", e)}
-            value={planData.cpu.cores}
-          />
-        </div>
-        <div>
-          <p className="text-sm text-gray-700 font-medium">CPU Speed</p>
-          <input
-            type="text"
-            className="mt-1 w-full border rounded-md py-2 px-4 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            placeholder="Type here"
-            onChange={(e) => handleChange("cpu.speed", e)}
-            value={planData.cpu.speed}
-          />
-        </div>
-      </div>
-      <div>
-        <p className="text-sm text-gray-700 font-medium">RAM</p>
-        <span className="flex items-end gap-1">
-          <input
-            type="number"
-            className="mt-1 w-full border rounded-md py-2 px-4 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            placeholder="Type here"
-            onChange={(e) => handleChange("ram", e)}
-            value={planData.ram}
-          />
-          <span className="text-sm text-gray-700 font-medium flex"> GB</span>
-        </span>
-      </div>
-      <div>
-        <p className="text-sm text-gray-700 font-medium">Storage</p>
-        <span className="flex items-end gap-1">
-          <input
-            type="text"
-            className="mt-1 w-full border rounded-md py-2 px-4 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            placeholder="Type here"
-            onChange={(e) => handleChange("storage", e)}
-            value={planData.storage}
-          />
-          <span className="text-sm text-gray-700 font-medium flex"> GB</span>
-        </span>
-      </div>
-      <div className="flex gap-2">
-        <div>
-          <p className="text-sm text-gray-700 font-medium">Network Total</p>
-          <input
-            type="number"
-            className="mt-1 w-full border rounded-md py-2 px-4 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            placeholder="Type here"
-            onChange={(e) => handleChange("network.total", e)}
-            value={planData.network.total}
-          />
-        </div>
-        <div>
-          <p className="text-sm text-gray-700 font-medium">Network Speed</p>
-          <span className="flex items-end gap-1">
-            <input
-              type="text"
-              className="mt-1 w-full border rounded-md py-2 px-4 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              placeholder="Type here"
-              onChange={(e) => handleChange("network.speed", e)}
-              value={planData.network.speed}
-            />
-            <span className="text-sm text-gray-700 font-medium">/sec</span>
-          </span>
-        </div>
-      </div>
-      <div className="flex gap-2">
-        <div>
-          <p className="text-sm text-gray-700 font-medium">Monthly Price</p>
-          <span className="flex items-end gap-1">
-            <input
-              type="number"
-              className="mt-1 w-full border rounded-md py-2 px-4 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              placeholder="Type here"
-              onChange={(e) => handleChange("price.monthly", e)}
-              value={planData.price.monthly}
-            />
-            <span className="text-sm text-gray-700 font-medium">$/mo</span>
-          </span>
-        </div>
-        <div>
-          <p className="text-sm text-gray-700 font-medium">Hourly Price</p>
-          <span className="flex items-end gap-1">
-            <input
-              type="number"
-              className="mt-1 w-full border rounded-md py-2 px-4 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              placeholder="Type here"
-              onChange={(e) => handleChange("price.hourly", e)}
-              value={planData.price.hourly}
-            />
-            <span className="text-sm text-gray-700 font-medium">$/hr</span>
-          </span>
-        </div>
-      </div>
-    </div>
-  );
-};
+const token = localStorage.getItem("token");
+const availableRegions = [
+  { name: "New York", keyword: "NY" },
+  { name: "Los Angeles", keyword: "LA" },
+  { name: "London", keyword: "LDN" },
+  { name: "Tokyo", keyword: "TOK" },
+];
 
 export const PlanModal = ({
   isModalOpen,
@@ -150,6 +29,33 @@ export const PlanModal = ({
   planData,
   setPlanData,
 }: CreatePlanProps) => {
+  const handleRegionChange = (selectedRegions: any) => {
+    const newRegions = selectedRegions.map((region: any) => ({
+      name: region.label,
+      keyword: region.value,
+      quantity: 0,
+    }));
+
+    setPlanData((prev: any): any => ({
+      ...prev,
+      regions: newRegions.length > 0 ? newRegions : [...prev.regions],
+    }));
+  };
+
+  const handleQuantityChange = (
+    regionName: string,
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const value = Number(e.target.value);
+
+    setPlanData((prev: PlanData): any => ({
+      ...prev,
+      regions: prev.regions.map((region) =>
+        region.name === regionName ? { ...region, quantity: value } : region
+      ),
+    }));
+  };
+
   const handleInputChange = (
     path: string,
     e: React.ChangeEvent<HTMLInputElement>
@@ -176,13 +82,43 @@ export const PlanModal = ({
     });
   };
 
-  const handleSave = () => {
-    if (modalType === "edit") {
-      console.log("Updated Plan Data:", planData);
-    } else {
-      console.log("New Plan Data:", planData);
+  const saveEditedPlan = async (planId: string) => {
+    try {
+      const response = await axios.put(
+        `${environment.VITE_API_URL}/plans/${planId}`,
+        { ...planData },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      toast.success(response.data.message);
+      setIsModalOpen(false);
+    } catch (error) {
+      console.error("Error updating plan status:", error);
     }
-    setIsModalOpen(false);
+  };
+
+  const handleSave = async () => {
+    if (modalType === "Edit") return await saveEditedPlan(planData?._id);
+    try {
+      const config = {
+        url: `${environment.VITE_API_URL}/plans`,
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        data: planData,
+      };
+      const response = await axios(config);
+      toast.success(response.data.message);
+      setIsModalOpen(false);
+    } catch (error: any) {
+      console.error("Error fetching projects:", error);
+      toast.error(error.response?.data?.message);
+    }
   };
 
   return (
@@ -197,6 +133,9 @@ export const PlanModal = ({
       <RenderForm
         planData={modalType === "create" ? initialPlan : planData}
         handleChange={handleInputChange}
+        handleRegionChange={handleRegionChange}
+        handleQuantityChange={handleQuantityChange}
+        availableRegions={availableRegions}
       />
     </Modal>
   );
