@@ -5,6 +5,7 @@ import Activity from "../pages/activity-log";
 import AdminClients from "../pages/admin-clients";
 import AdminDashboard from "../pages/admin-dashboard";
 import AdminOrders from "../pages/admin-orders";
+import AdminPlans from "../pages/admin-plans";
 import AdminProjects from "../pages/admin-projects";
 import Billing from "../pages/billing";
 import Dashboard from "../pages/dashboard";
@@ -62,6 +63,14 @@ const router = createBrowserRouter([
         element: (
           <ProtectedRoute isAdmin={true}>
             <AdminOrders />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "/admin/plans",
+        element: (
+          <ProtectedRoute isAdmin={true}>
+            <AdminPlans />
           </ProtectedRoute>
         ),
       },
