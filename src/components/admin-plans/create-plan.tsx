@@ -1,42 +1,21 @@
-import { useState } from "react";
+import { initialPlan } from "../../constants/constants";
+import { PlanData } from "../../types/generics.types";
 import { Modal } from "../shared/popups/modal-box";
 
 interface CreatePlanProps {
   isModalOpen: boolean;
   setIsModalOpen: (value: boolean) => void;
+  modalType: string;
+  planData: PlanData;
+  setPlanData: (value: PlanData) => void;
 }
 
-type PlanData = {
-  name: string;
-  cpu: {
-    name: string;
-    cores: number;
-    speed: string;
-  };
-  ram: number;
-  storage: string;
-  network: {
-    total: number;
-    speed: string;
-  };
-  price: {
-    monthly: number;
-    hourly: number;
-  };
-  regions: [
-    {
-      name: string;
-      quantity: number;
-    }
-  ];
-};
-
-interface PlanDataProps {
+interface FormDataProps {
   planData: PlanData;
   handleChange: (name: string, e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
-const RenderForm = ({ planData, handleChange }: PlanDataProps) => {
+const RenderForm = ({ planData, handleChange }: FormDataProps) => {
   return (
     <div className="flex flex-col p-1 gap-3">
       <div>
@@ -164,75 +143,61 @@ const RenderForm = ({ planData, handleChange }: PlanDataProps) => {
   );
 };
 
-export const CreatePlan = ({
+export const PlanModal = ({
   isModalOpen,
   setIsModalOpen,
+  modalType,
+  planData,
+  setPlanData,
 }: CreatePlanProps) => {
-  const [planData, setPlanData] = useState<PlanData>({
-    name: "",
-    cpu: {
-      name: "",
-      cores: 0,
-      speed: "",
-    },
-    ram: 0,
-    storage: "",
-    network: {
-      total: 0,
-      speed: "",
-    },
-    price: {
-      monthly: 0,
-      hourly: 0,
-    },
-    regions: [
-      {
-        name: "",
-        quantity: 0,
-      },
-    ],
-  });
-
   const handleInputChange = (
     path: string,
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
     const value = e.target.type === "number" ? +e.target.value : e.target.value;
 
-    setPlanData((prev) => {
-      const result = { ...prev };
-
+    setPlanData((prev: PlanData) => {
       const parts = path.split(".");
+
       if (parts.length === 1) {
-        // Top-level property
-        return {
-          ...prev,
-          [path]: value,
-        };
-      } else if (parts.length === 2) {
-        const [object, key] = parts;
-        return {
-          ...prev,
-          [object]: {
-            ...prev[object as keyof PlanData],
-            [key]: value,
-          },
-        };
+        return { ...prev, [path]: value };
       }
-      return result;
+
+      // Handle two-level nesting (like "cpu.name")
+      const [object, key] = parts;
+
+      return {
+        ...prev,
+        [object]: {
+          ...(prev[object as keyof PlanData] as object), // Ensure proper typing for nested object
+          [key]: value,
+        },
+      };
     });
+  };
+
+  const handleSave = () => {
+    if (modalType === "edit") {
+      console.log("Updated Plan Data:", planData);
+    } else {
+      console.log("New Plan Data:", planData);
+    }
+    setIsModalOpen(false);
   };
 
   return (
     <Modal
-      title="Create New Plan"
+      title={`${modalType} Plan`}
       isOpen={isModalOpen}
       setIsOpen={setIsModalOpen}
-      onSave={() => console.log(planData)}
-      actionButtonText="Create Plan"
+      onSave={handleSave}
+      actionButtonText={modalType === "Create" ? "Create Plan" : "Update Plan"}
       actionButtonStyles="w-full border text-white bg-gray-800 hover:text-gray-800"
     >
-      <RenderForm planData={planData} handleChange={handleInputChange} />
+      <RenderForm
+        planData={modalType === "create" ? initialPlan : planData}
+        handleChange={handleInputChange}
+      />
     </Modal>
   );
 };

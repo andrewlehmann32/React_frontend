@@ -7,6 +7,7 @@ import AdminDashboard from "../pages/admin-dashboard";
 import AdminOrders from "../pages/admin-orders";
 import AdminPlans from "../pages/admin-plans";
 import AdminProjects from "../pages/admin-projects";
+import AdminServers from "../pages/admin-servers";
 import Billing from "../pages/billing";
 import Dashboard from "../pages/dashboard";
 import Home from "../pages/home";
@@ -71,6 +72,14 @@ const router = createBrowserRouter([
         element: (
           <ProtectedRoute isAdmin={true}>
             <AdminPlans />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "/admin/servers",
+        element: (
+          <ProtectedRoute isAdmin={true}>
+            <AdminServers />
           </ProtectedRoute>
         ),
       },

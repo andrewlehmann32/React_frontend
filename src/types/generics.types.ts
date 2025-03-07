@@ -116,3 +116,30 @@ export type InvoiceType = {
   status: InvoiceStatus;
   projectId: string;
 };
+
+export type PlanData = {
+  name: string;
+  cpu: {
+    name: string;
+    cores: number;
+    speed: string;
+  };
+  ram: number;
+  storage: string;
+  enabled: boolean;
+  network: {
+    total: number;
+    speed: string;
+  };
+  price: {
+    monthly: number;
+    hourly: number;
+  };
+  regions: [
+    {
+      name: string;
+      quantity: number;
+      keyword: string;
+    }
+  ];
+};

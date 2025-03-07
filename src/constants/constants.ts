@@ -18,6 +18,7 @@ import {
 } from "react-icons/pi";
 import { RiTeamLine } from "react-icons/ri";
 import { svgDrawer } from "../lib/helpers/svgDrawer";
+import { PlanData } from "../types/generics.types";
 // Menu items.
 
 interface MenuItem {
@@ -98,13 +99,13 @@ export const adminMenuItems: MenuItem[] = [
     icon: FaShoppingCart,
   },
   {
-    identifier: "plans",
+    identifier: "admin/plans",
     title: "Plans",
     url: "/admin/plans",
     icon: FaClipboardList,
   },
   {
-    identifier: "servers",
+    identifier: "admin/servers",
     title: "Manage Servers",
     url: "/admin/servers",
     icon: HiServerStack,
@@ -254,5 +255,113 @@ export const OSOrdering: OSItem[] = [
     icon: svgDrawer.windows,
     title: "Windows",
     version: "20.04 LTS",
+  },
+];
+
+export const initialPlan: PlanData = {
+  name: "",
+  cpu: {
+    name: "",
+    cores: 0,
+    speed: "",
+  },
+  ram: 0,
+  storage: "",
+  network: {
+    total: 0,
+    speed: "",
+  },
+  price: {
+    monthly: 0,
+    hourly: 0,
+  },
+  enabled: true,
+  regions: [
+    {
+      name: "",
+      quantity: 0,
+      keyword: "",
+    },
+  ],
+};
+
+export const initialPlansData: PlanData[] = [
+  {
+    name: "c2.small.x86",
+    cpu: {
+      name: "E-2173G",
+      cores: 6,
+      speed: "3.7",
+    },
+    ram: 32,
+    storage: "500",
+    network: {
+      total: 20,
+      speed: "1",
+    },
+    price: {
+      monthly: 92,
+      hourly: 0.13,
+    },
+    enabled: true,
+    regions: [
+      {
+        name: "New York",
+        quantity: 2,
+        keyword: "NY",
+      },
+    ],
+  },
+  {
+    name: "c2.medium.x86",
+    cpu: {
+      name: "E-2288G",
+      cores: 8,
+      speed: "3.8",
+    },
+    ram: 64,
+    storage: "1000",
+    network: {
+      total: 40,
+      speed: "2",
+    },
+    price: {
+      monthly: 150,
+      hourly: 0.2,
+    },
+    enabled: false,
+    regions: [
+      {
+        name: "New York",
+        quantity: 2,
+        keyword: "NY",
+      },
+    ],
+  },
+  {
+    name: "c2.large.x86",
+    cpu: {
+      name: "E-2378G",
+      cores: 12,
+      speed: "3.9",
+    },
+    ram: 128,
+    storage: "2000",
+    network: {
+      total: 80,
+      speed: "4",
+    },
+    price: {
+      monthly: 300,
+      hourly: 0.4,
+    },
+    enabled: true,
+    regions: [
+      {
+        name: "New York",
+        quantity: 2,
+        keyword: "NY",
+      },
+    ],
   },
 ];
