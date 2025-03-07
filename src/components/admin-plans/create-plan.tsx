@@ -136,7 +136,6 @@ const RenderForm = ({ planData, handleChange }: PlanDataProps) => {
         <div>
           <p className="text-sm text-gray-700 font-medium">Monthly Price</p>
           <span className="flex items-end gap-1">
-            {" "}
             <input
               type="number"
               className="mt-1 w-full border rounded-md py-2 px-4 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -150,7 +149,6 @@ const RenderForm = ({ planData, handleChange }: PlanDataProps) => {
         <div>
           <p className="text-sm text-gray-700 font-medium">Hourly Price</p>
           <span className="flex items-end gap-1">
-            {" "}
             <input
               type="number"
               className="mt-1 w-full border rounded-md py-2 px-4 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -196,19 +194,40 @@ export const CreatePlan = ({
   });
 
   const handleInputChange = (
-    name: string,
+    path: string,
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
     const value = e.target.type === "number" ? +e.target.value : e.target.value;
-    setPlanData((prev) => ({ ...prev, [name]: value }));
+
+    setPlanData((prev) => {
+      const result = { ...prev };
+
+      const parts = path.split(".");
+      if (parts.length === 1) {
+        // Top-level property
+        return {
+          ...prev,
+          [path]: value,
+        };
+      } else if (parts.length === 2) {
+        const [object, key] = parts;
+        return {
+          ...prev,
+          [object]: {
+            ...prev[object as keyof PlanData],
+            [key]: value,
+          },
+        };
+      }
+      return result;
+    });
   };
 
   return (
     <Modal
-      title=" Create New Plan"
+      title="Create New Plan"
       isOpen={isModalOpen}
       setIsOpen={setIsModalOpen}
-      //   disabled={isDisabled}
       onSave={() => console.log(planData)}
       actionButtonText="Create Plan"
       actionButtonStyles="w-full border text-white bg-gray-800 hover:text-gray-800"
