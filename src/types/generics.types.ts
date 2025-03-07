@@ -48,12 +48,12 @@ export type User = {
   };
   googleId?: string;
   role: string;
-  dcimUserId?: string;
   resetPasswordToken?: string;
   resetPasswordExpire?: Date;
   createdAt: Date;
   updatedAt: Date;
   projects: ProjectsType[];
+  dcimUserId: number;
 };
 
 interface teamMember {
@@ -142,4 +142,9 @@ export type PlanData = {
       keyword: string;
     }
   ];
+};
+export type HeadersType = {
+  Authorization: string;
+  'Content-Type'?: string;
+  'api-key'?: string;
 };

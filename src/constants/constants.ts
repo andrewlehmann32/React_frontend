@@ -134,6 +134,20 @@ export enum DROPDOWN_DIRECTION {
   RIGHT = "right",
 }
 
+export enum HTTP_METHODS {
+  GET = 'GET',
+  POST = 'POST',
+  PATCH = 'PATCH',
+  DELETE = 'DELETE',
+}
+
+export enum NOTIFY_TYPE {
+  Success = 'success',
+  Error = 'error',
+  Info = 'info',
+  Warning = 'warning',
+}
+
 export enum InvoiceStatus {
   PENDING = "pending",
   PAID = "paid",
