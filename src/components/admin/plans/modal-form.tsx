@@ -1,5 +1,5 @@
 import Select from "react-select";
-import { PlanData } from "../../types/generics.types";
+import { PlanData } from "../../../types/generics.types";
 
 interface FormDataProps {
   planData: PlanData;

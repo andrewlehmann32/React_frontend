@@ -2,11 +2,11 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { FaEye, FaPen, FaRegTrashCan } from "react-icons/fa6";
-import { environment } from "../../config/environment";
-import { initialPlansData } from "../../constants/constants";
-import { PlanData } from "../../types/generics.types";
-import { DotsDropdown } from "../shared/menus/simple-dropdown";
-import { Table } from "../shared/table";
+import { environment } from "../../../config/environment";
+import { initialPlansData } from "../../../constants/constants";
+import { PlanData } from "../../../types/generics.types";
+import { DotsDropdown } from "../../shared/menus/simple-dropdown";
+import { Table } from "../../shared/table";
 
 interface PlansTableProps {
   setIsModalOpen: (value: boolean) => void;
@@ -32,7 +32,6 @@ export const PlansTable = ({
           Authorization: `Bearer ${token}`,
         },
       });
-      console.log(response.data);
       setPlans(response?.data);
     } catch (error) {
       console.error("Error fetching projects:", error);
@@ -53,8 +52,6 @@ export const PlansTable = ({
           },
         }
       );
-
-      console.log("Plan deleted:", response.data);
       toast.success(response.data.message);
       // Update state after successful deletion
       setPlans((prevPlans) => prevPlans.filter((plan) => plan?._id !== planId));
@@ -75,7 +72,6 @@ export const PlansTable = ({
         }
       );
       toast.success(response.data.message);
-      console.log("Plan status updated:", response.data);
 
       // Update the state to reflect the change in UI
       setPlans((prevPlans) =>
@@ -143,7 +139,7 @@ export const PlansTable = ({
     ];
   };
 
-  const tableBody = () => {
+  const renderBody = () => {
     // if (!plans.length)
     //   return (
     //     <p className="text-lg text-medium text-gray-800">No data to display</p>
@@ -195,7 +191,7 @@ export const PlansTable = ({
 
   const tableData = {
     headers: tableHeaders(),
-    body: tableBody(),
+    body: renderBody(),
   };
 
   return (

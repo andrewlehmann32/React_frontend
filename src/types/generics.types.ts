@@ -85,6 +85,7 @@ export type ProjectsType = {
   icon: string;
   createdBy: string;
   createdAt: Date;
+  credit?: number;
   teammates?: teamMember[];
   sshKeys?: ISSH[];
   paymentMethods?: PaymentMethodsType[];
@@ -99,6 +100,7 @@ export type PopulatedProjectsType = {
   icon: string;
   createdBy: User;
   createdAt: Date;
+  credit?: number;
   teammates?: teamMember[];
   sshKeys?: ISSH[];
   paymentMethods?: PaymentMethodsType[];
@@ -156,32 +158,6 @@ export type PlanData = {
     keyword: string;
   }>;
 };
-export interface IPlanData {
-  _id: string;
-  name: string;
-  cpu: {
-    name: string;
-    cores: number;
-    speed: string;
-  };
-  ram: number;
-  storage: string;
-  enabled: boolean;
-  network: {
-    total: number;
-    speed: string;
-  };
-  price: {
-    monthly: number;
-    hourly: number;
-  };
-  regions: Array<{
-    name: string;
-    quantity: number;
-    keyword: string;
-  }>;
-}
-
 
 export type HeadersType = {
   Authorization: string;

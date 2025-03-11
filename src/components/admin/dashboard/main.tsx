@@ -1,7 +1,7 @@
 import axios from "axios";
 import React, { useEffect, useMemo, useState } from "react";
-import { environment } from "../../config/environment";
-import { Chart } from "../generics/chart";
+import { environment } from "../../../config/environment";
+import { Chart } from "../../generics/chart";
 
 interface GridItem {
   title: string;

@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { formatTimestamp } from "../../lib/helpers/utils";
-import { Table } from "../shared/table";
+import { formatTimestamp } from "../../../lib/helpers/utils";
+import { Table } from "../../shared/table";
 
 const environment = import.meta.env;
 const token = localStorage.getItem("token");
@@ -29,7 +29,7 @@ export const Main = () => {
     fetchOrders();
   }, []);
 
-  const renderTableItem = () => {
+  const renderBody = () => {
     return orders.map((order) => ({
       ip: (
         <p className="font-semibold cursor-pointer hover:underline">
@@ -54,7 +54,7 @@ export const Main = () => {
 
   const tableData = {
     headers: ["IP", "Resource Id", "Created By", "Created At"],
-    body: renderTableItem(),
+    body: renderBody(),
   };
 
   return (
