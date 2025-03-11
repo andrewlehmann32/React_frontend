@@ -1,10 +1,10 @@
 import { useEffect } from "react";
-import { Device } from "../../pages/resources";
-import { DisplayPageHeader } from "../resources/display-page-header";
+import { Device } from "../../../pages/resources";
+import { DisplayPageHeader } from "../../resources/display-page-header";
 import {
   DisplayChart,
   DisplaySpecificaions,
-} from "../resources/display-specifications";
+} from "../../resources/display-specifications";
 
 export const Main = ({
   devices,

@@ -27,7 +27,6 @@ import {
   loginSchema,
   registerSchema,
 } from "../../../schemas/auth-schema";
-import { Home } from "../../../types";
 import { Divider } from "../../generics/divider";
 import { GenericInput } from "../../generics/input";
 import { Button } from "../../ui/button";
@@ -39,11 +38,16 @@ import {
   FormMessage,
 } from "../../ui/form";
 
+type AuthProps = {
+  type: "login" | "register";
+  setFormState: (state: "login" | "register") => void;
+};
+
 // PARTIALS -
 const auth = getAuth(firebase);
 const provider = new GoogleAuthProvider();
 
-export const Auth = ({ type, setFormState }: Home.AuthProps) => {
+export const Auth = ({ type, setFormState }: AuthProps) => {
   const { formHook: registerFormHook } = useRegisterContext();
   const { formHook: loginFormHook } = useLoginContext();
   const [Google] = useGoogleMutation();

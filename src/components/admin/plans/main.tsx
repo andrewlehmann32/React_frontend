@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { initialPlan } from "../../constants/constants";
-import { Button } from "../ui/button";
+import { initialPlan } from "../../../constants/constants";
+import { Button } from "../../ui/button";
 import { PlanModal } from "./create-plan";
 import { PlansTable } from "./plans-table";
 

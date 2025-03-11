@@ -1,9 +1,9 @@
 import axios from "axios";
 import toast from "react-hot-toast";
-import { environment } from "../../config/environment";
-import { initialPlan } from "../../constants/constants";
-import { PlanData } from "../../types/generics.types";
-import { Modal } from "../shared/popups/modal-box";
+import { environment } from "../../../config/environment";
+import { initialPlan } from "../../../constants/constants";
+import { PlanData } from "../../../types/generics.types";
+import { Modal } from "../../shared/popups/modal-box";
 import { RenderForm } from "./modal-form";
 
 interface CreatePlanProps {

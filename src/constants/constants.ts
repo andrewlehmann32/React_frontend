@@ -11,7 +11,7 @@ import {
 import { GiHouseKeys } from "react-icons/gi";
 import { HiServerStack } from "react-icons/hi2";
 import { LuSquareActivity } from "react-icons/lu";
-import { MdAdminPanelSettings, MdAttachMoney } from "react-icons/md";
+import { MdAdminPanelSettings } from "react-icons/md";
 import {
   PiCreditCardDuotone,
   PiShoppingCartSimpleDuotone,
@@ -86,12 +86,12 @@ export const adminMenuItems: MenuItem[] = [
     url: "/admin/clients",
     icon: FaUserFriends,
   },
-  {
-    identifier: "credit",
-    title: "Credit",
-    url: "/admin/credit",
-    icon: MdAttachMoney,
-  },
+  // {
+  //   identifier: "credit",
+  //   title: "Credit",
+  //   url: "/admin/credit",
+  //   icon: MdAttachMoney,
+  // },
   {
     identifier: "admin/orders",
     title: "Orders",

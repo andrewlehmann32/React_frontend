@@ -1,11 +1,11 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import { Main } from "../../components/admin-servers/main";
-import { PageLayout } from "../../components/layouts/pageLayout";
-import { ServersList } from "../../components/resources/servers-list";
-import { environment } from "../../config/environment";
-import { Resource } from "../../types/generics.types";
+import { Main } from "../../../components/admin/servers/main";
+import { PageLayout } from "../../../components/layouts/pageLayout";
+import { ServersList } from "../../../components/resources/servers-list";
+import { environment } from "../../../config/environment";
+import { Resource } from "../../../types/generics.types";
 
 export interface Device {
   resource: Resource;

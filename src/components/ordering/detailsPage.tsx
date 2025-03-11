@@ -1,10 +1,10 @@
 import axios from "axios";
+import { Check, ChevronDownIcon } from "lucide-react";
 import React from "react";
 import toast from "react-hot-toast";
-import { environment } from "../../config/environment";
-import { Check, ChevronDownIcon } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { environment } from "../../config/environment";
 import { OSOrdering } from "../../constants/constants";
 import { useAppSelector } from "../../hooks/redux";
 import { svgDrawer } from "../../lib/helpers/svgDrawer";
@@ -16,7 +16,10 @@ import {
   setRaid,
   setRegion,
 } from "../../redux/reducer/resourcesReducer";
-import { selectActiveProject } from "../../redux/selectors/userSelector";
+import {
+  selectActiveProject,
+  selectUser,
+} from "../../redux/selectors/userSelector";
 import { RootState } from "../../redux/store";
 import { ToggleButton } from "../shared/buttons/buttons";
 import { Button } from "../ui/button";
@@ -70,6 +73,7 @@ export const RenderDetails = () => {
   const dispatch = useDispatch();
   const details = useSelector((state: RootState) => state.renderDetails);
   const currentProject = useAppSelector(selectActiveProject);
+  const { user } = useAppSelector(selectUser);
 
   const RegionSelector = ({ value }: any) => {
     return (
@@ -115,6 +119,7 @@ export const RenderDetails = () => {
         raid: "",
         billing: "",
         projectId: currentProject?._id,
+        clientId: user?.dcimUserId,
       };
 
       const config = {
