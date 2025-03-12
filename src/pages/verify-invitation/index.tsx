@@ -1,7 +1,7 @@
-import axios from "axios";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { environment } from "../../config/environment";
+import axios from "../../lib/apiConfig";
 
 const VerifyInvite = () => {
   const [loading, setLoading] = useState(true);

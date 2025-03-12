@@ -2,6 +2,7 @@
 import { useEffect } from "react";
 import { Outlet } from "react-router-dom";
 import webfont from "webfontloader";
+import ImpersonationBanner from "./components/shared/impersonation-banner";
 import { useAppDispatch } from "./hooks/redux";
 import { useMeQuery } from "./redux/api/user-api";
 import { loadUser } from "./redux/reducer/userSlice";
@@ -32,5 +33,10 @@ export default function App() {
     }
   }, [data, dispatch]);
 
-  return <Outlet />;
+  return (
+    <>
+      <ImpersonationBanner />
+      <Outlet />
+    </>
+  );
 }

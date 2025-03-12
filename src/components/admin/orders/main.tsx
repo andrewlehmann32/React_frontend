@@ -1,24 +1,15 @@
-import axios from "axios";
 import { useEffect, useState } from "react";
+import { environment } from "../../../config/environment";
 import { formatTimestamp } from "../../../lib/helpers/utils";
 import { Table } from "../../shared/table";
-
-const environment = import.meta.env;
-const token = localStorage.getItem("token");
+import axios from "./../../../lib/apiConfig";
 
 export const Main = () => {
   const [orders, setOrders] = useState<any[]>([]);
 
   const fetchOrders = async () => {
     try {
-      const response = await axios.get(
-        `${environment.VITE_API_URL}/ordering/`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await axios.get(`${environment.VITE_API_URL}/ordering/`);
       setOrders(response?.data?.data);
     } catch (error) {
       console.error("Error fetching projects:", error);

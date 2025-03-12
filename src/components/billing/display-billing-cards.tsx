@@ -1,13 +1,11 @@
-import axios from "axios";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { environment } from "../../config/environment";
 import { useAppDispatch, useAppSelector } from "../../hooks/redux";
+import axios from "../../lib/apiConfig";
 import { setActiveProject } from "../../redux/reducer/userSlice";
 import { selectActiveProject } from "../../redux/selectors/userSelector";
 import { CreditsModal } from "../shared/modals/credits-modal";
-
-const token = localStorage.getItem("token");
 
 const RenderBillingCards = ({ cardItems }: { cardItems: any[] }) => {
   return (
@@ -68,12 +66,7 @@ export const DisplayBillCards = () => {
       const credit = (currentProject.credit ?? 0) + Number(newCredits);
       const response = await axios.put(
         `${environment.VITE_API_URL}/projects/update-project/${currentProject._id}`,
-        { credit },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
+        { credit }
       );
       if (response.status === 200 && response.data?.project) {
         toast.success("Credits added successfully");

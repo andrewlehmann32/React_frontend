@@ -1,4 +1,3 @@
-import axios from "axios";
 import { Check, ChevronDownIcon } from "lucide-react";
 import React from "react";
 import toast from "react-hot-toast";
@@ -7,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { environment } from "../../config/environment";
 import { OSOrdering } from "../../constants/constants";
 import { useAppSelector } from "../../hooks/redux";
+import axios from "../../lib/apiConfig";
 import { svgDrawer } from "../../lib/helpers/svgDrawer";
 import {
   RegionItem,
@@ -109,8 +109,6 @@ export const RenderDetails = () => {
 
   const handleDeployment = async () => {
     try {
-      const token = localStorage.getItem("token");
-
       const payload = {
         location: details.region?.id || 1,
         ip: "192.168.346.235",
@@ -127,7 +125,6 @@ export const RenderDetails = () => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
         },
         data: payload,
       };

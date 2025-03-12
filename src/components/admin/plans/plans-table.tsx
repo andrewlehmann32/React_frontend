@@ -1,12 +1,11 @@
-import axios from "axios";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { FaEye, FaPen, FaRegTrashCan } from "react-icons/fa6";
 import { environment } from "../../../config/environment";
-import { initialPlansData } from "../../../constants/constants";
 import { PlanData } from "../../../types/generics.types";
 import { DotsDropdown } from "../../shared/menus/simple-dropdown";
 import { Table } from "../../shared/table";
+import axios from "./../../../lib/apiConfig";
 
 interface PlansTableProps {
   setIsModalOpen: (value: boolean) => void;
@@ -15,23 +14,17 @@ interface PlansTableProps {
   isModalOpen: boolean;
 }
 
-const token = localStorage.getItem("token");
-
 export const PlansTable = ({
   setIsModalOpen,
   setModalType,
   setPlan,
   isModalOpen,
 }: PlansTableProps) => {
-  const [plans, setPlans] = useState(initialPlansData);
+  const [plans, setPlans] = useState<PlanData[]>([]);
 
   const fetchPlans = async () => {
     try {
-      const response = await axios.get(`${environment.VITE_API_URL}/plans`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await axios.get(`${environment.VITE_API_URL}/plans`);
       setPlans(response?.data);
     } catch (error) {
       console.error("Error fetching projects:", error);
@@ -45,12 +38,7 @@ export const PlansTable = ({
   const handleDelete = async (planId: string) => {
     try {
       const response = await axios.delete(
-        `${environment.VITE_API_URL}/plans/${planId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
+        `${environment.VITE_API_URL}/plans/${planId}`
       );
       toast.success(response.data.message);
       // Update state after successful deletion
@@ -64,12 +52,7 @@ export const PlansTable = ({
     try {
       const response = await axios.put(
         `${environment.VITE_API_URL}/plans/${planId}`,
-        { enabled: !currentStatus },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
+        { enabled: !currentStatus }
       );
       toast.success(response.data.message);
 

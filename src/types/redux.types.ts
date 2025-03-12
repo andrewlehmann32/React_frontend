@@ -9,4 +9,6 @@ export type TUserState = {
   isError?: boolean;
   isSuccess?: boolean;
   message?: string;
+  impersonationToken: string | null;
+  impersonatedUser: User | null;
 };

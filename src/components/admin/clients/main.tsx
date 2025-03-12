@@ -1,23 +1,47 @@
-import axios from "axios";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { environment } from "../../../config/environment";
+import { useAppDispatch } from "../../../hooks/redux";
 import { formatTimestamp } from "../../../lib/helpers/utils";
+import { setImpersonationToken } from "../../../redux/reducer/userSlice";
 import { User } from "../../../types/generics.types";
 import { Table } from "../../shared/table";
-
-const token = localStorage.getItem("token");
+import { Button } from "../../ui/button";
+import axios from "./../../../lib/apiConfig";
 
 export const Main = () => {
   const [clients, setClients] = useState<User[]>([]);
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+
+  const handleImpersonation = async (userId: string) => {
+    try {
+      const response = await axios.post(
+        `${environment.VITE_API_URL}/admin/impersonate/${userId}`
+      );
+
+      if (response.data.impersonationToken) {
+        const impersonationToken = response.data.impersonationToken;
+        dispatch(setImpersonationToken(impersonationToken));
+        localStorage.setItem("impersonationToken", impersonationToken);
+        navigate("/home");
+      }
+
+      window.location.reload();
+    } catch (error) {
+      console.error("Error starting impersonation:", error);
+    }
+  };
 
   const fetchClients = async () => {
     try {
-      const response = await axios.get(`${environment.VITE_API_URL}/user/`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      setClients(response?.data?.users);
+      const response = await axios.get(`${environment.VITE_API_URL}/user/`);
+      if (response?.data?.users) {
+        const filteredClients = response?.data?.users.filter(
+          (user: User) => user.role === "user"
+        );
+        setClients(filteredClients);
+      }
     } catch (error) {
       console.error("Error fetching projects:", error);
     }
@@ -28,7 +52,14 @@ export const Main = () => {
   }, []);
 
   const tableData = {
-    headers: ["User", "dcim user id", "Email", "Projects", "Created At"],
+    headers: [
+      "User",
+      "dcim user id",
+      "Email",
+      "Projects",
+      "Created At",
+      "Actions",
+    ],
     body: clients.map((member) => ({
       user: (
         <div className="flex gap-3 items-center">
@@ -47,6 +78,16 @@ export const Main = () => {
         <p className="font-semibold">{member?.projects?.length || 0}</p>
       ),
       createdat: formatTimestamp(member?.createdAt),
+      actions: (
+        <div className="flex gap-3">
+          <Button
+            className="text-white text-xs bg-sky-700 p-2 hover:bg-sky-800"
+            onClick={() => handleImpersonation(member._id)}
+          >
+            Impersonate
+          </Button>
+        </div>
+      ),
     })),
   };
 

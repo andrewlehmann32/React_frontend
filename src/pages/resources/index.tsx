@@ -1,4 +1,3 @@
-import axios from "axios";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { PageLayout } from "../../components/layouts/pageLayout";
@@ -6,6 +5,7 @@ import { Main } from "../../components/resources/main";
 import { ServersList } from "../../components/resources/servers-list";
 import { environment } from "../../config/environment";
 import { useAppSelector } from "../../hooks/redux";
+import axios from "../../lib/apiConfig";
 import { selectActiveProject } from "../../redux/selectors/userSelector";
 import { Resource } from "../../types/generics.types";
 
@@ -19,7 +19,6 @@ const Resources = () => {
   const [selectedId, setSelectedId] = useState<number | null>(1);
   const [selectedDevice, setSelectedDevice] = useState<Device>();
   const currentProject = useAppSelector(selectActiveProject);
-  const token = localStorage.getItem("token");
 
   useEffect(() => {
     const controller = new AbortController();
@@ -32,7 +31,6 @@ const Resources = () => {
           {
             headers: {
               "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
             },
             signal,
           }

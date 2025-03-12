@@ -1,8 +1,8 @@
-import axios from "axios";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { environment } from "../../config/environment";
 import { useAppDispatch, useAppSelector } from "../../hooks/redux";
+import axios from "../../lib/apiConfig";
 import { setActiveProject } from "../../redux/reducer/userSlice";
 import {
   selectActiveProject,
@@ -13,7 +13,6 @@ import { Table } from "../shared/table";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
-const token = localStorage.getItem("token");
 
 const AddKey = ({
   currentProject,
@@ -34,7 +33,6 @@ const AddKey = ({
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
         },
       };
       const response = await axios(config);
@@ -54,7 +52,6 @@ const AddKey = ({
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
         },
         data: {
           name,
