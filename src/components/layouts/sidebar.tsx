@@ -18,6 +18,7 @@ import { useLogoutMutation } from "../../redux/api/user-api";
 import { logout, setActiveProject } from "../../redux/reducer/userSlice";
 import {
   selectActiveProject,
+  selectImpersonationToken,
   selectUser,
   selectUserProjects,
 } from "../../redux/selectors/userSelector";
@@ -183,8 +184,9 @@ const Sidebar = () => {
   const [activeItem, setActiveItem] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const { user } = useAppSelector(selectUser);
+  const impersonating = useAppSelector(selectImpersonationToken);
   const isAdmin = user?.role === "admin";
-  const sidebarMenu = isAdmin ? adminMenuItems : menuItems;
+  const sidebarMenu = !isAdmin || impersonating ? menuItems : adminMenuItems;
   const userProjects = useAppSelector(selectUserProjects);
   const activeProject = useAppSelector(selectActiveProject);
   const location = useLocation();
@@ -313,37 +315,38 @@ const Sidebar = () => {
                 ))}
               </nav>
             </div>
-            {!isAdmin && (
-              <div className="mt-4">
-                {!isCollapsed && (
-                  <h1 className="hidden text-xs text-gray-500 lg:block ml-1">
-                    Misc
-                  </h1>
-                )}
+            {!isAdmin ||
+              (impersonating && (
+                <div className="mt-4">
+                  {!isCollapsed && (
+                    <h1 className="hidden text-xs text-gray-500 lg:block ml-1">
+                      Misc
+                    </h1>
+                  )}
 
-                <nav className="flex flex-col mt-4 space-y-2">
-                  {miscItems.map((item, index) => (
-                    <Link
-                      to={item.url}
-                      className={`flex items-center gap-2 px-2 rounded-md min-h-8 h-full md:justify-center  ${
-                        isCollapsed ? "justify-center" : "lg:justify-start"
-                      } ${activeItem === item.identifier ? "bg-white" : ""}`}
-                      onClick={() => setIsMobileOpen(false)}
-                      key={index}
-                    >
-                      <item.icon
-                        className={`${isCollapsed ? "w-5 h-5" : "w-4 h-4"}`}
-                      />
-                      {!isCollapsed && (
-                        <span className="block md:hidden lg:block">
-                          {item.title}
-                        </span>
-                      )}
-                    </Link>
-                  ))}
-                </nav>
-              </div>
-            )}
+                  <nav className="flex flex-col mt-4 space-y-2">
+                    {miscItems.map((item, index) => (
+                      <Link
+                        to={item.url}
+                        className={`flex items-center gap-2 px-2 rounded-md min-h-8 h-full md:justify-center  ${
+                          isCollapsed ? "justify-center" : "lg:justify-start"
+                        } ${activeItem === item.identifier ? "bg-white" : ""}`}
+                        onClick={() => setIsMobileOpen(false)}
+                        key={index}
+                      >
+                        <item.icon
+                          className={`${isCollapsed ? "w-5 h-5" : "w-4 h-4"}`}
+                        />
+                        {!isCollapsed && (
+                          <span className="block md:hidden lg:block">
+                            {item.title}
+                          </span>
+                        )}
+                      </Link>
+                    ))}
+                  </nav>
+                </div>
+              ))}
           </div>
         </>
         {/* Sidebar Footer */}

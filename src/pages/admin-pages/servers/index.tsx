@@ -1,4 +1,3 @@
-import axios from "axios";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { Main } from "../../../components/admin/servers/main";
@@ -6,6 +5,7 @@ import { PageLayout } from "../../../components/layouts/pageLayout";
 import { ServersList } from "../../../components/resources/servers-list";
 import { environment } from "../../../config/environment";
 import { Resource } from "../../../types/generics.types";
+import axios from "./../../../lib/apiConfig";
 
 export interface Device {
   resource: Resource;
@@ -16,7 +16,6 @@ const AdminServers = () => {
   const [devices, setDevices] = useState<Device[]>([]);
   const [selectedId, setSelectedId] = useState<number | null>(1);
   const [selectedDevice, setSelectedDevice] = useState<Device>();
-  const token = localStorage.getItem("token");
 
   useEffect(() => {
     const controller = new AbortController();
@@ -28,7 +27,6 @@ const AdminServers = () => {
           {
             headers: {
               "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
             },
             signal,
           }

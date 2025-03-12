@@ -1,14 +1,13 @@
-import axios from "axios";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { environment } from "../../config/environment";
 import { useAppDispatch, useAppSelector } from "../../hooks/redux";
+import axios from "../../lib/apiConfig";
 import { setUserProjects } from "../../redux/reducer/userSlice";
 import { selectUser } from "../../redux/selectors/userSelector";
 import { Modal } from "../shared/popups/modal-box";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
-const token = localStorage.getItem("token");
 
 export interface AddTeamProps {
   isModalOpen: boolean;
@@ -33,9 +32,6 @@ export const AddTeam = ({ isModalOpen, setIsModalOpen }: AddTeamProps) => {
   const fetchAndDispatchProjects = async () => {
     try {
       const response = await axios.get(`${environment.VITE_API_URL}/projects`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
         params: {
           userId: user?._id,
         },
@@ -61,7 +57,6 @@ export const AddTeam = ({ isModalOpen, setIsModalOpen }: AddTeamProps) => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
         },
         data: {
           name: teamInfo.name,

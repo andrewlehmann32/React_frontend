@@ -31,7 +31,7 @@ export const RenderProjectsTable = ({
       ),
       credits: (
         <div className="flex items-center font-semibold">
-          <p className="mr-2">{project?.credit || "N/A"}</p>
+          <p className="mr-2">${project?.credit || 0}</p>
           <FiEdit
             className="cursor-pointer hover:text-blue-500"
             onClick={() => handleEditCredits(project._id)}

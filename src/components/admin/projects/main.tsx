@@ -1,12 +1,10 @@
-import axios from "axios";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { environment } from "../../../config/environment";
 import { PopulatedProjectsType } from "../../../types/generics.types";
 import { CreditsModal } from "../../shared/modals/credits-modal";
+import axios from "./../../../lib/apiConfig";
 import { RenderProjectsTable } from "./render-projects";
-
-const token = localStorage.getItem("token");
 
 export const Main = () => {
   const [projects, setProjects] = useState<PopulatedProjectsType[]>([]);
@@ -20,12 +18,7 @@ export const Main = () => {
     const fetchProjects = async () => {
       try {
         const response = await axios.get(
-          `${environment.VITE_API_URL}/projects/`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
+          `${environment.VITE_API_URL}/projects/`
         );
         setProjects(response.data?.projects);
       } catch (error) {
@@ -47,12 +40,7 @@ export const Main = () => {
     try {
       const response = await axios.put(
         `${environment.VITE_API_URL}/projects/update-project/${selectedProjectId}`,
-        { credit: credits },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
+        { credit: credits }
       );
       if (response.status === 200 && response.data?.project) {
         toast.success("Credits added successfully");

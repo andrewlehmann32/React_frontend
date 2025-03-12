@@ -1,6 +1,5 @@
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
-import axios from "axios";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import Swal from "sweetalert2";
@@ -15,6 +14,7 @@ import {
   selectUser,
 } from "../../redux/selectors/userSelector";
 import { ProjectsType } from "../../types/generics.types";
+import axios from "../../lib/apiConfig";
 import { AddPaymentMethod } from "./addPaymentMethod";
 import { PaymentMethods } from "./payment-methods";
 
@@ -36,9 +36,6 @@ export const DisplayPaymentMethods = () => {
       const response = await axios.get(
         `${environment.VITE_API_URL}/projects/`,
         {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
           params: {
             userId: user?._id,
           },
@@ -101,7 +98,6 @@ export const DisplayPaymentMethods = () => {
         {
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
           },
         }
       );
@@ -127,7 +123,6 @@ export const DisplayPaymentMethods = () => {
         {
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
           },
         }
       );

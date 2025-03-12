@@ -5,11 +5,11 @@ import {
   useElements,
   useStripe,
 } from "@stripe/react-stripe-js";
-import axios from "axios";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { environment } from "../../config/environment";
 import { useAppSelector } from "../../hooks/redux";
+import axios from "../../lib/apiConfig";
 import { selectActiveProject } from "../../redux/selectors/userSelector";
 import { Modal } from "../shared/popups/modal-box";
 import { Button } from "../ui/button";
@@ -107,7 +107,6 @@ const AddPaymentMethod = ({ reFetch }: { reFetch: () => void }) => {
           {
             headers: {
               "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
             },
           }
         );

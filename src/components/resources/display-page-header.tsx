@@ -1,4 +1,3 @@
-import axios from "axios";
 import { useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import { CiPlay1, CiStop1 } from "react-icons/ci";
@@ -7,6 +6,7 @@ import { FiDownload } from "react-icons/fi";
 import { IoIosArrowDown, IoMdRefresh } from "react-icons/io";
 import { environment } from "../../config/environment";
 import { OS, raid } from "../../constants/constants";
+import axios from "../../lib/apiConfig";
 import { RDropdownMenu } from "../shared/menus/dropdown-menu";
 import { Modal } from "../shared/popups/modal-box";
 import { Button } from "../ui/button";
@@ -173,7 +173,6 @@ const RenderDeleteModal = ({
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
         },
       };
 
@@ -228,7 +227,6 @@ const RenderServerActions = ({
   setIsModalOpen: (value: boolean) => void;
   setIsDeleteModalOpen: (value: boolean) => void;
 }) => {
-  const token = localStorage.getItem("token");
   const [isActive, setIsActive] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -252,7 +250,6 @@ const RenderServerActions = ({
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
         },
       };
 

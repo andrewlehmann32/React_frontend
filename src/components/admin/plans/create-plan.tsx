@@ -1,9 +1,9 @@
-import axios from "axios";
 import toast from "react-hot-toast";
 import { environment } from "../../../config/environment";
 import { initialPlan } from "../../../constants/constants";
 import { PlanData } from "../../../types/generics.types";
 import { Modal } from "../../shared/popups/modal-box";
+import axios from "./../../../lib/apiConfig";
 import { RenderForm } from "./modal-form";
 
 interface CreatePlanProps {
@@ -14,7 +14,6 @@ interface CreatePlanProps {
   setPlanData: (value: any) => any;
 }
 
-const token = localStorage.getItem("token");
 const availableRegions = [
   { name: "New York", keyword: "NY" },
   { name: "Los Angeles", keyword: "LA" },
@@ -86,12 +85,7 @@ export const PlanModal = ({
     try {
       const response = await axios.put(
         `${environment.VITE_API_URL}/plans/${planId}`,
-        { ...planData },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
+        { ...planData }
       );
       toast.success(response.data.message);
       setIsModalOpen(false);
@@ -108,7 +102,6 @@ export const PlanModal = ({
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
         },
         data: planData,
       };

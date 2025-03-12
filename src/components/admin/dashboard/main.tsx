@@ -1,7 +1,7 @@
-import axios from "axios";
 import React, { useEffect, useMemo, useState } from "react";
 import { environment } from "../../../config/environment";
 import { Chart } from "../../generics/chart";
+import axios from "./../../../lib/apiConfig";
 
 interface GridItem {
   title: string;
@@ -50,17 +50,9 @@ export const Main = () => {
   const [orderNumber, setOrderNumber] = useState<string | number>();
   const [clientNumber, setClientNumber] = useState<string | number>();
 
-  const token = localStorage.getItem("token");
   const fetchOrders = async () => {
     try {
-      const response = await axios.get(
-        `${environment.VITE_API_URL}/ordering/`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await axios.get(`${environment.VITE_API_URL}/ordering/`);
       setOrderNumber(response?.data?.data.length);
     } catch (error) {
       console.error("Error fetching projects:", error);
@@ -69,11 +61,7 @@ export const Main = () => {
 
   const fetchClients = async () => {
     try {
-      const response = await axios.get(`${environment.VITE_API_URL}/user/`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await axios.get(`${environment.VITE_API_URL}/user/`);
       setClientNumber(response?.data?.users.length);
     } catch (error) {
       console.error("Error fetching projects:", error);

@@ -1,15 +1,13 @@
-import axios from "axios";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { MdOutlineArrowOutward } from "react-icons/md";
 import { environment } from "../../config/environment";
 import { useAppSelector } from "../../hooks/redux";
+import axios from "../../lib/apiConfig";
 import { handleAxiosError } from "../../lib/helpers/utils";
 import { selectActiveProject } from "../../redux/selectors/userSelector";
 import { Modal } from "../shared/popups/modal-box";
 import { Input } from "../ui/input";
-
-const token = localStorage.getItem("token");
 
 type InviteMembersProps = {
   isActive: boolean;
@@ -31,7 +29,6 @@ export const InviteMembers = ({
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
         },
         data: {
           email,

@@ -1,8 +1,8 @@
 // Imports:
-import axios from "axios";
 import { clsx, type ClassValue } from "clsx";
 import toast from "react-hot-toast";
 import { twMerge } from "tailwind-merge";
+import axios from "../../lib/apiConfig";
 
 export const mergeClasses = (...inputs: ClassValue[]) => {
   return twMerge(clsx(inputs));

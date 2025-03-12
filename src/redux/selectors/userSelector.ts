@@ -5,3 +5,7 @@ export const selectUserProjects = (state: RootState) =>
   state.userSlice.user?.projects;
 export const selectActiveProject = (state: RootState) =>
   state.userSlice.activeProject;
+export const selectImpersonationToken = (state: RootState) =>
+  state.userSlice.impersonationToken;
+export const selectImpersonatedUser = (state: RootState) =>
+  state.userSlice.impersonatedUser

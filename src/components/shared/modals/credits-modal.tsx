@@ -19,7 +19,7 @@ export const CreditsModal = ({
 }: CreditsModalProps) => {
   return (
     <Modal
-      title="Credits"
+      title="Add/Remove Credits"
       isOpen={isOpen}
       setIsOpen={setIsOpen}
       onSave={handleSave}
@@ -44,8 +44,8 @@ export const CreditsModal = ({
               onChange={(e) => setCredits(e.target.value)}
             />
             <label className="text-xs text-gray-500">
-              Enter new credits to be replaced with the current credits. In
-              order to make it zero simply enter 0.
+              Enter the amount of credit you wish to add to the current credit.
+              To remove credit, enter amount with negative value.
             </label>
           </div>
         </div>

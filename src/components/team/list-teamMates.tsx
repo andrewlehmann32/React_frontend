@@ -1,16 +1,14 @@
-import axios from "axios";
 import toast from "react-hot-toast";
 import { FaRegTrashCan } from "react-icons/fa6";
 import { environment } from "../../config/environment";
 import { useAppDispatch } from "../../hooks/redux";
+import axios from "../../lib/apiConfig";
 import { formatTimestamp } from "../../lib/helpers/utils";
 import { setActiveProject } from "../../redux/reducer/userSlice";
 import { ProjectsType, Roles } from "../../types/generics.types";
 import { RDropdownMenu } from "../shared/menus/dropdown-menu";
 import { DotsDropdown } from "../shared/menus/simple-dropdown";
 import { Table } from "../shared/table";
-
-const token = localStorage.getItem("token");
 
 export const menuItems = [
   { label: Roles.ADMINISTRATOR },
@@ -39,7 +37,6 @@ export const ListTeamMembers = ({
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
         },
         data: {
           email,
@@ -139,7 +136,6 @@ export const ListTeamMembers = ({
         {
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
           },
         }
       );
