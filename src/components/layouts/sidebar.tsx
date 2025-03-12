@@ -275,7 +275,7 @@ const Sidebar = () => {
       >
         {/* Sidebar Header */}
         <>
-          {!isAdmin && (
+          {(!isAdmin || impersonating) && (
             <SidebarHead
               userProjects={userProjects as ProjectsType[]}
               activeProject={activeProject as ProjectsType}
