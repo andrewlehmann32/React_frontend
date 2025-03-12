@@ -10,6 +10,7 @@ export const Main = () => {
   const [modalType, setModalType] = useState("");
 
   const handleCreatePlan = () => {
+    setPlan(initialPlan);
     setIsModalOpen(true);
     setModalType("Create");
   };

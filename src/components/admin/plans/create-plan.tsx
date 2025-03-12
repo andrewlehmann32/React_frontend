@@ -97,13 +97,14 @@ export const PlanModal = ({
   const handleSave = async () => {
     if (modalType === "Edit") return await saveEditedPlan(planData?._id);
     try {
+      const { _id, ...payload } = planData;
       const config = {
         url: `${environment.VITE_API_URL}/plans`,
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        data: planData,
+        data: payload,
       };
       const response = await axios(config);
       toast.success(response.data.message);
