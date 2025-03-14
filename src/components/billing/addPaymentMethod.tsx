@@ -45,13 +45,6 @@ const AddPaymentMethod = ({ reFetch }: { reFetch: () => void }) => {
     const { addressLine1, addressLine2, city, country, name, state, zipCode } =
       userData;
 
-    const token = localStorage.getItem("token");
-    if (!token) {
-      toast.error("User is not authenticated");
-      setIsLoading(false);
-      return;
-    }
-
     if (!stripe || !elements) {
       toast.error("Stripe or elements not loaded");
       setIsLoading(false);

@@ -1,9 +1,12 @@
 import { useNavigate } from "react-router-dom";
 import { environment } from "../../config/environment";
 import { useAppDispatch, useAppSelector } from "../../hooks/redux";
-import { clearImpersonationToken } from "../../redux/reducer/userSlice";
+import {
+  clearImpersonationToken,
+  loadUser,
+} from "../../redux/reducer/userSlice";
 import { selectImpersonationToken } from "../../redux/selectors/userSelector";
-import axios from "./../../lib/apiConfig";
+import axios, { setAuthHeader } from "./../../lib/apiConfig";
 
 const ImpersonationBanner = () => {
   const dispatch = useAppDispatch();
@@ -16,14 +19,13 @@ const ImpersonationBanner = () => {
         `${environment.VITE_API_URL}/admin/stop-impersonation`
       );
 
-      const { originalToken } = response.data;
+      const { originalToken, adminUser } = response.data.result;
+      setAuthHeader(originalToken);
+      dispatch(clearImpersonationToken());
+      dispatch(loadUser(adminUser));
 
       localStorage.setItem("token", originalToken);
-      localStorage.removeItem("impersonationToken");
-
-      dispatch(clearImpersonationToken());
-      navigate("/admin/home");
-      window.location.reload();
+      navigate("/admin/home", { replace: true });
     } catch (error) {
       console.error("Error stopping impersonation:", error);
     }

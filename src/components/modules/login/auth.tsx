@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { z } from "zod";
 import { useLoginContext, useRegisterContext } from "../../../contexts/auth";
 import { useAppDispatch } from "../../../hooks/redux";
+import { setAuthHeader } from "../../../lib/apiConfig";
 import firebase from "../../../lib/firebase";
 import {
   useGoogleMutation,
@@ -110,6 +111,7 @@ export const Auth = ({ type, setFormState }: AuthProps) => {
       if (data?.success) {
         toast.success("Signed in successfully");
         dispatch(loadUser(data?.user));
+        setAuthHeader(token);
         localStorage.setItem("token", token);
         localStorage.setItem("id", JSON.stringify(data?.user?._id));
         navigate(data?.user?.role === "admin" ? "/admin/home" : "/home", {
@@ -140,6 +142,7 @@ export const Auth = ({ type, setFormState }: AuthProps) => {
       if (data?.success) {
         toast.success("Logged in successfully");
         dispatch(loadUser(data?.user));
+        setAuthHeader(data?.token);
         localStorage.setItem("token", data?.token);
         localStorage.setItem("id", JSON.stringify(data?.user?._id));
         navigate(data?.user?.role === "admin" ? "/admin/home" : "/home", {

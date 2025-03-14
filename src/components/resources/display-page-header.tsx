@@ -152,7 +152,6 @@ const RenderDeleteModal = ({
 }: DeleteModalPropsType) => {
   const [inputValue, setInputValue] = useState("");
   const isDisabled = inputValue !== name;
-  const token = localStorage.getItem("token");
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(e.target.value);
@@ -160,11 +159,6 @@ const RenderDeleteModal = ({
 
   const handleDelete = async () => {
     try {
-      if (!token) {
-        toast.error("Authorization token is missing");
-        return;
-      }
-
       const apiUrl = `${environment.VITE_API_URL}/ordering/${id}`;
       const successMessage = "Server Deleted successfully";
 

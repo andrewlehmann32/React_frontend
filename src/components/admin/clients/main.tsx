@@ -3,11 +3,15 @@ import { useNavigate } from "react-router-dom";
 import { environment } from "../../../config/environment";
 import { useAppDispatch } from "../../../hooks/redux";
 import { formatTimestamp } from "../../../lib/helpers/utils";
-import { setImpersonationToken } from "../../../redux/reducer/userSlice";
+import {
+  loadUser,
+  setImpersonatedUser,
+  setImpersonationToken,
+} from "../../../redux/reducer/userSlice";
 import { User } from "../../../types/generics.types";
 import { Table } from "../../shared/table";
 import { Button } from "../../ui/button";
-import axios from "./../../../lib/apiConfig";
+import axios, { setAuthHeader } from "./../../../lib/apiConfig";
 
 export const Main = () => {
   const [clients, setClients] = useState<User[]>([]);
@@ -21,13 +25,15 @@ export const Main = () => {
       );
 
       if (response.data.impersonationToken) {
-        const impersonationToken = response.data.impersonationToken;
+        const { impersonationToken, impersonationId, user } = response.data;
+        localStorage.setItem("token", impersonationToken);
+        localStorage.setItem("id", impersonationId);
+        setAuthHeader(impersonationToken);
         dispatch(setImpersonationToken(impersonationToken));
-        localStorage.setItem("impersonationToken", impersonationToken);
+        dispatch(setImpersonatedUser(user));
+        dispatch(loadUser(user));
         navigate("/home");
       }
-
-      window.location.reload();
     } catch (error) {
       console.error("Error starting impersonation:", error);
     }

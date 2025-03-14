@@ -35,7 +35,6 @@ export const formatTimestamp = (timestamp: Date) => {
 export const handleAxiosError = (error: any) => {
   if (axios.isAxiosError(error)) {
     if (error.response) {
-      console.log(error)
       const status = error.response.status;
       const message = error.response.data?.error;
 

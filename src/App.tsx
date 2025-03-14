@@ -4,8 +4,10 @@ import { Outlet } from "react-router-dom";
 import webfont from "webfontloader";
 import ImpersonationBanner from "./components/shared/impersonation-banner";
 import { useAppDispatch } from "./hooks/redux";
+import { setAuthHeader } from "./lib/apiConfig";
 import { useMeQuery } from "./redux/api/user-api";
 import { loadUser } from "./redux/reducer/userSlice";
+import { persistor } from "./redux/store";
 
 export default function App() {
   const id = localStorage.getItem("id");
@@ -15,7 +17,7 @@ export default function App() {
   const { data } = useMeQuery(
     { id: id!, token: token! },
     {
-      skip: !token || !id,
+      skip: !id || !token,
       refetchOnMountOrArgChange: true,
     }
   );
@@ -28,9 +30,22 @@ export default function App() {
       },
     });
 
+    if (token) {
+      setAuthHeader(token);
+    }
+
     if (data?.success) {
       dispatch(loadUser(data.user));
     }
+
+    persistor
+      .flush()
+      .then(() => {
+        console.log("State is flushed and saved!");
+      })
+      .catch((err) => {
+        console.error("Error saving state:", err);
+      });
   }, [data, dispatch]);
 
   return (

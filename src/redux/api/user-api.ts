@@ -57,7 +57,7 @@ export const userAPI = createApi({
 
     Me: builder.query({
       query: ({ id, token }: { id: string; token: string }) => ({
-        url: `/user/me?id=${JSON.parse(id)}`,
+        url: `/user/me?id=${id}`,
         method: "GET",
         headers: {
           "Content-Type": "application/json",
