@@ -185,7 +185,8 @@ const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { user } = useAppSelector(selectUser);
   const impersonating = useAppSelector(selectImpersonationToken);
-  const isAdmin = localStorage.getItem("userRole");
+  const userRole = localStorage.getItem("userRole");
+  const isAdmin = userRole === "admin" ? true : false;
   const sidebarMenu = !isAdmin || impersonating ? menuItems : adminMenuItems;
   const userProjects = useAppSelector(selectUserProjects);
   const activeProject = useAppSelector(selectActiveProject);
