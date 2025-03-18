@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { useAppSelector } from "../../hooks/redux";
+import { formatTimestamp } from "../../lib/helpers/utils";
 import { Device } from "../../pages/resources";
 import { selectActiveProject } from "../../redux/selectors/userSelector";
 import { DisplayPageHeader } from "./display-page-header";
@@ -24,6 +25,15 @@ export const Main = ({
 }) => {
   const currentProject = useAppSelector(selectActiveProject);
 
+  useEffect(() => {
+    if (selectedId !== null) {
+      const device = devices.find(
+        (device) => device.resource.resourceId === selectedId
+      );
+      if (device) setSelectedDevice(device);
+    }
+  }, [selectedId, devices, setSelectedDevice]);
+
   if (!currentProject) return;
   if (!devices.length)
     return (
@@ -38,7 +48,12 @@ export const Main = ({
         value: selectedDevice?.resource.hostname || "Unknown",
       },
       { title: "Main IP", value: selectedDevice?.resource?.ip || "Unknown" },
-      { title: "Created", value: "May 10th, 2023" },
+      {
+        title: "Created",
+        value: formatTimestamp(
+          selectedDevice?.resource?.createdAt ?? new Date()
+        ),
+      },
       { title: "Location", value: "Chicago CHI" },
       {
         title: "Status",
@@ -69,15 +84,6 @@ export const Main = ({
     ],
   };
 
-  useEffect(() => {
-    if (selectedId !== null) {
-      const device = devices.find(
-        (device) => device.resource.resourceId === selectedId
-      );
-      if (device) setSelectedDevice(device);
-    }
-  }, [selectedId, devices]);
-
   if (!selectedDevice) {
     return (
       <div className="w-full h-screen  justify-center items-center text-center flex">
@@ -90,6 +96,7 @@ export const Main = ({
     <div className="py-2 gap-2 flex flex-col pr-0 lg:pr-6 w-full max-h-full h-[45rem] overflow-scroll">
       <DisplayPageHeader
         id={Number(selectedDevice?.resource?.resourceId)}
+        serverId={Number(selectedDevice?.resource?.serverId)}
         name={selectedDevice?.resource?.name}
         ip={selectedDevice?.resource?.ip}
       />

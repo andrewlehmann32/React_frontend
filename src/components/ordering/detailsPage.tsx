@@ -1,5 +1,5 @@
 import { Check, ChevronDownIcon } from "lucide-react";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -15,13 +15,16 @@ import {
   setOS,
   setRaid,
   setRegion,
+  setSshKey,
 } from "../../redux/reducer/resourcesReducer";
 import {
   selectActiveProject,
   selectUser,
 } from "../../redux/selectors/userSelector";
 import { RootState } from "../../redux/store";
+import { PlanData } from "../../types/generics.types";
 import { ToggleButton } from "../shared/buttons/buttons";
+import { RDropdownMenu } from "../shared/menus/dropdown-menu";
 import { Button } from "../ui/button";
 
 const countryFlags: RegionItem[] = [
@@ -68,12 +71,83 @@ const raid = [
   { title: "RAID 1", subTitle: "Distributes data evenly" },
 ];
 
-export const RenderDetails = () => {
+type SSHItem = {
+  label: string;
+  key: string;
+};
+
+export const RenderDetails = ({ plan }: { plan: PlanData }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const details = useSelector((state: RootState) => state.renderDetails);
   const currentProject = useAppSelector(selectActiveProject);
+  const [sshItems, setSshItems] = useState<SSHItem[]>([]);
+  const [locations, setLocations] = useState([]);
+  const [os, setOs] = useState<string[]>([]);
   const { user } = useAppSelector(selectUser);
+  const [sshEnabled, setSshEnabled] = useState(false);
+
+  useEffect(() => {
+    if (currentProject?.sshKeys) {
+      const sshData = currentProject.sshKeys.map((item) => ({
+        label: item.name,
+        key: item.key,
+      }));
+
+      setSshItems(sshData);
+    }
+  }, [currentProject]);
+
+  useEffect(() => {
+    const fetchLocations = async () => {
+      try {
+        const response = await axios.get(
+          `${environment.VITE_API_URL}/ordering/locations`,
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        setLocations(response?.data?.data?.result);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchLocations();
+  }, []);
+
+  useEffect(() => {
+    const fetchOS = async () => {
+      try {
+        const response = await axios.get(
+          `${environment.VITE_API_URL}/ordering/os`,
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        setOs(response?.data?.data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchOS();
+  }, []);
+
+  const isLocationAvailable = (title: string) => {
+    const [city] = title.split(", ");
+    return locations.some(
+      (location: { name: string }) => location.name === city
+    );
+  };
+
+  const isOsAvailable = (title: string) => {
+    const available = os.some((item) => item.split(" ")[0] === title);
+    return available;
+  };
 
   const RegionSelector = ({ value }: any) => {
     return (
@@ -111,13 +185,13 @@ export const RenderDetails = () => {
     try {
       const payload = {
         location: details.region?.id || 1,
-        ip: "192.168.346.235",
         hostname: details.hostname,
         template: details.os?.id,
         raid: "",
         billing: "",
         projectId: currentProject?._id,
         clientId: user?.dcimUserId,
+        ssh: details.ssh,
       };
 
       const config = {
@@ -141,22 +215,37 @@ export const RenderDetails = () => {
     }
   };
 
+  const handleInputChange = (label: string) => {
+    const filteredSsh = sshItems
+      .map((item) => ({ name: item.label, key: item.key }))
+      .find((item) => item.name === label);
+    if (filteredSsh) dispatch(setSshKey(filteredSsh));
+  };
+
   return (
     <div className="py-2 gap-2 flex flex-col pr-0 lg:pr-6 w-full mb-20 sm:mb-0">
-      <h1 className="text-lg font-medium py-1">c2.small.x86</h1>
+      <h1 className="text-lg font-medium py-1">{plan.name}</h1>
       <div className="flex flex-col sm:flex-row w-full gap-4 xl:gap-8">
         <div className="w-full sm:w-2/6 flex flex-col gap-4">
           <p className="text-xs text-gray-500">Select Operating System</p>
           <div className="grid grid-cols-2 gap-4">
             {OSOrdering.map((item, index) => (
               <div
-                className={`flex flex-col gap-4 border rounded-lg px-3 py-4  justify-center items-center text-xs cursor-pointer ${
+                className={`flex flex-col gap-4 border rounded-lg px-3 py-4  justify-center items-center text-xs ${
                   details.os?.title === item.title
                     ? "border-sky-600"
                     : "border-gray-200"
-                }`}
+                }
+                ${
+                  !isOsAvailable(item.title)
+                    ? "opacity-50 cursor-not-allowed"
+                    : "cursor-pointer"
+                }    
+                `}
                 key={index}
-                onClick={() => dispatch(setOS(item))}
+                onClick={() =>
+                  isOsAvailable(item.title) && dispatch(setOS(item))
+                }
               >
                 <div>{item.icon}</div>
                 <p>{item.title}</p>
@@ -185,14 +274,22 @@ export const RenderDetails = () => {
           <div className=" text-xs text-gray-500">
             <div className="pb-2 items-center flex justify-between ">
               <p>SSH Keys</p>
-              <ToggleButton />
+              <ToggleButton
+                isChecked={sshEnabled}
+                setIsChecked={setSshEnabled}
+              />
             </div>
-            <div className="border rounded-lg py-2 px-4 ">Choose SSH Keys</div>
+            <RDropdownMenu
+              items={sshItems}
+              placeholder="SSH"
+              onChange={(value) => handleInputChange(value)}
+              disabled={!sshEnabled}
+            />
           </div>
           <div className="flex bg-gray-100 rounded-lg p-3 justify-between items-center">
             <div className="pl-0 lg:pl-2 text-sm ">
               <p className="text-xs text-gray-500">My Total</p>
-              <p className="font-medium">$0.14/hr</p>
+              <p className="font-medium">${plan.price.hourly}/hr</p>
             </div>
             <Button className="lg:text-sm text-xs" onClick={handleDeployment}>
               Deploy Server
@@ -205,13 +302,19 @@ export const RenderDetails = () => {
             <div className="grid grid-cols-3 gap-3">
               {countryFlags.map((item, index) => (
                 <div
-                  className={`flex gap-2 sm:gap-4 rounded-lg pl-2 lg:pl-4 xl:pl-8 py-3 items-center text-xs cursor-pointer ${
+                  className={`flex gap-2 sm:gap-4 rounded-lg pl-2 lg:pl-4 xl:pl-8 py-3 items-center text-xs  ${
                     details.region?.title === item.title
                       ? " bg-gray-100"
                       : "border-gray-200 border"
+                  } ${
+                    !isLocationAvailable(item.title)
+                      ? "opacity-50 cursor-not-allowed"
+                      : "cursor-pointer"
                   }`}
                   key={index}
-                  onClick={() => dispatch(setRegion(item))}
+                  onClick={() =>
+                    isLocationAvailable(item.title) && dispatch(setRegion(item))
+                  }
                 >
                   <div>{item.icon}</div>
                   <p>{item.title}</p>

@@ -27,7 +27,6 @@ const RenderGrid: React.FC<RenderGridProps> = ({ columns }) => {
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="rounded-lg p-3 bg-gray-100">
-          <p>Specification</p>
           <Chart />
         </div>
         <div className="rounded-lg p-3 bg-gray-100">

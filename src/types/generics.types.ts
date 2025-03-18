@@ -72,6 +72,8 @@ export interface Resource {
   hostname: string;
   os: string;
   projectId: string;
+  serverId: number;
+  createdAt: Date;
 }
 
 export type ResourcesType = {
@@ -161,6 +163,6 @@ export type PlanData = {
 
 export type HeadersType = {
   Authorization: string;
-  'Content-Type'?: string;
-  'api-key'?: string;
+  "Content-Type"?: string;
+  "api-key"?: string;
 };

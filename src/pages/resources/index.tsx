@@ -36,6 +36,7 @@ const Resources = () => {
           }
         );
         setDevices(response.data?.data);
+        setSelectedId(response.data?.data[0]?.resource?.resourceId);
         setSelectedDevice(response.data.data[0]);
       } catch (error) {
         console.error(error);

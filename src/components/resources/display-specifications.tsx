@@ -124,7 +124,10 @@ export const DisplaySpecificaions = ({
                     <ToggleButton
                       showLabel={true}
                       disabled={true}
-                      isChecked={property.value === "running"}
+                      isChecked={
+                        property.value === "running" ||
+                        property.value === "accepted"
+                      }
                     />
                   </div>
                 )}
