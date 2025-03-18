@@ -44,9 +44,14 @@ export const Table = ({ headers, body }: TableData) => {
               </tr>
             ))
           ) : (
-            <td className="px-4 py-3 sm:px-6 text-gray-700 text-xs truncate">
-              No Data found
-            </td>
+            <tr className="bg-white border-b hover:bg-gray-50">
+              <td
+                className="px-4 py-3 sm:px-6 text-gray-600 text-xs truncate text-center font-medium"
+                colSpan={headers.length}
+              >
+                No Data found
+              </td>
+            </tr>
           )}
         </tbody>
       </table>

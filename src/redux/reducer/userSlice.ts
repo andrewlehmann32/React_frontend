@@ -48,6 +48,7 @@ export const userSlice = createSlice({
       state.isAuth = true;
       state.isLoading = false;
       state.isSuccess = true;
+      state.activeProject = action.payload.projects.length > 0 ? action.payload.projects[0] : null;
     },
     loadUserFailure: (state, action: PayloadAction<string>) => {
       state.isLoading = false;

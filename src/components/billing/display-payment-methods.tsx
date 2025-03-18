@@ -5,6 +5,7 @@ import toast from "react-hot-toast";
 import Swal from "sweetalert2";
 import { environment } from "../../config/environment";
 import { useAppDispatch, useAppSelector } from "../../hooks/redux";
+import axios from "../../lib/apiConfig";
 import {
   setActiveProject,
   setUserProjects,
@@ -14,7 +15,6 @@ import {
   selectUser,
 } from "../../redux/selectors/userSelector";
 import { ProjectsType } from "../../types/generics.types";
-import axios from "../../lib/apiConfig";
 import { AddPaymentMethod } from "./addPaymentMethod";
 import { PaymentMethods } from "./payment-methods";
 
@@ -25,7 +25,6 @@ export const DisplayPaymentMethods = () => {
   const activeProject = useAppSelector(selectActiveProject);
   const { user } = useAppSelector(selectUser);
   const dispatch = useAppDispatch();
-  const token = localStorage.getItem("token");
 
   useEffect(() => {
     setDefaultPaymentMethod(activeProject?.defaultPaymentMethod ?? "");
@@ -74,11 +73,6 @@ export const DisplayPaymentMethods = () => {
   };
 
   const handleDeletePaymentMethod = async (paymentMethodId: string) => {
-    if (!token) {
-      toast.error("User is not authenticated");
-      return;
-    }
-
     if (!activeProject?._id) {
       toast.error("Project not found");
       return;
