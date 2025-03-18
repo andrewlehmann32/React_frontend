@@ -54,10 +54,20 @@ export const renderDetailsSlice = createSlice({
     setHostname: (state, action: PayloadAction<string>) => {
       state.hostname = action.payload;
     },
+    setToInitial: () => {
+      return initialState;
+    },
   },
 });
 
-export const { setOS, setRegion, setRaid, setBilling, setHostname, setSshKey } =
-  renderDetailsSlice.actions;
+export const {
+  setOS,
+  setRegion,
+  setRaid,
+  setBilling,
+  setHostname,
+  setSshKey,
+  setToInitial,
+} = renderDetailsSlice.actions;
 
 export default renderDetailsSlice.reducer;
