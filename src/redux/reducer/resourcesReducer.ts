@@ -13,10 +13,12 @@ export type RegionItem = {
   id: number;
 };
 
+type SSHType = { name: string; key: string };
 interface RenderDetailsState {
   os: OSItem | null;
   region: RegionItem | null;
   raid: string | null;
+  ssh?: SSHType | null;
   billing: string | null;
   hostname: string;
 }
@@ -25,6 +27,7 @@ const initialState: RenderDetailsState = {
   os: null,
   region: null,
   raid: null,
+  ssh: null,
   billing: null,
   hostname: "",
 };
@@ -39,6 +42,9 @@ export const renderDetailsSlice = createSlice({
     setRegion: (state, action: PayloadAction<RegionItem>) => {
       state.region = action.payload;
     },
+    setSshKey: (state, action: PayloadAction<SSHType>) => {
+      state.ssh = action.payload;
+    },
     setRaid: (state, action: PayloadAction<string>) => {
       state.raid = action.payload;
     },
@@ -51,7 +57,7 @@ export const renderDetailsSlice = createSlice({
   },
 });
 
-export const { setOS, setRegion, setRaid, setBilling, setHostname } =
+export const { setOS, setRegion, setRaid, setBilling, setHostname, setSshKey } =
   renderDetailsSlice.actions;
 
 export default renderDetailsSlice.reducer;

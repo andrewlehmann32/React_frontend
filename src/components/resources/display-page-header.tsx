@@ -30,6 +30,7 @@ interface DisplayPageHeaderProps {
   name: string;
   ip: string;
   id: number;
+  serverId: number;
 }
 
 type ModalDataType = {
@@ -220,10 +221,12 @@ const RenderDeleteModal = ({
 
 const RenderServerActions = ({
   id,
+  serverId,
   setIsModalOpen,
   setIsDeleteModalOpen,
 }: {
   id: number;
+  serverId: number;
   setIsModalOpen: (value: boolean) => void;
   setIsDeleteModalOpen: (value: boolean) => void;
 }) => {
@@ -234,20 +237,26 @@ const RenderServerActions = ({
     try {
       let apiUrl;
       let successMessage;
+      let method = "POST";
+
       if (value === "Start") {
-        apiUrl = `${environment.VITE_API_URL}/ordering/${id}/boot`;
+        apiUrl = `${environment.VITE_API_URL}/ordering/${serverId}/boot`;
         successMessage = "Server started successfully";
       } else if (value === "Stop") {
-        apiUrl = `${environment.VITE_API_URL}/ordering/${id}/shutdown`;
+        apiUrl = `${environment.VITE_API_URL}/ordering/${serverId}/shutdown`;
         successMessage = "Server stopped successfully";
+      } else if (value === "Novnc") {
+        apiUrl = `${environment.VITE_API_URL}/ordering/${serverId}/novnc`;
+        successMessage = "NoVNC Successful";
+        method = "GET";
       } else {
-        apiUrl = `${environment.VITE_API_URL}/ordering/${id}/reboot`;
+        apiUrl = `${environment.VITE_API_URL}/ordering/${serverId}/reboot`;
         successMessage = "Server rebooted successfully";
       }
 
       const config = {
         url: apiUrl,
-        method: "POST",
+        method: method,
         headers: {
           "Content-Type": "application/json",
         },
@@ -260,7 +269,11 @@ const RenderServerActions = ({
       }
     } catch (error) {
       console.error(error);
-      toast.error("Something went wrong");
+      const errorMessage =
+        axios.isAxiosError(error) && error.response && value === "Novnc"
+          ? error.response.data.message
+          : "Something went wrong";
+      toast.error(errorMessage);
     }
   };
 
@@ -293,7 +306,7 @@ const RenderServerActions = ({
       label: "Novnc",
       value: "Novnc",
       icon: <FaTv size={14} />,
-      onClick: () => {},
+      onClick: () => handleApiCall("Novnc"),
     },
     {
       label: "Destroy Server",
@@ -360,7 +373,12 @@ const RenderServerActions = ({
   );
 };
 
-export const DisplayPageHeader = ({ name, ip, id }: DisplayPageHeaderProps) => {
+export const DisplayPageHeader = ({
+  name,
+  ip,
+  id,
+  serverId,
+}: DisplayPageHeaderProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
@@ -372,6 +390,7 @@ export const DisplayPageHeader = ({ name, ip, id }: DisplayPageHeaderProps) => {
       </div>
       <RenderServerActions
         id={id}
+        serverId={serverId}
         setIsModalOpen={setIsModalOpen}
         setIsDeleteModalOpen={setIsDeleteModalOpen}
       />
