@@ -214,12 +214,10 @@ const RenderDeleteModal = ({
 };
 
 const RenderServerActions = ({
-  id,
   serverId,
   setIsModalOpen,
   setIsDeleteModalOpen,
 }: {
-  id: number;
   serverId: number;
   setIsModalOpen: (value: boolean) => void;
   setIsDeleteModalOpen: (value: boolean) => void;
@@ -383,7 +381,6 @@ export const DisplayPageHeader = ({
         <p>{ip}</p>
       </div>
       <RenderServerActions
-        id={id}
         serverId={serverId}
         setIsModalOpen={setIsModalOpen}
         setIsDeleteModalOpen={setIsDeleteModalOpen}

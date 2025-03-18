@@ -73,6 +73,7 @@ export const Main = ({
     <div className="py-2 gap-2 flex flex-col pr-0 lg:pr-6 w-full max-h-full h-[45rem] overflow-scroll">
       <DisplayPageHeader
         id={Number(selectedDevice?.resource?.resourceId)}
+        serverId={Number(selectedDevice?.resource?.serverId)}
         name={selectedDevice?.resource?.name}
         ip={selectedDevice?.resource?.ip}
       />
