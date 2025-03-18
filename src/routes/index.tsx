@@ -1,6 +1,7 @@
 // Imports:
 import { createBrowserRouter } from "react-router-dom";
 import App from "../App";
+import NotFound from "../components/not-found";
 import Activity from "../pages/activity-log";
 import AdminClients from "../pages/admin-pages/clients";
 import AdminDashboard from "../pages/admin-pages/dashboard";
@@ -16,7 +17,8 @@ import Resources from "../pages/resources";
 import SSHkeys from "../pages/ssh-keys";
 import Team from "../pages/team";
 import VerifyInvite from "../pages/verify-invitation";
-import { ProtectedRoute } from "./protect-route";
+import OnlyAdmin from "./only-admin";
+import ProtectedRoute from "./protected-route";
 
 const router = createBrowserRouter([
   {
@@ -30,7 +32,7 @@ const router = createBrowserRouter([
       {
         path: "/home",
         element: (
-          <ProtectedRoute isAdmin={false}>
+          <ProtectedRoute>
             <Dashboard />
           </ProtectedRoute>
         ),
@@ -38,63 +40,67 @@ const router = createBrowserRouter([
       {
         path: "/admin/home",
         element: (
-          <ProtectedRoute isAdmin={true}>
+          <OnlyAdmin>
             <AdminDashboard />
-          </ProtectedRoute>
+          </OnlyAdmin>
         ),
       },
       {
         path: "/admin/projects",
         element: (
-          <ProtectedRoute isAdmin={true}>
+          <OnlyAdmin>
             <AdminProjects />
-          </ProtectedRoute>
+          </OnlyAdmin>
         ),
       },
       {
         path: "/admin/clients",
         element: (
-          <ProtectedRoute isAdmin={true}>
+          <OnlyAdmin>
             <AdminClients />
-          </ProtectedRoute>
+          </OnlyAdmin>
         ),
       },
       {
         path: "/admin/orders",
         element: (
-          <ProtectedRoute isAdmin={true}>
+          <OnlyAdmin>
             <AdminOrders />
-          </ProtectedRoute>
+          </OnlyAdmin>
         ),
       },
       {
         path: "/admin/plans",
         element: (
-          <ProtectedRoute isAdmin={true}>
+          <OnlyAdmin>
             <AdminPlans />
-          </ProtectedRoute>
+          </OnlyAdmin>
         ),
       },
       {
         path: "/admin/servers",
         element: (
-          <ProtectedRoute isAdmin={true}>
+          <OnlyAdmin>
             <AdminServers />
-          </ProtectedRoute>
+          </OnlyAdmin>
         ),
       },
       {
         path: "/team",
         element: (
-          <ProtectedRoute isAdmin={false}>
+          <ProtectedRoute>
             <Team />
           </ProtectedRoute>
         ),
       },
       {
+        path: "/not-found",
+        element: <NotFound />,
+      },
+      {
         path: "/ordering",
         element: (
-          <ProtectedRoute isAdmin={false}>
+          <ProtectedRoute>
             <Ordering />
           </ProtectedRoute>
         ),
@@ -102,7 +108,7 @@ const router = createBrowserRouter([
       {
         path: "/billing",
         element: (
-          <ProtectedRoute isAdmin={false}>
+          <ProtectedRoute>
             <Billing />
           </ProtectedRoute>
         ),
@@ -110,7 +116,7 @@ const router = createBrowserRouter([
       {
         path: "/activity",
         element: (
-          <ProtectedRoute isAdmin={false}>
+          <ProtectedRoute>
             <Activity />
           </ProtectedRoute>
         ),
@@ -122,7 +128,7 @@ const router = createBrowserRouter([
       {
         path: "/sshkeys",
         element: (
-          <ProtectedRoute isAdmin={false}>
+          <ProtectedRoute>
             <SSHkeys />
           </ProtectedRoute>
         ),
@@ -130,7 +136,7 @@ const router = createBrowserRouter([
       {
         path: "/resources",
         element: (
-          <ProtectedRoute isAdmin={false}>
+          <ProtectedRoute>
             <Resources />
           </ProtectedRoute>
         ),

@@ -20,12 +20,12 @@ const ImpersonationBanner = () => {
       );
 
       const { originalToken, adminUser } = response.data.result;
+      dispatch(loadUser(adminUser));
       setAuthHeader(originalToken);
       dispatch(clearImpersonationToken());
-      dispatch(loadUser(adminUser));
-
       localStorage.setItem("token", originalToken);
-      navigate("/admin/home", { replace: true });
+      localStorage.setItem("userRole", adminUser?.role);
+      navigate("/admin/clients", { replace: true });
     } catch (error) {
       console.error("Error stopping impersonation:", error);
     }

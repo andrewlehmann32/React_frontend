@@ -113,6 +113,7 @@ export const Auth = ({ type, setFormState }: AuthProps) => {
         dispatch(loadUser(data?.user));
         setAuthHeader(token);
         localStorage.setItem("token", token);
+        localStorage.setItem("userRole", data?.user?.role);
         localStorage.setItem("id", JSON.stringify(data?.user?._id));
         navigate(data?.user?.role === "admin" ? "/admin/home" : "/home", {
           replace: true,
@@ -144,6 +145,7 @@ export const Auth = ({ type, setFormState }: AuthProps) => {
         dispatch(loadUser(data?.user));
         setAuthHeader(data?.token);
         localStorage.setItem("token", data?.token);
+        localStorage.setItem("userRole", data?.user?.role);
         localStorage.setItem("id", JSON.stringify(data?.user?._id));
         navigate(data?.user?.role === "admin" ? "/admin/home" : "/home", {
           replace: true,

@@ -27,12 +27,13 @@ export const Main = () => {
       if (response.data.impersonationToken) {
         const { impersonationToken, impersonationId, user } = response.data;
         localStorage.setItem("token", impersonationToken);
+        localStorage.setItem("userRole", user.role);
         localStorage.setItem("id", impersonationId);
         setAuthHeader(impersonationToken);
         dispatch(setImpersonationToken(impersonationToken));
         dispatch(setImpersonatedUser(user));
         dispatch(loadUser(user));
-        navigate("/home");
+        setTimeout(() => navigate("/home"), 200);
       }
     } catch (error) {
       console.error("Error starting impersonation:", error);
