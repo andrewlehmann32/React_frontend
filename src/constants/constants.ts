@@ -1,3 +1,4 @@
+import { RegionItem } from "./../redux/reducer/resourcesReducer";
 // Imports:
 import { Home } from "lucide-react";
 import { ComponentType } from "react";
@@ -135,17 +136,17 @@ export enum DROPDOWN_DIRECTION {
 }
 
 export enum HTTP_METHODS {
-  GET = 'GET',
-  POST = 'POST',
-  PATCH = 'PATCH',
-  DELETE = 'DELETE',
+  GET = "GET",
+  POST = "POST",
+  PATCH = "PATCH",
+  DELETE = "DELETE",
 }
 
 export enum NOTIFY_TYPE {
-  Success = 'success',
-  Error = 'error',
-  Info = 'info',
-  Warning = 'warning',
+  Success = "success",
+  Error = "error",
+  Info = "info",
+  Warning = "warning",
 }
 
 export enum InvoiceStatus {
@@ -226,11 +227,12 @@ export const OS = [
   },
 ];
 
-type OSItem = {
+export type OSItem = {
   id?: number;
   icon: React.ReactNode;
   title: string;
   version: string;
+  versions: [];
 };
 
 export const OSOrdering: OSItem[] = [
@@ -239,41 +241,47 @@ export const OSOrdering: OSItem[] = [
     icon: svgDrawer.centOS,
     title: "CentOS",
     version: "20.04 LTS",
+    versions: [],
   },
   {
     id: 36,
     icon: svgDrawer.rocky,
     title: "Rocky",
     version: "20.04 LTS",
+    versions: [],
   },
   {
     id: 47,
     icon: svgDrawer.ubuntu,
     title: "Ubuntu",
     version: "20.04 LTS",
+    versions: [],
   },
   {
     id: 3,
     icon: svgDrawer.debian,
     title: "Debian",
     version: "20.04 LTS",
+    versions: [],
   },
   {
     id: 33,
     icon: svgDrawer.redHat,
     title: "Red Hat",
     version: "20.04 LTS",
+    versions: [],
   },
   {
     id: 33,
     icon: svgDrawer.windows,
     title: "Windows",
     version: "20.04 LTS",
+    versions: [],
   },
 ];
 
 export const initialPlan: PlanData = {
-  _id: '',
+  _id: "",
   name: "",
   cpu: {
     name: "",
@@ -302,7 +310,7 @@ export const initialPlan: PlanData = {
 
 export const initialPlansData: PlanData[] = [
   {
-    _id: 'abc',
+    _id: "abc",
     name: "c2.small.x86",
     cpu: {
       name: "E-2173G",
@@ -334,7 +342,7 @@ export const initialPlansData: PlanData[] = [
     ],
   },
   {
-    _id: 'abcd',
+    _id: "abcd",
     name: "c2.medium.x86",
     cpu: {
       name: "E-2288G",
@@ -361,7 +369,7 @@ export const initialPlansData: PlanData[] = [
     ],
   },
   {
-    _id: 'abcde',
+    _id: "abcde",
     name: "c2.large.x86",
     cpu: {
       name: "E-2378G",
@@ -386,5 +394,38 @@ export const initialPlansData: PlanData[] = [
         keyword: "NY",
       },
     ],
+  },
+];
+
+export const countryFlags: RegionItem[] = [
+  {
+    icon: svgDrawer.usaFlag,
+    title: "Ashburn, VA",
+    id: 2,
+  },
+  {
+    icon: svgDrawer.usaFlag,
+    title: "New York, NY",
+    id: 1,
+  },
+  {
+    icon: svgDrawer.usaFlag,
+    title: "Los Angeles, CA",
+    id: 3,
+  },
+  {
+    icon: svgDrawer.hongKongFlag,
+    title: "Hong Kong",
+    id: 4,
+  },
+  {
+    icon: svgDrawer.germanyFlag,
+    title: "Germany",
+    id: 5,
+  },
+  {
+    icon: svgDrawer.ukFlag,
+    title: "United Kingdom",
+    id: 6,
   },
 ];

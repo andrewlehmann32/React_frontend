@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { BsThreeDots } from "react-icons/bs";
 import { DROPDOWN_DIRECTION } from "../../../constants/constants";
 
@@ -17,6 +17,7 @@ export const DotsDropdown = ({
 }: DotsDropdownProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [dropdownStyle, setDropdownStyle] = useState({ top: 0, left: 0 });
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   const toggleDropdown = (event: React.MouseEvent) => {
     event.stopPropagation();
@@ -44,15 +45,27 @@ export const DotsDropdown = ({
       }
     };
 
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setIsOpen(false);
+      }
+    };
+
     document.addEventListener(
       "closeAllDropdowns",
       handleClose as EventListener
     );
+    document.addEventListener("mousedown", handleClickOutside);
+
     return () => {
       document.removeEventListener(
         "closeAllDropdowns",
         handleClose as EventListener
       );
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [id]);
 
@@ -63,7 +76,7 @@ export const DotsDropdown = ({
   }, [isSidebarCollapsed]);
 
   return (
-    <div className="relative flex justify-center">
+    <div className="relative flex justify-center" ref={dropdownRef}>
       {!isSidebarCollapsed && (
         <BsThreeDots
           onClick={toggleDropdown}

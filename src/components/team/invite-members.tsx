@@ -18,10 +18,10 @@ export const InviteMembers = ({
   isActive,
   setIsActive,
 }: InviteMembersProps) => {
-  if (!isActive) return null;
   const [searchValue, setSearchValue] = useState("");
   const activeProject = useAppSelector(selectActiveProject);
 
+  if (!isActive) return null;
   const sendInvite = async (email: string) => {
     try {
       const config = {

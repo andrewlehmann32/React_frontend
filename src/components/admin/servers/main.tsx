@@ -26,7 +26,10 @@ export const Main = ({
       { title: "Main IP", value: selectedDevice?.resource?.ip || "Unknown" },
       { title: "Created", value: "May 10th, 2023" },
       { title: "Location", value: "Chicago CHI" },
-      { title: "Status", value: selectedDevice?.resource?.status || "Unknown" },
+      {
+        title: "Status",
+        value: selectedDevice?.resource?.devicePowerStatus || "Unknown",
+      },
       { title: "OS", value: selectedDevice?.resource?.os || "Unknown" },
       { title: "Tags", value: "Add tags..." },
     ],

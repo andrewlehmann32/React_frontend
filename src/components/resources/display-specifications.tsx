@@ -90,9 +90,9 @@ export const DisplaySpecificaions = ({
                 {property.title === "Location" && (
                   <div className="flex items-center gap-2">
                     <div className="w6 h-6">
-                      {React.isValidElement(svgDrawer.usaFlag)
+                      {property.icon && React.isValidElement(property.icon)
                         ? React.cloneElement(
-                            svgDrawer.usaFlag as React.ReactElement,
+                            property.icon as React.ReactElement,
                             {
                               width: "100%",
                               height: "100%",

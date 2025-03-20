@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { countryFlags } from "../../constants/constants";
 import { useAppSelector } from "../../hooks/redux";
 import { formatTimestamp } from "../../lib/helpers/utils";
 import { Device } from "../../pages/resources";
@@ -7,7 +8,7 @@ import { DisplayPageHeader } from "./display-page-header";
 import { DisplayChart, DisplaySpecificaions } from "./display-specifications";
 
 export interface ResourcDataType {
-  properties: { title: string; value: string }[];
+  properties: { title: string; value: string; icon?: React.ReactNode }[];
   hardware: { title: string; value: string }[];
   credentials: { title: string; value: string }[];
 }
@@ -41,6 +42,11 @@ export const Main = ({
         Nothing to show here
       </p>
     );
+
+  const location = countryFlags.find(
+    (flag) => flag.id === selectedDevice?.resource?.location?.id
+  );
+
   const dynamicData = {
     properties: [
       {
@@ -54,19 +60,38 @@ export const Main = ({
           selectedDevice?.resource?.createdAt ?? new Date()
         ),
       },
-      { title: "Location", value: "Chicago CHI" },
+      {
+        title: "Location",
+        value: location?.title || "Unknown",
+        icon: location?.icon,
+      },
       {
         title: "Status",
-        value: selectedDevice?.resource?.status || "Unknown",
+        value: selectedDevice?.resource?.devicePowerStatus || "Unknown",
       },
       { title: "OS", value: selectedDevice?.resource?.os || "Unknown" },
       { title: "Tags", value: "Add tags..." },
     ],
     hardware: [
-      { title: "CPU", value: "Xeon E-2286G CPU ..." },
-      { title: "RAM", value: "32 GB" },
-      { title: "Disk", value: "500 GB NVMe" },
-      { title: "NIC", value: "2 X 1 Gbit/s" },
+      { title: "CPU", value: selectedDevice?.planId?.cpu?.name || "Unknown" },
+      {
+        title: "RAM",
+        value: selectedDevice?.planId?.ram
+          ? `${selectedDevice?.planId?.ram} GB`
+          : "Unknown",
+      },
+      {
+        title: "Disk",
+        value: selectedDevice?.planId?.storage
+          ? `${selectedDevice?.planId?.storage} GB`
+          : "Unknown",
+      },
+      {
+        title: "NIC",
+        value: selectedDevice?.planId?.network?.speed
+          ? `${selectedDevice?.planId?.network?.speed} Gbit/s`
+          : "Unknown",
+      },
     ],
     credentials: [
       {

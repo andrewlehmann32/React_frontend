@@ -14,7 +14,7 @@ export type RegionItem = {
 };
 
 type SSHType = { name: string; key: string };
-interface RenderDetailsState {
+export interface RenderDetailsState {
   os: OSItem | null;
   region: RegionItem | null;
   raid: string | null;

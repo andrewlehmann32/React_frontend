@@ -124,7 +124,8 @@ const ListKeys = ({ sshKeys }: any) => {
     body: sshKeys?.length
       ? sshKeys.map((key: any) => ({
           name: key.name,
-          sshkey: key.key,
+          sshkey:
+            key.key.length > 30 ? `${key.key.substring(0, 30)}...` : key.key,
           created: new Date(key.createdAt).toLocaleDateString(),
           id: key._id,
         }))

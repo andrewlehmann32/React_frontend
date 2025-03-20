@@ -4,11 +4,12 @@ import { Main } from "../../../components/admin/servers/main";
 import { PageLayout } from "../../../components/layouts/pageLayout";
 import { ServersList } from "../../../components/resources/servers-list";
 import { environment } from "../../../config/environment";
-import { Resource } from "../../../types/generics.types";
+import { PlanData, Resource } from "../../../types/generics.types";
 import axios from "./../../../lib/apiConfig";
 
 export interface Device {
   resource: Resource;
+  planId: PlanData;
   projectId: string;
 }
 
@@ -31,6 +32,7 @@ const AdminServers = () => {
             signal,
           }
         );
+        setSelectedId(response.data?.data[0]?.resource?.resourceId);
         setDevices(response.data?.data);
         setSelectedDevice(response.data.data[0]);
       } catch (error) {

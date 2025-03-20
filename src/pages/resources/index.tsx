@@ -7,10 +7,11 @@ import { environment } from "../../config/environment";
 import { useAppSelector } from "../../hooks/redux";
 import axios from "../../lib/apiConfig";
 import { selectActiveProject } from "../../redux/selectors/userSelector";
-import { Resource } from "../../types/generics.types";
+import { PlanData, Resource } from "../../types/generics.types";
 
 export interface Device {
   resource: Resource;
+  planId: PlanData;
   projectId: string;
 }
 
@@ -19,6 +20,8 @@ const Resources = () => {
   const [selectedId, setSelectedId] = useState<number | null>(1);
   const [selectedDevice, setSelectedDevice] = useState<Device>();
   const currentProject = useAppSelector(selectActiveProject);
+
+  console.log("Devices", devices);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -58,6 +61,8 @@ const Resources = () => {
       id: Number(device?.resource?.resourceId),
       name: device?.resource?.name,
       ip: device?.resource?.ip,
+      core: device?.planId?.cpu?.cores,
+      ram: device?.planId?.ram,
     }));
     return filtered;
   };
