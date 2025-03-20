@@ -16,6 +16,7 @@ import {
   setRaid,
   setRegion,
   setSshKey,
+  setToInitial,
 } from "../../redux/reducer/resourcesReducer";
 import {
   selectActiveProject,
@@ -207,6 +208,7 @@ export const RenderDetails = ({ plan }: { plan: PlanData }) => {
 
       if (response.status === 200 || response.status === 201) {
         toast.success("Successfully Deployed!");
+        dispatch(setToInitial());
         navigate("/resources");
       }
     } catch (error: any) {
