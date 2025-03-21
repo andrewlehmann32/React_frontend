@@ -21,8 +21,6 @@ const Resources = () => {
   const [selectedDevice, setSelectedDevice] = useState<Device>();
   const currentProject = useAppSelector(selectActiveProject);
 
-  console.log("Devices", devices);
-
   useEffect(() => {
     const controller = new AbortController();
     const signal = controller.signal;

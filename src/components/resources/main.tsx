@@ -26,7 +26,6 @@ export const Main = ({
   setSelectedDevice: (device: Device) => void;
 }) => {
   const currentProject = useAppSelector(selectActiveProject);
-  console.log("selected device", selectedDevice);
 
   useEffect(() => {
     if (selectedId !== null) {
