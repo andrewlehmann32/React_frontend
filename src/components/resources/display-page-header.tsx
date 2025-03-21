@@ -34,6 +34,7 @@ interface DisplayPageHeaderProps {
   ip: string;
   id: number;
   serverId: number;
+  refetchDevices: () => void;
 }
 
 type ModalDataType = {
@@ -57,6 +58,7 @@ type DeleteModalPropsType = {
   name: string;
   setIsDeleteModalOpen: (value: boolean) => void;
   isDeleteModalOpen: boolean;
+  refetchDevices: () => void;
 };
 
 const RenderModal = ({
@@ -167,6 +169,7 @@ const RenderDeleteModal = ({
   name,
   setIsDeleteModalOpen,
   isDeleteModalOpen,
+  refetchDevices,
 }: DeleteModalPropsType) => {
   const [inputValue, setInputValue] = useState("");
   const isDisabled = inputValue !== name;
@@ -192,6 +195,7 @@ const RenderDeleteModal = ({
 
       if (response.status === 200) {
         toast.success(successMessage);
+        refetchDevices();
       }
       setIsDeleteModalOpen(false);
     } catch (error) {
@@ -392,6 +396,7 @@ export const DisplayPageHeader = ({
   ip,
   id,
   serverId,
+  refetchDevices,
 }: DisplayPageHeaderProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -418,6 +423,7 @@ export const DisplayPageHeader = ({
         name={name}
         isDeleteModalOpen={isDeleteModalOpen}
         setIsDeleteModalOpen={setIsDeleteModalOpen}
+        refetchDevices={refetchDevices}
       />
     </div>
   );
