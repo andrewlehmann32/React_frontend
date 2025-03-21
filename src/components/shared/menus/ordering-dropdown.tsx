@@ -41,8 +41,13 @@ export const OrderDropdownMenu = ({
     if (value) setActive(value);
   }, [value]);
 
+<<<<<<< Updated upstream
   const handleSelect = (selectedValue: OSItem) => {
     setActive(selectedValue.title);
+=======
+  const handleSelect = (selectedValue: any) => {
+    setActive(selectedValue.title || selectedValue.label);
+>>>>>>> Stashed changes
     onChange(selectedValue);
   };
 

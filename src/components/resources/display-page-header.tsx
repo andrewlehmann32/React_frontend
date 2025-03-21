@@ -11,6 +11,7 @@ import axios from "../../lib/apiConfig";
 import { selectActiveProject } from "../../redux/selectors/userSelector";
 import { SSHItem } from "../ordering/detailsPage";
 import { RDropdownMenu } from "../shared/menus/dropdown-menu";
+import { OrderDropdownMenu } from "../shared/menus/ordering-dropdown";
 import { Modal } from "../shared/popups/modal-box";
 import { Button } from "../ui/button";
 
@@ -48,8 +49,10 @@ const modalData: ModalDataType = {
 
 type ModalPropsType = {
   setIsModalOpen: (value: boolean) => void;
+  serverId: number;
   isModalOpen: boolean;
   modalData: ModalDataType;
+  refetchDevices: () => void;
 };
 
 type DeleteModalPropsType = {
@@ -63,9 +66,13 @@ const RenderModal = ({
   setIsModalOpen,
   isModalOpen,
   modalData,
+  refetchDevices,
+  serverId,
 }: ModalPropsType) => {
   const [raid, setRaid] = useState("");
   const [sshItems, setSshItems] = useState<SSHItem[]>([]);
+  const [os, setOs] = useState<{ label: string; id: number }[]>([]);
+  const [selectedOs, setSelectedOs] = useState<{ label: string; id: number }>();
   const [hostname, setHostname] = useState("");
   const [confirmationInput, setConfirmationInput] = useState("");
   const currentProject = useAppSelector(selectActiveProject);
@@ -83,12 +90,67 @@ const RenderModal = ({
 
   const isDisabled = confirmationInput !== hostname;
 
+  useEffect(() => {
+    const fetchOS = async () => {
+      try {
+        const response = await axios.get(
+          `${environment.VITE_API_URL}/ordering/os`,
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        const fetchedOS = response?.data?.data;
+
+        const formattedOS = fetchedOS.map(
+          (item: { name: string; id: number }) => ({
+            label: item.name,
+            id: item.id,
+          })
+        );
+        setOs(formattedOS);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchOS();
+  }, []);
+
+  const handleReInstall = async () => {
+    const payLoad = {
+      template: selectedOs?.id,
+    };
+
+    try {
+      const apiUrl = `${environment.VITE_API_URL}/ordering/${serverId}/reinstall`;
+
+      const config = {
+        url: apiUrl,
+        method: "POST",
+        data: payLoad,
+      };
+
+      const response = await axios(config);
+
+      if (response.status === 200) {
+        toast.success(response?.data?.message);
+        setIsModalOpen(false);
+        refetchDevices();
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Something went wrong");
+    }
+  };
+
   return (
     <Modal
       title="Reinstall Server"
       isOpen={isModalOpen}
       setIsOpen={setIsModalOpen}
-      onSave={() => {}}
+      onSave={handleReInstall}
       actionButtonText={
         <>
           <FiDownload size={14} />
@@ -103,7 +165,14 @@ const RenderModal = ({
           <p className="text-gray-500 text-sm font-medium mb-2">
             Operating System
           </p>
-          <RDropdownMenu items={modalData.OS} placeholder="OS" />
+          <OrderDropdownMenu
+            items={os}
+            placeholder="OS"
+            onChange={(item) =>
+              setSelectedOs({ label: item.label ?? "", id: item.id })
+            }
+            value={selectedOs?.label}
+          />
         </div>
 
         <div>
@@ -410,8 +479,10 @@ export const DisplayPageHeader = ({
       />
       <RenderModal
         isModalOpen={isModalOpen}
+        serverId={serverId}
         setIsModalOpen={setIsModalOpen}
         modalData={modalData}
+        refetchDevices={refetchDevices}
       />
       <RenderDeleteModal
         id={id}
