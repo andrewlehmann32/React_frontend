@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import { CiPlay1, CiStop1 } from "react-icons/ci";
 import { FaRegTrashAlt, FaTv } from "react-icons/fa";
@@ -6,7 +6,10 @@ import { FiDownload } from "react-icons/fi";
 import { IoIosArrowDown, IoMdRefresh } from "react-icons/io";
 import { environment } from "../../config/environment";
 import { OS, raid } from "../../constants/constants";
+import { useAppSelector } from "../../hooks/redux";
 import axios from "../../lib/apiConfig";
+import { selectActiveProject } from "../../redux/selectors/userSelector";
+import { SSHItem } from "../ordering/detailsPage";
 import { RDropdownMenu } from "../shared/menus/dropdown-menu";
 import { Modal } from "../shared/popups/modal-box";
 import { Button } from "../ui/button";
@@ -62,6 +65,24 @@ const RenderModal = ({
   modalData,
 }: ModalPropsType) => {
   const [raid, setRaid] = useState("");
+  const [sshItems, setSshItems] = useState<SSHItem[]>([]);
+  const [hostname, setHostname] = useState("");
+  const [confirmationInput, setConfirmationInput] = useState("");
+  const currentProject = useAppSelector(selectActiveProject);
+
+  useEffect(() => {
+    if (currentProject?.sshKeys) {
+      const sshData = currentProject.sshKeys.map((item) => ({
+        label: item.name,
+        key: item.key,
+      }));
+
+      setSshItems(sshData);
+    }
+  }, [currentProject]);
+
+  const isDisabled = confirmationInput !== hostname;
+
   return (
     <Modal
       title="Reinstall Server"
@@ -75,6 +96,7 @@ const RenderModal = ({
         </>
       }
       actionButtonStyles="w-full border"
+      disabled={isDisabled}
     >
       <div className="w-full flex flex-col gap-4 ">
         <div>
@@ -87,16 +109,7 @@ const RenderModal = ({
         <div>
           <p className="text-gray-500 text-sm font-medium mb-2">SSH Keys</p>
           <div className="flex items-center justify-between gap-2 w-full text-gray-500 ">
-            {/* <RDropdownMenu
-              items={modalData.items}
-              placeholder="Choose Keys"
-            /> */}
-            <div className="text-gray-500 text-sm w-1/2 text-center flex items-center justify-center gap-1 cursor-pointer active:scale-95">
-              <div className="bg-blue-500 rounded-full px-1.5 text-center text-white">
-                +
-              </div>
-              <p> Add New</p>
-            </div>
+            <RDropdownMenu items={sshItems} placeholder="SSH" />
           </div>
         </div>
 
@@ -106,6 +119,8 @@ const RenderModal = ({
             type="text"
             className="mt-1 w-full border rounded-md py-2 px-4 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             placeholder="ch01"
+            value={hostname}
+            onChange={(e) => setHostname(e.target.value)}
           />
         </div>
 
@@ -131,12 +146,14 @@ const RenderModal = ({
           </div>
           <div className="flex flex-col p-1 gap-1">
             <p className="text-xs text-gray-500 mt-1">
-              Please type: c2-small-x86-chi-1 to confirm
+              Please type: {hostname} to confirm
             </p>
             <input
               type="text"
               className="mt-1 w-full border rounded-md py-2 px-4 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               placeholder="Type here"
+              value={confirmationInput}
+              onChange={(e) => setConfirmationInput(e.target.value)}
             />
           </div>
         </div>
@@ -215,10 +232,12 @@ const RenderDeleteModal = ({
 
 const RenderServerActions = ({
   serverId,
+  resourceId,
   setIsModalOpen,
   setIsDeleteModalOpen,
 }: {
   serverId: number;
+  resourceId: number;
   setIsModalOpen: (value: boolean) => void;
   setIsDeleteModalOpen: (value: boolean) => void;
 }) => {
@@ -251,6 +270,9 @@ const RenderServerActions = ({
         method: method,
         headers: {
           "Content-Type": "application/json",
+        },
+        data: {
+          resourceId: resourceId,
         },
       };
 
@@ -381,6 +403,7 @@ export const DisplayPageHeader = ({
         <p>{ip}</p>
       </div>
       <RenderServerActions
+        resourceId={id}
         serverId={serverId}
         setIsModalOpen={setIsModalOpen}
         setIsDeleteModalOpen={setIsDeleteModalOpen}

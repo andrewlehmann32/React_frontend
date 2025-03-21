@@ -3,7 +3,7 @@ import toast from "react-hot-toast";
 import { CiCalendar } from "react-icons/ci";
 import { IoIosArrowDown } from "react-icons/io";
 import { IoCopyOutline } from "react-icons/io5";
-import { svgDrawer } from "../../lib/helpers/svgDrawer";
+import { OSOrdering } from "../../constants/constants";
 import { Chart } from "../generics/chart";
 import { ToggleButton } from "../shared/buttons/buttons";
 import { ResourcDataType } from "./main";
@@ -58,6 +58,7 @@ export const DisplaySpecificaions = ({
 }: {
   resourcData: ResourcDataType;
 }) => {
+  console.log("rs data", resourcData);
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
     toast.success("Copied to clipboard");
@@ -90,9 +91,9 @@ export const DisplaySpecificaions = ({
                 {property.title === "Location" && (
                   <div className="flex items-center gap-2">
                     <div className="w6 h-6">
-                      {React.isValidElement(svgDrawer.usaFlag)
+                      {property.icon && React.isValidElement(property.icon)
                         ? React.cloneElement(
-                            svgDrawer.usaFlag as React.ReactElement,
+                            property.icon as React.ReactElement,
                             {
                               width: "100%",
                               height: "100%",
@@ -106,15 +107,15 @@ export const DisplaySpecificaions = ({
                 {property.title === "OS" && (
                   <div className="flex items-center gap-2">
                     <div className="w6 h-6">
-                      {React.isValidElement(svgDrawer.ubuntu)
-                        ? React.cloneElement(
-                            svgDrawer.ubuntu as React.ReactElement,
-                            {
+                      {OSOrdering.map((os) =>
+                        os.title === property.value.split(" ")[0] &&
+                        React.isValidElement(os.icon)
+                          ? React.cloneElement(os.icon as React.ReactElement, {
                               width: "100%",
                               height: "100%",
-                            }
-                          )
-                        : null}
+                            })
+                          : null
+                      )}
                     </div>
                     <p>{property.value}</p>
                   </div>
@@ -149,7 +150,7 @@ export const DisplaySpecificaions = ({
           </div>
           <div className="flex justify-between items-center py-5 pb-4">
             <p className="text-gray-500">Hourly Price</p>
-            <p>$30</p>
+            <p>{`$ ${resourcData.billing}`}</p>
           </div>
         </div>
         <div className="border  rounded-md p-2 divide-y">

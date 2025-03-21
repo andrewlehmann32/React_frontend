@@ -1,15 +1,13 @@
 import { Check, ChevronDownIcon } from "lucide-react";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { environment } from "../../config/environment";
-import { OSOrdering } from "../../constants/constants";
+import { countryFlags, OSOrdering } from "../../constants/constants";
 import { useAppSelector } from "../../hooks/redux";
 import axios from "../../lib/apiConfig";
-import { svgDrawer } from "../../lib/helpers/svgDrawer";
 import {
-  RegionItem,
   setBilling,
   setHostname,
   setOS,
@@ -17,6 +15,7 @@ import {
   setRegion,
   setSshKey,
   setToInitial,
+  Versions,
 } from "../../redux/reducer/resourcesReducer";
 import {
   selectActiveProject,
@@ -26,40 +25,26 @@ import { RootState } from "../../redux/store";
 import { PlanData } from "../../types/generics.types";
 import { ToggleButton } from "../shared/buttons/buttons";
 import { RDropdownMenu } from "../shared/menus/dropdown-menu";
+import { OrderDropdownMenu } from "../shared/menus/ordering-dropdown";
 import { Button } from "../ui/button";
 
-const countryFlags: RegionItem[] = [
-  {
-    icon: svgDrawer.usaFlag,
-    title: "Ashburn, VA",
-    id: 1,
-  },
-  {
-    icon: svgDrawer.usaFlag,
-    title: "New York, NY",
-    id: 1,
-  },
-  {
-    icon: svgDrawer.usaFlag,
-    title: "Los Angeles, CA",
-    id: 1,
-  },
-  {
-    icon: svgDrawer.hongKongFlag,
-    title: "Hong Kong",
-    id: 1,
-  },
-  {
-    icon: svgDrawer.germanyFlag,
-    title: "Germany",
-    id: 1,
-  },
-  {
-    icon: svgDrawer.ukFlag,
-    title: "United Kingdom",
-    id: 1,
-  },
-];
+type FetchedOsType = {
+  id: number;
+  name: string;
+};
+
+export type SSHItem = {
+  label: string;
+  key: string;
+};
+
+type OSList = {
+  versions: Versions[];
+  id?: number;
+  icon: React.ReactNode;
+  title: string;
+  version: string;
+};
 
 const billing = [
   { title: "Hourly", subTitle: "Pay as you go" },
@@ -72,21 +57,19 @@ const raid = [
   { title: "RAID 1", subTitle: "Distributes data evenly" },
 ];
 
-type SSHItem = {
-  label: string;
-  key: string;
-};
-
 export const RenderDetails = ({ plan }: { plan: PlanData }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const details = useSelector((state: RootState) => state.renderDetails);
   const currentProject = useAppSelector(selectActiveProject);
   const [sshItems, setSshItems] = useState<SSHItem[]>([]);
+  const [version, setVersion] = useState<{ title: string }>();
   const [locations, setLocations] = useState([]);
-  const [os, setOs] = useState<string[]>([]);
+  const [os, setOs] = useState<{ name: string; id: string }[]>([]);
+  const [osList, setOsList] = useState<OSList[]>([]);
   const { user } = useAppSelector(selectUser);
   const [sshEnabled, setSshEnabled] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (currentProject?.sshKeys) {
@@ -119,8 +102,37 @@ export const RenderDetails = ({ plan }: { plan: PlanData }) => {
   }, []);
 
   useEffect(() => {
+    if (version) {
+      const selectedOs = osList.find((osItem) =>
+        osItem.versions.some(
+          (ver: { title: string }) => ver.title === version.title
+        )
+      );
+
+      if (selectedOs) {
+        const selectedVersion = selectedOs.versions.find(
+          (ver: { title: string }) => ver.title === version.title
+        );
+
+        if (selectedVersion) {
+          dispatch(
+            setOS({
+              id: selectedVersion.id,
+              icon: selectedOs.icon,
+              title: selectedOs.title,
+              version: selectedVersion?.label || "",
+              versions: [],
+            })
+          );
+        }
+      }
+    }
+  }, [version, osList, dispatch]);
+
+  useEffect(() => {
     const fetchOS = async () => {
       try {
+        setLoading(true);
         const response = await axios.get(
           `${environment.VITE_API_URL}/ordering/os`,
           {
@@ -129,8 +141,27 @@ export const RenderDetails = ({ plan }: { plan: PlanData }) => {
             },
           }
         );
+        const fetchedOS = response?.data?.data;
+
+        const osWithVersions = OSOrdering.map((osItem) => {
+          const versions = fetchedOS
+            .filter((fetchedItem: FetchedOsType) =>
+              fetchedItem.name.includes(osItem.title)
+            )
+            .map((fetchedItem: FetchedOsType) => ({
+              label: fetchedItem.name,
+              id: fetchedItem.id,
+              title: fetchedItem.name,
+              icon: osItem.icon,
+            }));
+          return { ...osItem, versions };
+        });
+
         setOs(response?.data?.data);
+        setOsList(osWithVersions);
+        setLoading(false);
       } catch (error) {
+        setLoading(false);
         console.error(error);
       }
     };
@@ -146,9 +177,57 @@ export const RenderDetails = ({ plan }: { plan: PlanData }) => {
   };
 
   const isOsAvailable = (title: string) => {
-    const available = os.some((item) => item.split(" ")[0] === title);
+    const available = os.some((item) => item.name.split(" ")[0] === title);
     return available;
   };
+
+  const handleDeployment = async () => {
+    try {
+      const payload = {
+        location: details.region?.id || 1,
+        hostname: details.hostname,
+        template: details.os?.id,
+        osName: details.os?.version,
+        raid: details.raid,
+        billing: details.billing,
+        projectId: currentProject?._id,
+        clientId: user?.dcimUserId,
+        ssh: details.ssh,
+        planId: plan._id,
+      };
+
+      const config = {
+        url: `${environment.VITE_API_URL}/ordering`,
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        data: payload,
+      };
+
+      const response = await axios(config);
+
+      if (response.status === 200 || response.status === 201) {
+        toast.success("Successfully Deployed!");
+        dispatch(setToInitial());
+        navigate("/resources");
+      }
+    } catch (error: any) {
+      console.error("Error deploying server:", error);
+      toast.error(error?.response?.data?.message);
+    }
+  };
+
+  const handleInputChange = (label: string) => {
+    const filteredSsh = sshItems
+      .map((item) => ({ name: item.label, key: item.key }))
+      .find((item) => item.name === label);
+    if (filteredSsh) dispatch(setSshKey(filteredSsh));
+  };
+  const memoizedOsVersions = useMemo(
+    () => details?.os?.versions,
+    [details?.os?.title]
+  );
 
   const RegionSelector = ({ value }: any) => {
     return (
@@ -182,46 +261,32 @@ export const RenderDetails = ({ plan }: { plan: PlanData }) => {
     );
   };
 
-  const handleDeployment = async () => {
-    try {
-      const payload = {
-        location: details.region?.id || 1,
-        hostname: details.hostname,
-        template: details.os?.id,
-        raid: "",
-        billing: "",
-        projectId: currentProject?._id,
-        clientId: user?.dcimUserId,
-        ssh: details.ssh,
-      };
+  const RenderOSGrid = () => {
+    if (loading) return <div className="">"Loading..."</div>;
 
-      const config = {
-        url: `${environment.VITE_API_URL}/ordering`,
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        data: payload,
-      };
-
-      const response = await axios(config);
-
-      if (response.status === 200 || response.status === 201) {
-        toast.success("Successfully Deployed!");
-        dispatch(setToInitial());
-        navigate("/resources");
-      }
-    } catch (error: any) {
-      console.error("Error deploying server:", error);
-      toast.error(error?.response?.data?.message);
-    }
-  };
-
-  const handleInputChange = (label: string) => {
-    const filteredSsh = sshItems
-      .map((item) => ({ name: item.label, key: item.key }))
-      .find((item) => item.name === label);
-    if (filteredSsh) dispatch(setSshKey(filteredSsh));
+    return osList.map((item, index) => (
+      <div
+        // className={`justify-center items-center`}
+        key={index}
+        onClick={() => isOsAvailable(item.title) && dispatch(setOS(item))}
+      >
+        <div
+          className={`w-full  rounded-lg items-center flex justify-center border  px-3 py-4  text-xs  flex-col gap-4 ${
+            details.os?.title === item.title
+              ? "border-sky-600"
+              : "border-gray-200"
+          }
+                ${
+                  !isOsAvailable(item.title)
+                    ? "opacity-50 cursor-not-allowed"
+                    : "cursor-pointer"
+                }    `}
+        >
+          <div>{item.icon}</div>
+          <p>{item.title}</p>
+        </div>
+      </div>
+    ));
   };
 
   return (
@@ -230,47 +295,26 @@ export const RenderDetails = ({ plan }: { plan: PlanData }) => {
       <div className="flex flex-col sm:flex-row w-full gap-4 xl:gap-8">
         <div className="w-full sm:w-2/6 flex flex-col gap-4">
           <p className="text-xs text-gray-500">Select Operating System</p>
-          <div className="grid grid-cols-2 gap-4">
-            {OSOrdering.map((item, index) => (
-              <div
-                className={`flex flex-col gap-4 border rounded-lg px-3 py-4  justify-center items-center text-xs ${
-                  details.os?.title === item.title
-                    ? "border-sky-600"
-                    : "border-gray-200"
-                }
-                ${
-                  !isOsAvailable(item.title)
-                    ? "opacity-50 cursor-not-allowed"
-                    : "cursor-pointer"
-                }    
-                `}
-                key={index}
-                onClick={() =>
-                  isOsAvailable(item.title) && dispatch(setOS(item))
-                }
-              >
-                <div>{item.icon}</div>
-                <p>{item.title}</p>
-              </div>
-            ))}
+          <div className="flex flex-col min-h-[24rem]">
+            <div className="grid grid-cols-2 gap-4">
+              <RenderOSGrid />
+            </div>
           </div>
-          <div className="border rounded-lg py-2 pl-8 flex items-center gap-2">
+          <div className="border rounded-lg py-2 pl-4 pr-4 xl:pl-8 flex items-start lg:items-center gap-2 flex-col lg:flex-row flex-wrap">
             <p className="text-xs text-gray-500">OS Version:</p>
-            <div className="flex flex-wrap items-center gap-3">
-              <div className="w-5 h-5 flex items-center justify-center">
-                {details.os?.icon && React.isValidElement(details.os.icon)
-                  ? React.cloneElement(
-                      details.os.icon as React.ReactElement<
-                        React.SVGProps<SVGSVGElement>
-                      >,
-                      {
-                        width: "100%",
-                        height: "100%",
-                      }
-                    )
-                  : null}
-              </div>
-              <p className="text-xs flex">{details.os?.title} 24.03</p>
+            <div className="flex flex-wrap items-center gap-3 ">
+              {/* {!loading ? ( */}
+              <OrderDropdownMenu
+                items={memoizedOsVersions || []}
+                value={details?.os?.title}
+                placeholder="OS"
+                onChange={(item) => {
+                  setVersion(item);
+                }}
+              />
+              {/* // ) : (
+              //   <div className="text-xs text-gray-500">Loading...</div>
+              // )} */}
             </div>
           </div>
           <div className=" text-xs text-gray-500">

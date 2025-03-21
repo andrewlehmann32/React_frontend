@@ -11,6 +11,8 @@ export const Main = () => {
   const [params, setParams] = useSearchParams();
   const [plans, setPlans] = useState<PlanData[]>([]);
 
+  console.log("plans", plans);
+
   useEffect(() => {
     const fetchPlans = async () => {
       try {

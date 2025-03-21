@@ -1,10 +1,18 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
+export type Versions = {
+  label: string;
+  id: number;
+  title: string;
+  icon: React.ReactNode;
+};
+
 type OSItem = {
   id?: number;
   icon: React.ReactNode;
   title: string;
   version: string;
+  versions: Versions[];
 };
 
 export type RegionItem = {
@@ -14,7 +22,7 @@ export type RegionItem = {
 };
 
 type SSHType = { name: string; key: string };
-interface RenderDetailsState {
+export interface RenderDetailsState {
   os: OSItem | null;
   region: RegionItem | null;
   raid: string | null;

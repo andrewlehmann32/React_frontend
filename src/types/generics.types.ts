@@ -64,7 +64,8 @@ interface teamMember {
 export interface Resource {
   resourceId: number | string;
   name: string;
-  status: string;
+  orderStatus: string;
+  devicePowerStatus: string;
   price: number;
   ip: string;
   password: string;
@@ -74,6 +75,7 @@ export interface Resource {
   projectId: string;
   serverId: number;
   createdAt: Date;
+  location: { id: number; name: string };
 }
 
 export type ResourcesType = {

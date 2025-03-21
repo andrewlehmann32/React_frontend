@@ -1,12 +1,18 @@
 import { memo } from "react";
+import { useNavigate } from "react-router-dom";
 import { useAppSelector } from "../../hooks/redux";
-import { selectActiveProject } from "../../redux/selectors/userSelector";
+import {
+  selectActiveProject,
+  selectUser,
+} from "../../redux/selectors/userSelector";
 import { Button } from "../ui/button";
 
 interface Server {
   id: number;
   name: string;
   ip: string;
+  core?: number;
+  ram?: number;
 }
 
 interface ServerItemProps {
@@ -56,7 +62,7 @@ const ServerItem = memo(
             <p className="text-gray-600">{server?.ip}</p>
           </div>
           <div className="mt-2 px-3 py-1 text-gray-500 bg-gray-200 rounded-lg inline-block text-xs font-medium">
-            1 Core, 12 GB
+            {server?.core || "-"} Core, {server?.ram || "-"} GB
           </div>
         </div>
       </div>
@@ -69,7 +75,10 @@ export const ServersList = ({
   selectedId,
   setSelectedId,
 }: ServersListProps) => {
+  const { user } = useAppSelector(selectUser);
+  const isAdmin = user?.role === "admin";
   const currentProject = useAppSelector(selectActiveProject);
+  const navigate = useNavigate();
 
   const DisplayLoader = () => {
     if (!currentProject) return;
@@ -84,7 +93,11 @@ export const ServersList = ({
   return (
     <div className="w-[100%] lg:w-[24%] xl:w-[27%] p-3">
       <div className="flex flex-col p-3 lg:border-l h-screen">
-        <Button className="max-w-12">+</Button>
+        {!isAdmin && (
+          <Button className="max-w-12" onClick={() => navigate("/ordering")}>
+            +
+          </Button>
+        )}
         <h1 className="mt-4 mb-1 text-gray-500 text-sm">
           Active Servers ({devices.length})
         </h1>
