@@ -49,7 +49,8 @@ export const RDropdownMenu = ({
       <DropdownMenuTrigger asChild>
         <Button
           disabled={disabled}
-          className="bg-transparent border px-3 py-2 rounded text-gray-600 flex justify-between items-center gap-2 font-normal hover:bg-gray-100 focus-visible:ring-0 shadow-none min-w-60 w-full">
+          className="bg-transparent border px-3 py-1 z-20 rounded text-gray-600 flex justify-between items-center gap-2 font-normal hover:bg-gray-100 focus-visible:ring-0 shadow-none min-w-60 w-full"
+        >
           <div className="flex items-center gap-2">
             <span className="flex-shrink-0">
               {items.find((item) => item.label === active)?.icon}
@@ -64,7 +65,8 @@ export const RDropdownMenu = ({
         side={direction}
         align={
           direction === "left" || direction === "right" ? "start" : "center"
-        }>
+        }
+      >
         {items.map((item, index) => (
           <DropdownMenuItem
             key={index}
@@ -74,7 +76,8 @@ export const RDropdownMenu = ({
               item.disabled
                 ? "text-gray-400 cursor-not-allowed"
                 : "text-gray-700 hover:bg-gray-100"
-            }`}>
+            }`}
+          >
             <div className="flex items-center gap-2">
               <span className="flex-shrink-0 w-5 h-5">
                 {React.isValidElement(item?.icon) &&
