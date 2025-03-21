@@ -48,6 +48,7 @@ const RenderGrid: React.FC<RenderGridProps> = ({ columns }) => {
 export const Main = () => {
   const [orderNumber, setOrderNumber] = useState<string | number>();
   const [clientNumber, setClientNumber] = useState<string | number>();
+  const [activeServers, setActiveServers] = useState([]);
 
   const fetchOrders = async () => {
     try {
@@ -63,7 +64,16 @@ export const Main = () => {
       const response = await axios.get(`${environment.VITE_API_URL}/user/`);
       setClientNumber(response?.data?.users.length);
     } catch (error) {
-      console.error("Error fetching projects:", error);
+      console.error("Error fetching clients:", error);
+    }
+  };
+
+  const fetchServers = async () => {
+    try {
+      const response = await axios.get(`${environment.VITE_API_URL}/ordering`);
+      setActiveServers(response?.data?.data);
+    } catch (error) {
+      console.error("Error fetching servers:", error);
     }
   };
 
@@ -71,7 +81,7 @@ export const Main = () => {
     () => [
       { title: "Total Orders", value: orderNumber ?? "-" },
       { title: "Active Clients", value: clientNumber ?? "-" },
-      { title: "Active Servers", value: "N/A" },
+      { title: "Active Servers", value: activeServers.length ?? "-" },
       { title: "Predicted Revenue", value: "N/A" },
     ],
     [orderNumber, clientNumber]
@@ -80,6 +90,7 @@ export const Main = () => {
   useEffect(() => {
     fetchOrders();
     fetchClients();
+    fetchServers();
   }, []);
 
   return <RenderGrid columns={memoizedColumns} />;
