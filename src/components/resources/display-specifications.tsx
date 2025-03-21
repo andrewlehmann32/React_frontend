@@ -58,7 +58,6 @@ export const DisplaySpecificaions = ({
 }: {
   resourcData: ResourcDataType;
 }) => {
-  console.log("rs data", resourcData);
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
     toast.success("Copied to clipboard");

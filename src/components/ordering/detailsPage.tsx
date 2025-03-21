@@ -1,4 +1,4 @@
-import { Check, ChevronDownIcon } from "lucide-react";
+import { Check } from "lucide-react";
 import React, { useEffect, useMemo, useState } from "react";
 import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
@@ -253,9 +253,13 @@ export const RenderDetails = ({ plan }: { plan: PlanData }) => {
         </div>
 
         <div className="flex items-center gap-3">
-          <p className="text-[10px] border px-2  rounded-md">$97.00/mo</p>
-          <p className=" border text-[10px] px-2  rounded-md">$0.13/hr</p>
-          <ChevronDownIcon className="w-5 h-5 text-gray-500" />
+          <p className="text-[10px] border px-2  rounded-md">
+            ${plan.price.monthly}/mo
+          </p>
+          <p className=" border text-[10px] px-2  rounded-md">
+            ${plan.price.hourly}/hr
+          </p>
+          {/* <ChevronDownIcon className="w-5 h-5 text-gray-500" /> */}
         </div>
       </div>
     );
@@ -288,6 +292,8 @@ export const RenderDetails = ({ plan }: { plan: PlanData }) => {
       </div>
     ));
   };
+
+  console.log(details);
 
   return (
     <div className="py-2 gap-2 flex flex-col pr-0 lg:pr-6 w-full mb-20 sm:mb-0">
