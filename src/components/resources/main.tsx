@@ -19,11 +19,13 @@ export const Main = ({
   selectedId,
   selectedDevice,
   setSelectedDevice,
+  refetchDevices,
 }: {
   devices: Device[];
   selectedId: number | null;
   selectedDevice: Device | undefined;
   setSelectedDevice: (device: Device) => void;
+  refetchDevices: () => void;
 }) => {
   const currentProject = useAppSelector(selectActiveProject);
 
@@ -126,6 +128,7 @@ export const Main = ({
         serverId={Number(selectedDevice?.resource?.serverId)}
         name={selectedDevice?.resource?.name}
         ip={selectedDevice?.resource?.ip}
+        refetchDevices={refetchDevices}
       />
       <DisplaySpecificaions resourcData={dynamicData} />
       <DisplayChart />

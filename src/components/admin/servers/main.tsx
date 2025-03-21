@@ -1,23 +1,25 @@
 import { useEffect } from "react";
+import { countryFlags } from "../../../constants/constants";
+import { formatTimestamp } from "../../../lib/helpers/utils";
 import { Device } from "../../../pages/resources";
 import { DisplayPageHeader } from "../../resources/display-page-header";
 import {
   DisplayChart,
   DisplaySpecificaions,
 } from "../../resources/display-specifications";
-import { countryFlags } from "../../../constants/constants";
-import { formatTimestamp } from "../../../lib/helpers/utils";
 
 export const Main = ({
   devices,
   selectedId,
   selectedDevice,
   setSelectedDevice,
+  refetchDevices,
 }: {
   devices: Device[];
   selectedId: number | null;
   selectedDevice: Device | undefined;
   setSelectedDevice: (device: Device) => void;
+  refetchDevices: () => void;
 }) => {
   const location = countryFlags.find(
     (flag) => flag.id === selectedDevice?.resource?.location?.id
@@ -110,6 +112,7 @@ export const Main = ({
         serverId={Number(selectedDevice?.resource?.serverId)}
         name={selectedDevice?.resource?.name}
         ip={selectedDevice?.resource?.ip}
+        refetchDevices={refetchDevices}
       />
       <DisplaySpecificaions resourcData={dynamicData} />
       <DisplayChart />

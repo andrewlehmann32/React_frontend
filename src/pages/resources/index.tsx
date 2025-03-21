@@ -51,7 +51,40 @@ const Resources = () => {
     return () => {
       controller.abort();
     };
-  }, []);
+  }, [currentProject]); // Re-fetch devices when `currentProject` changes
+
+  // Refetch the devices after deleting one
+  const refetchDevices = async () => {
+    const controller = new AbortController();
+    const signal = controller.signal;
+    const fetchDevices = async () => {
+      if (!currentProject) return;
+      try {
+        const response = await axios.get(
+          `${environment.VITE_API_URL}/ordering/${currentProject?._id}`,
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+            signal,
+          }
+        );
+        setDevices(response.data?.data);
+        setSelectedId(response.data?.data[0]?.resource?.resourceId);
+        setSelectedDevice(response.data.data[0]);
+      } catch (error) {
+        console.error(error);
+        toast.error("Failed to fetch devices");
+      }
+    };
+
+    fetchDevices();
+
+    // Cleanup function: Abort the request if the component unmounts
+    return () => {
+      controller.abort();
+    };
+  };
 
   const filteredDevices = () => {
     if (!devices.length) return [];
@@ -79,6 +112,7 @@ const Resources = () => {
             selectedId={selectedId}
             selectedDevice={selectedDevice}
             setSelectedDevice={setSelectedDevice}
+            refetchDevices={refetchDevices}
           />
         </PageLayout>
       </div>
