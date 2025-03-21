@@ -55,6 +55,39 @@ const AdminServers = () => {
     return filtered;
   };
 
+  // Refetch the devices after deleting one
+  const refetchDevices = async () => {
+    console.log("triggered");
+    const controller = new AbortController();
+    const signal = controller.signal;
+    const fetchDevices = async () => {
+      try {
+        const response = await axios.get(
+          `${environment.VITE_API_URL}/ordering`,
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+            signal,
+          }
+        );
+        setDevices(response.data?.data);
+        setSelectedId(response.data?.data[0]?.resource?.resourceId);
+        setSelectedDevice(response.data.data[0]);
+      } catch (error) {
+        console.error(error);
+        toast.error("Failed to fetch devices");
+      }
+    };
+
+    fetchDevices();
+
+    // Cleanup function: Abort the request if the component unmounts
+    return () => {
+      controller.abort();
+    };
+  };
+
   return (
     <div className="flex flex-col lg:flex-row max-h-screen">
       <ServersList
@@ -69,6 +102,7 @@ const AdminServers = () => {
             selectedId={selectedId}
             selectedDevice={selectedDevice}
             setSelectedDevice={setSelectedDevice}
+            refetchDevices={refetchDevices}
           />
         </PageLayout>
       </div>

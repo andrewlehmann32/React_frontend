@@ -41,8 +41,7 @@ export const OrderDropdownMenu = ({
     if (value) setActive(value);
   }, [value]);
 
-<<<<<<< Updated upstream
-  const handleSelect = (selectedValue: OSItem) => {
+  const handleSelect = (selectedValue: any) => {
     setActive(selectedValue.title);
 =======
   const handleSelect = (selectedValue: any) => {
@@ -56,7 +55,7 @@ export const OrderDropdownMenu = ({
       <DropdownMenuTrigger asChild>
         <Button
           disabled={disabled}
-          className="bg-transparent border px-3 py-2 rounded text-gray-600 flex justify-between items-center gap-2 font-normal hover:bg-gray-100 focus-visible:ring-0 shadow-none min-w-60 w-full"
+          className="bg-transparent bg-gray-100 px-3 py-2 h-8 rounded text-gray-600 flex justify-between items-center gap-2 font-normal hover:bg-gray-100 focus-visible:ring-0 shadow-none min-w-20 w-44 lg:w-52"
         >
           <div className="flex items-center gap-2">
             <span className="flex-shrink-0">
@@ -68,15 +67,15 @@ export const OrderDropdownMenu = ({
           <ChevronDown />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent
-        className="border bg-white shadow-md rounded-lg p-2 w-48 max-h-40 overflow-y-scroll divide-y"
-        side={direction}
-        align={
-          direction === "left" || direction === "right" ? "start" : "center"
-        }
-      >
-        {!!items &&
-          items.map((item, index) => (
+      {!!items.length && (
+        <DropdownMenuContent
+          className="border bg-white shadow-md rounded-lg p-2 z-50 max-h-40 overflow-y-scroll divide-y w-full"
+          side={direction}
+          align={
+            direction === "left" || direction === "right" ? "start" : "center"
+          }
+        >
+          {items.map((item, index) => (
             <DropdownMenuItem
               key={index}
               onSelect={() => handleSelect(item)}
@@ -99,7 +98,8 @@ export const OrderDropdownMenu = ({
               </div>
             </DropdownMenuItem>
           ))}
-      </DropdownMenuContent>
+        </DropdownMenuContent>
+      )}
     </DropdownMenu>
   );
 };
