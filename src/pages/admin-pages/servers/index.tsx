@@ -4,14 +4,8 @@ import { Main } from "../../../components/admin/servers/main";
 import { PageLayout } from "../../../components/layouts/pageLayout";
 import { ServersList } from "../../../components/resources/servers-list";
 import { environment } from "../../../config/environment";
-import { PlanData, Resource } from "../../../types/generics.types";
+import { Device } from "../../resources";
 import axios from "./../../../lib/apiConfig";
-
-export interface Device {
-  resource: Resource;
-  planId: PlanData;
-  projectId: string;
-}
 
 const AdminServers = () => {
   const [devices, setDevices] = useState<Device[]>([]);
@@ -55,6 +49,8 @@ const AdminServers = () => {
       id: Number(device?.resource?.resourceId),
       name: device?.resource?.name,
       ip: device?.resource?.ip,
+      core: device?.planId?.cpu?.cores,
+      ram: device?.planId?.ram,
     }));
     return filtered;
   };

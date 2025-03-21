@@ -78,6 +78,21 @@ type SSHItem = {
   key: string;
 };
 
+export type Versions = {
+  label: string;
+  id: number;
+  title: string;
+  icon: React.ReactNode;
+};
+
+type OSList = {
+  versions: Versions[];
+  id?: number;
+  icon: React.ReactNode;
+  title: string;
+  version: string;
+};
+
 export const RenderDetails = ({ plan }: { plan: PlanData }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -87,18 +102,13 @@ export const RenderDetails = ({ plan }: { plan: PlanData }) => {
   const [version, setVersion] = useState<{ title: string }>();
   const [locations, setLocations] = useState([]);
   const [os, setOs] = useState<{ name: string; id: string }[]>([]);
-  const [osList, setOsList] = useState<
-    {
-      versions: any;
-      id?: number;
-      icon: React.ReactNode;
-      title: string;
-      version: string;
-    }[]
-  >([]);
+  const [osList, setOsList] = useState<OSList[]>([]);
   const { user } = useAppSelector(selectUser);
   const [sshEnabled, setSshEnabled] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  console.log("selectedplan", plan);
+  console.log("oslist", osList);
 
   useEffect(() => {
     if (currentProject?.sshKeys) {
@@ -143,12 +153,14 @@ export const RenderDetails = ({ plan }: { plan: PlanData }) => {
           (ver: { title: string }) => ver.title === version.title
         );
 
+        console.log("selectedVersion", selectedVersion);
+
         dispatch(
           setOS({
-            id: selectedVersion.id,
+            id: selectedVersion?.id,
             icon: selectedOs.icon,
             title: selectedOs.title,
-            version: selectedVersion?.label,
+            version: selectedVersion?.label || "",
           })
         );
       }
@@ -249,6 +261,7 @@ export const RenderDetails = ({ plan }: { plan: PlanData }) => {
         projectId: currentProject?._id,
         clientId: user?.dcimUserId,
         ssh: details.ssh,
+        planId: plan._id,
       };
 
       const config = {
@@ -279,6 +292,8 @@ export const RenderDetails = ({ plan }: { plan: PlanData }) => {
       .find((item) => item.name === label);
     if (filteredSsh) dispatch(setSshKey(filteredSsh));
   };
+
+  console.log("details", details);
 
   const memoizedOsVersions = useMemo(
     () => details?.os?.versions,
@@ -321,6 +336,7 @@ export const RenderDetails = ({ plan }: { plan: PlanData }) => {
               {!loading ? (
                 <OrderDropdownMenu
                   items={memoizedOsVersions}
+                  value={details?.os?.title}
                   placeholder="OS"
                   onChange={(item) => {
                     setVersion(item);

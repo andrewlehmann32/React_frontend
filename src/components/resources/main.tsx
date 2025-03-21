@@ -11,6 +11,7 @@ export interface ResourcDataType {
   properties: { title: string; value: string; icon?: React.ReactNode }[];
   hardware: { title: string; value: string }[];
   credentials: { title: string; value: string }[];
+  billing: number | string;
 }
 
 export const Main = ({
@@ -25,6 +26,7 @@ export const Main = ({
   setSelectedDevice: (device: Device) => void;
 }) => {
   const currentProject = useAppSelector(selectActiveProject);
+  console.log("selected device", selectedDevice);
 
   useEffect(() => {
     if (selectedId !== null) {
@@ -107,6 +109,7 @@ export const Main = ({
         value: `ssh ${selectedDevice?.resource?.username}@${selectedDevice?.resource?.ip}`,
       },
     ],
+    billing: selectedDevice?.planId?.price?.hourly ?? "N/A",
   };
 
   if (!selectedDevice) {
