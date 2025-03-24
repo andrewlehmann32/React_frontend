@@ -228,11 +228,12 @@ export const OS = [
 ];
 
 export type OSItem = {
-  id?: number;
-  icon: React.ReactNode;
+  id: number;
+  icon?: React.ReactNode;
   title: string;
-  version: string;
-  versions: [];
+  label?: string;
+  version?: string;
+  versions?: [];
 };
 
 export const OSOrdering: OSItem[] = [
