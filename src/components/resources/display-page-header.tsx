@@ -73,7 +73,9 @@ const RenderModal = ({
 }: ModalPropsType) => {
   const [raid, setRaid] = useState("");
   const [sshItems, setSshItems] = useState<SSHItem[]>([]);
-  const [os, setOs] = useState<{ label: string; id: number }[]>([]);
+  const [os, setOs] = useState<{ label: string; id: number; title: string }[]>(
+    []
+  );
   const [selectedOs, setSelectedOs] = useState<{ label: string; id: number }>();
   const [hostname, setHostname] = useState("");
   const [confirmationInput, setConfirmationInput] = useState("");
@@ -108,6 +110,7 @@ const RenderModal = ({
         const formattedOS = fetchedOS.map(
           (item: { name: string; id: number }) => ({
             label: item.name,
+            title: item.name,
             id: item.id,
           })
         );
@@ -137,9 +140,13 @@ const RenderModal = ({
       const response = await axios(config);
 
       if (response.status === 200) {
-        toast.success(response?.data?.message);
-        setIsModalOpen(false);
-        refetchDevices();
+        if (response?.data?.data?.success === false) {
+          toast.error(response?.data?.data?.message);
+        } else {
+          toast.success(response?.data?.message);
+          setIsModalOpen(false);
+          refetchDevices();
+        }
       }
     } catch (error) {
       console.error(error);
@@ -308,11 +315,13 @@ const RenderServerActions = ({
   resourceId,
   setIsModalOpen,
   setIsDeleteModalOpen,
+  refetchDevices,
 }: {
   serverId: number;
   resourceId: number;
   setIsModalOpen: (value: boolean) => void;
   setIsDeleteModalOpen: (value: boolean) => void;
+  refetchDevices: () => void;
 }) => {
   const [isActive, setIsActive] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -320,15 +329,18 @@ const RenderServerActions = ({
   const handleApiCall = async (value: string) => {
     try {
       let apiUrl;
+      let reFetch = false;
       let successMessage;
       let method = "POST";
 
       if (value === "Start") {
         apiUrl = `${environment.VITE_API_URL}/ordering/${serverId}/boot`;
         successMessage = "Server started successfully";
+        reFetch = true;
       } else if (value === "Stop") {
         apiUrl = `${environment.VITE_API_URL}/ordering/${serverId}/shutdown`;
         successMessage = "Server stopped successfully";
+        reFetch = true;
       } else if (value === "Novnc") {
         apiUrl = `${environment.VITE_API_URL}/ordering/${serverId}/novnc`;
         successMessage = "NoVNC Successful";
@@ -336,6 +348,7 @@ const RenderServerActions = ({
       } else {
         apiUrl = `${environment.VITE_API_URL}/ordering/${serverId}/reboot`;
         successMessage = "Server rebooted successfully";
+        reFetch = true;
       }
 
       const config = {
@@ -353,6 +366,7 @@ const RenderServerActions = ({
 
       if (response.status === 200) {
         toast.success(successMessage);
+        if (reFetch) refetchDevices();
       }
     } catch (error) {
       console.error(error);
@@ -481,6 +495,7 @@ export const DisplayPageHeader = ({
         serverId={serverId}
         setIsModalOpen={setIsModalOpen}
         setIsDeleteModalOpen={setIsDeleteModalOpen}
+        refetchDevices={refetchDevices}
       />
       <RenderModal
         isModalOpen={isModalOpen}

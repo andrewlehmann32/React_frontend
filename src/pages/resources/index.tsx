@@ -13,6 +13,7 @@ export interface Device {
   resource: Resource;
   planId: PlanData;
   projectId: string;
+  createdAt: Date;
 }
 
 const Resources = () => {
@@ -63,15 +64,22 @@ const Resources = () => {
         const response = await axios.get(
           `${environment.VITE_API_URL}/ordering/${currentProject?._id}`,
           {
-            headers: {
-              "Content-Type": "application/json",
-            },
             signal,
           }
         );
-        setDevices(response.data?.data);
-        setSelectedId(response.data?.data[0]?.resource?.resourceId);
-        setSelectedDevice(response.data.data[0]);
+        if (response.data?.data.length) {
+          const defaultDevice = response.data.data[0]?.resource;
+          const previousDevice = response.data.data.find(
+            (device: Device) => device.resource.resourceId === selectedId
+          );
+          if (!previousDevice) {
+            setSelectedId(defaultDevice.resourceId);
+            setSelectedDevice(defaultDevice);
+          } else {
+            setSelectedId(previousDevice.resource.resourceId);
+            setSelectedDevice(previousDevice);
+          }
+        }
       } catch (error) {
         console.error(error);
         toast.error("Failed to fetch devices");

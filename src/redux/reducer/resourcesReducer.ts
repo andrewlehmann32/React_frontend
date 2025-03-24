@@ -9,7 +9,7 @@ export type Versions = {
 
 type OSItem = {
   id?: number;
-  icon: React.ReactNode;
+  icon?: React.ReactNode;
   title: string;
   version: string;
   versions: Versions[];
@@ -17,8 +17,8 @@ type OSItem = {
 
 export type RegionItem = {
   icon: React.ReactNode;
-  title: string;
-  id: number;
+  title: string | undefined;
+  id?: number;
 };
 
 type SSHType = { name: string; key: string };

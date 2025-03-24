@@ -54,14 +54,12 @@ export const Main = ({
     properties: [
       {
         title: "Host name",
-        value: selectedDevice?.resource.hostname || "Unknown",
+        value: selectedDevice?.resource?.hostname || "Unknown",
       },
       { title: "Main IP", value: selectedDevice?.resource?.ip || "Unknown" },
       {
         title: "Created",
-        value: formatTimestamp(
-          selectedDevice?.resource?.createdAt ?? new Date()
-        ),
+        value: formatTimestamp(selectedDevice?.createdAt ?? new Date()),
       },
       {
         title: "Location",

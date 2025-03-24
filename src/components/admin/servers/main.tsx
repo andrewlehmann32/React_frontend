@@ -34,9 +34,7 @@ export const Main = ({
       { title: "Main IP", value: selectedDevice?.resource?.ip || "Unknown" },
       {
         title: "Created",
-        value: formatTimestamp(
-          selectedDevice?.resource?.createdAt ?? new Date()
-        ),
+        value: formatTimestamp(selectedDevice?.createdAt ?? new Date()),
       },
       {
         title: "Location",
