@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { countryFlags } from "../../constants/constants";
 import { useAppSelector } from "../../hooks/redux";
 import { formatTimestamp } from "../../lib/helpers/utils";
@@ -28,6 +28,12 @@ export const Main = ({
   refetchDevices: () => void;
 }) => {
   const currentProject = useAppSelector(selectActiveProject);
+  const [disableServerActions, setDisableServerActions] =
+    useState<boolean>(false);
+
+  useEffect(() => {
+    setDisableServerActions(selectedDevice?.resource?.reinstall || false);
+  }, [selectedDevice]);
 
   useEffect(() => {
     if (selectedId !== null) {
@@ -127,6 +133,8 @@ export const Main = ({
         name={selectedDevice?.resource?.name}
         ip={selectedDevice?.resource?.ip}
         refetchDevices={refetchDevices}
+        disableServerActions={disableServerActions}
+        setDisableServerActions={setDisableServerActions}
       />
       <DisplaySpecificaions resourcData={dynamicData} />
       <DisplayChart />
