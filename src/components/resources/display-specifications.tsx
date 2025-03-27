@@ -4,11 +4,18 @@ import { CiCalendar } from "react-icons/ci";
 import { IoIosArrowDown } from "react-icons/io";
 import { IoCopyOutline } from "react-icons/io5";
 import { OSOrdering } from "../../constants/constants";
-import { Chart } from "../generics/chart";
+import { ChartData } from "../dashboard/trafficChart";
 import { ToggleButton } from "../shared/buttons/buttons";
 import { ResourcDataType } from "./main";
+import { SpecificationsChart } from "./specifications-chart";
 
-export const DisplayChart = () => {
+export const DisplayChart = ({
+  chartData,
+  chartData95,
+}: {
+  chartData: ChartData[];
+  chartData95: ChartData[];
+}) => {
   const [selected, setSelected] = useState("Total Transfer");
   const items = ["Total Transfer", "95th Percentile"];
   const selectedStyles = "bg-white  hover:bg-white";
@@ -48,7 +55,10 @@ export const DisplayChart = () => {
           </div>
         </div>
       </div>
-      <Chart />
+      <SpecificationsChart
+        layout="horizontal"
+        chartData={selected === "Total Transfer" ? chartData : chartData95}
+      />
     </div>
   );
 };
@@ -200,11 +210,20 @@ export const DisplaySpecificaions = ({
         <div className="flex flex-col border rounded-md p-3 gap-3">
           <div className="flex justify-between items-center">
             <p className="text-gray-500">Inbound</p>
-            <p>0 TB</p>
+            <p>
+              {resourcData.traffic.find((traffic) => traffic.name === "Inbound")
+                ?.value || 0}{" "}
+              GB
+            </p>
           </div>
           <div className="flex justify-between items-center">
             <p className="text-gray-500">Outbound</p>
-            <p>0 TB</p>
+            <p>
+              {resourcData.traffic.find(
+                (traffic) => traffic.name === "Outbound"
+              )?.value || 0}{" "}
+              GB
+            </p>
           </div>
         </div>
       </div>

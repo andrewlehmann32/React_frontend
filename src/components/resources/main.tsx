@@ -1,9 +1,12 @@
 import { useEffect, useState } from "react";
+import { environment } from "../../config/environment";
 import { countryFlags } from "../../constants/constants";
 import { useAppSelector } from "../../hooks/redux";
+import axios from "../../lib/apiConfig";
 import { formatTimestamp } from "../../lib/helpers/utils";
 import { Device } from "../../pages/resources";
 import { selectActiveProject } from "../../redux/selectors/userSelector";
+import { ChartData } from "../dashboard/trafficChart";
 import { DisplayPageHeader } from "./display-page-header";
 import { DisplayChart, DisplaySpecificaions } from "./display-specifications";
 
@@ -12,6 +15,7 @@ export interface ResourcDataType {
   hardware: { title: string; value: string }[];
   credentials: { title: string; value: string }[];
   billing: number | string;
+  traffic: ChartData[];
 }
 
 export const Main = ({
@@ -28,6 +32,9 @@ export const Main = ({
   refetchDevices: () => void;
 }) => {
   const currentProject = useAppSelector(selectActiveProject);
+  const [trafficData, setTrafficData] = useState<ChartData[]>([]);
+  const [trafficData95, setTrafficData95] = useState<ChartData[]>([]);
+  const [trafficDataBytes, setTrafficDataBytes] = useState<ChartData[]>([]);
   const [disableServerActions, setDisableServerActions] =
     useState<boolean>(false);
 
@@ -43,6 +50,57 @@ export const Main = ({
       if (device) setSelectedDevice(device);
     }
   }, [selectedId, devices, setSelectedDevice]);
+
+  useEffect(() => {
+    const fetchBandwidth = async () => {
+      try {
+        const response = await axios.get(
+          `${environment.VITE_API_URL}/ordering/${selectedDevice?.resource?.serverId}/bandwidth`
+        );
+        const bandwidthData = response?.data?.data?.result?.current_month;
+
+        if (bandwidthData) {
+          const BW_IN = parseFloat(bandwidthData.BW_IN_BYTES) || 100;
+          const BW_OUT = parseFloat(bandwidthData.BW_OUT_BYTES) || 200;
+          const BW_IN_95 = parseFloat(bandwidthData["95TH_PERC_IN"]) || 350;
+          const BW_OUT_95 = parseFloat(bandwidthData["95TH_PERC_OUT"]) || 450;
+          const BW_IN_BYTES =
+            Math.round(
+              ((parseFloat(bandwidthData.BW_IN_BYTES) || 120000000) /
+                1024 ** 3) *
+                100
+            ) / 100;
+          const BW_OUT_BYTES =
+            Math.round(
+              ((parseFloat(bandwidthData.BW_OUT_BYTES) || 240000000) /
+                1024 ** 3) *
+                100
+            ) / 100;
+
+          const formattedData: ChartData[] = [
+            { name: "Inbound", value: BW_IN },
+            { name: "Outbound", value: BW_OUT },
+          ];
+          const formattedData95: ChartData[] = [
+            { name: "Inbound", value: BW_IN_95 },
+            { name: "Outbound", value: BW_OUT_95 },
+          ];
+          const formattedDataBytes: ChartData[] = [
+            { name: "Inbound", value: BW_IN_BYTES },
+            { name: "Outbound", value: BW_OUT_BYTES },
+          ];
+
+          setTrafficData(formattedData);
+          setTrafficData95(formattedData95);
+          setTrafficDataBytes(formattedDataBytes);
+        }
+      } catch (error) {
+        console.error("Error fetching bandwidth data:", error);
+      }
+    };
+
+    fetchBandwidth();
+  }, [selectedDevice]);
 
   if (!currentProject) return;
   if (!devices.length)
@@ -115,6 +173,7 @@ export const Main = ({
       },
     ],
     billing: selectedDevice?.planId?.price?.hourly ?? "N/A",
+    traffic: trafficDataBytes,
   };
 
   if (!selectedDevice) {
@@ -137,7 +196,7 @@ export const Main = ({
         setDisableServerActions={setDisableServerActions}
       />
       <DisplaySpecificaions resourcData={dynamicData} />
-      <DisplayChart />
+      <DisplayChart chartData={trafficData} chartData95={trafficData95} />
     </div>
   );
 };

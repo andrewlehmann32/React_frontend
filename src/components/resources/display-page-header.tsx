@@ -133,6 +133,7 @@ const RenderModal = ({
       template: selectedOs?.id,
       ssh: sshKey?.key,
       hostname: hostname,
+      projectName: currentProject?.name,
     };
 
     try {

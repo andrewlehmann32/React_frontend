@@ -56,42 +56,29 @@ const Resources = () => {
 
   // Refetch the devices after deleting one
   const refetchDevices = async () => {
-    const controller = new AbortController();
-    const signal = controller.signal;
-    const fetchDevices = async () => {
-      if (!currentProject) return;
-      try {
-        const response = await axios.get(
-          `${environment.VITE_API_URL}/ordering/${currentProject?._id}`,
-          {
-            signal,
-          }
+    if (!currentProject) return;
+    try {
+      const response = await axios.get(
+        `${environment.VITE_API_URL}/ordering/${currentProject?._id}`
+      );
+      if (response.data?.data.length) {
+        setDevices(response.data?.data);
+        const defaultDevice = response.data.data[0]?.resource;
+        const previousDevice = response.data.data.find(
+          (device: Device) => device.resource.resourceId === selectedId
         );
-        if (response.data?.data.length) {
-          const defaultDevice = response.data.data[0]?.resource;
-          const previousDevice = response.data.data.find(
-            (device: Device) => device.resource.resourceId === selectedId
-          );
-          if (!previousDevice) {
-            setSelectedId(defaultDevice.resourceId);
-            setSelectedDevice(defaultDevice);
-          } else {
-            setSelectedId(previousDevice.resource.resourceId);
-            setSelectedDevice(previousDevice);
-          }
+        if (!previousDevice) {
+          setSelectedId(defaultDevice.resourceId);
+          setSelectedDevice(defaultDevice);
+        } else {
+          setSelectedId(previousDevice.resource.resourceId);
+          setSelectedDevice(previousDevice);
         }
-      } catch (error) {
-        console.error(error);
-        toast.error("Failed to fetch devices");
       }
-    };
-
-    fetchDevices();
-
-    // Cleanup function: Abort the request if the component unmounts
-    return () => {
-      controller.abort();
-    };
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to fetch devices");
+    }
   };
 
   const filteredDevices = () => {
