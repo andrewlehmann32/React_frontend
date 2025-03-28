@@ -3,18 +3,28 @@ import { SplitScreen } from "../../components/generics/split-screen";
 import { Wrapper } from "../../components/layouts/wrapper";
 import { Auth } from "../../components/modules/login/auth";
 import { AuthLayer } from "../../components/modules/login/auth-layer";
-import { LoginFormProvider, RegisterFormProvider } from "../../contexts/auth";
+import {
+  LoginFormProvider,
+  RegisterFormProvider,
+  ResetFormProvider,
+} from "../../contexts/auth";
 
 export default function Home() {
-  const [formState, setFormState] = useState<"login" | "register">("login");
+  const [formState, setFormState] = useState<"login" | "register" | "reset">(
+    "login"
+  );
 
   return (
     <Wrapper>
       <SplitScreen
-        leftClassName="h-screen w-full p-8 md:p-16 lg:p-32"
+        leftClassName="h-screen w-full p-4 md:p-12 xl:p-32"
         rightClassName="h-screen hidden md:block"
         left={
-          formState === "login" ? (
+          formState === "reset" ? (
+            <ResetFormProvider>
+              <Auth type={formState} setFormState={setFormState} />
+            </ResetFormProvider>
+          ) : formState === "login" ? (
             <LoginFormProvider>
               <Auth type={formState} setFormState={setFormState} />
             </LoginFormProvider>

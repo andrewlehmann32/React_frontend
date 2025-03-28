@@ -42,13 +42,10 @@ const SidebarHead = ({
   const [isWorkspaceActive, setIsWorkspaceActive] = useState(!!activeProject);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [activeWorkspace, setActiveWorkspace] = useState({
-    icon:
-      activeProject?.icon ||
-      userProjects[0]?.icon ||
-      "https://i.pravatar.cc/150?img=62",
-    name: activeProject?.name ?? userProjects[0]?.name,
+    icon: activeProject?.icon ?? (userProjects[0]?.icon || ""),
+    name: activeProject?.name ?? (userProjects[0]?.name || ""),
     createdAt: `Created ${calculateDaysFromDate(
-      activeProject?.createdAt ?? userProjects[0]?.createdAt
+      activeProject?.createdAt ?? (userProjects[0]?.createdAt || "")
     )} days ago`,
   });
 
