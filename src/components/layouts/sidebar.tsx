@@ -42,7 +42,10 @@ const SidebarHead = ({
   const [isWorkspaceActive, setIsWorkspaceActive] = useState(!!activeProject);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [activeWorkspace, setActiveWorkspace] = useState({
-    icon: activeProject?.icon ?? userProjects[0]?.icon,
+    icon:
+      activeProject?.icon ||
+      userProjects[0]?.icon ||
+      "https://i.pravatar.cc/150?img=62",
     name: activeProject?.name ?? userProjects[0]?.name,
     createdAt: `Created ${calculateDaysFromDate(
       activeProject?.createdAt ?? userProjects[0]?.createdAt
@@ -53,7 +56,7 @@ const SidebarHead = ({
     if (!activeProject && userProjects.length > 0) {
       const defaultProject = userProjects[0];
       setActiveWorkspace({
-        icon: defaultProject?.icon ?? "https://i.pravatar.cc/150?img=62",
+        icon: defaultProject?.icon || "https://i.pravatar.cc/150?img=62",
         name: defaultProject.name,
         createdAt: `Created ${calculateDaysFromDate(
           defaultProject.createdAt

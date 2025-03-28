@@ -1,118 +1,58 @@
+import { useEffect, useState } from "react";
 import { FaBomb } from "react-icons/fa";
 import { GoPlus } from "react-icons/go";
 import { HiServerStack } from "react-icons/hi2";
-import { IoPerson } from "react-icons/io5";
+import { environment } from "../../config/environment";
+import { useAppSelector } from "../../hooks/redux";
+import axios from "../../lib/apiConfig";
+import { selectUser } from "../../redux/selectors/userSelector";
 import { Table } from "../shared/table";
 import { Button } from "../ui/button";
 
-type TableData = {
-  headers: string[];
-  body: { [key: string]: string | number | any }[];
-};
-
-const tableData: TableData = {
-  headers: ["Event", "Target", "Project", "Author", "Date"],
-  body: [
-    {
-      event: (
-        <div className="flex items-center gap-2">
-          <FaBomb />
-          <span>servers.destroy</span>
-        </div>
-      ),
-      target: "sv_83737AyUDG8377Ay",
-      project: "Subnet Testing",
-      author: "johndoe18@gmail.com",
-      date: "Dec 1, 2024",
-    },
-    {
-      event: (
-        <div className="flex items-center gap-2">
-          <HiServerStack />
-          <span>reinstall.servers</span>
-        </div>
-      ),
-      target: "sv_83737AyUDG8377Ay",
-      project: "Subnet Testing",
-      author: "johndoe18@gmail.com",
-      date: "Dec 1, 2024",
-    },
-    {
-      event: (
-        <div className="flex items-center gap-2">
-          <IoPerson />
-          <span>profile.creation</span>
-        </div>
-      ),
-      target: "sv_83737AyUDG8377Ay",
-      project: "Subnet Testing",
-      author: "johndoe18@gmail.com",
-      date: "Dec 1, 2024",
-    },
-    {
-      event: (
-        <div className="flex items-center gap-2">
-          <HiServerStack />
-          <span>deploy+config.update</span>
-        </div>
-      ),
-      target: "sv_83737AyUDG8377Ay",
-      project: "Subnet Testing",
-      author: "johndoe18@gmail.com",
-      date: "Dec 1, 2024",
-    },
-    {
-      event: (
-        <div className="flex items-center gap-2">
-          <FaBomb />
-          <span>servers.destroy</span>
-        </div>
-      ),
-      target: "-",
-      project: "-",
-      author: "johndoe18@gmail.com",
-      date: "Dec 1, 2024",
-    },
-    {
-      event: (
-        <div className="flex items-center gap-2">
-          <HiServerStack />
-          <span>reinstall.servers</span>
-        </div>
-      ),
-      target: "-",
-      project: "-",
-      author: "johndoe18@gmail.com",
-      date: "Dec 1, 2024",
-    },
-    {
-      event: (
-        <div className="flex items-center gap-2">
-          <IoPerson />
-          <span>profile.creation</span>
-        </div>
-      ),
-      target: "-",
-      project: "-",
-      author: "johndoe18@gmail.com",
-      date: "Dec 1, 2024",
-    },
-    {
-      event: (
-        <div className="flex items-center gap-2">
-          <HiServerStack />
-          <span>deploy+config.update</span>
-        </div>
-      ),
-      target: "-",
-      project: "-",
-      author: "johndoe18@gmail.com",
-      date: "Dec 1, 2024",
-    },
-  ],
-};
-
 export const Main = () => {
+  const [tableBody, setTableBody] = useState([]);
+  const { user } = useAppSelector(selectUser);
+
+  useEffect(() => {
+    const fetchLogs = async () => {
+      try {
+        const response = await axios.get(
+          `${environment.VITE_API_URL}/logs/${user?._id}`,
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        const logs = response?.data?.data;
+        const mappedLogs = logs.map((log: any) => ({
+          event: (
+            <div className="flex items-center gap-2">
+              {log.eventName === "server.destroy" && <FaBomb />}
+              {log.eventName === "server.reinstall" && <HiServerStack />}
+              {log.eventName === "server.deploy" && <HiServerStack />}
+              <span>{log.eventName}</span>
+            </div>
+          ),
+          project: log.projectName || "-",
+          author: log.loggedBy?.email || "-",
+          date: new Date(log.createdAt).toLocaleDateString(),
+        }));
+
+        setTableBody(mappedLogs);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchLogs();
+  }, []);
+
+  const tableData = {
+    headers: ["Event", "Project", "Author", "Date"],
+    body: tableBody,
+  };
+
   return (
     <div className="py-2 gap-4 flex flex-col pr-0 lg:pr-6 w-full">
       <div className="flex justify-between items-center">

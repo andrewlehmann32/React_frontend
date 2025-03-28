@@ -27,10 +27,10 @@ export const AveragePerformance = () => {
               <p className="text-gray-500">{item.name}</p>
               <div className="flex flex-wrap gap-3 items-center">
                 <p className="font-semibold text-lg">{item.storage}</p>
-                <span className="bg-green-100 text-[10px] text-green-600 h-fit px-1 py-[2px] rounded-full flex items-center">
+                {/* <span className="bg-green-100 text-[10px] text-green-600 h-fit px-1 py-[2px] rounded-full flex items-center">
                   <MdOutlineArrowOutward className="text-sm" />
                   {item.percentage}
-                </span>
+                </span> */}
               </div>
             </div>
           ))}

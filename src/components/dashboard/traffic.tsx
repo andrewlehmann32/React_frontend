@@ -1,5 +1,5 @@
 import { MdOutlineArrowOutward } from "react-icons/md";
-import { Chart } from "../generics/chart";
+import { TrafficChart } from "./trafficChart";
 
 export const Traffic = () => {
   return (
@@ -11,9 +11,11 @@ export const Traffic = () => {
         </div>
       </div>
       <div className="flex flex-col border rounded-md  px-3 sm:px-6 max-h-96 h-full justify-between ">
-        <h4 className="text-gray-500 text-sm pt-4 font-normal">Traffic In</h4>
+        <h4 className="text-gray-500 text-sm pt-4 font-normal">
+          Monthly Traffic
+        </h4>
         <div>
-          <Chart />
+          <TrafficChart />
         </div>
       </div>
     </div>
