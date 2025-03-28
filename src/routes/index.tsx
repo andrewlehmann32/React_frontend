@@ -2,6 +2,7 @@
 import { createBrowserRouter } from "react-router-dom";
 import App from "../App";
 import ForgotPassword from "../components/modules/forget-password";
+import VerifyEmail from "../components/modules/verify-email/verify-email";
 import NotFound from "../components/not-found";
 import Activity from "../pages/activity-log";
 import AdminClients from "../pages/admin-pages/clients";
@@ -104,7 +105,7 @@ const router = createBrowserRouter([
       },
       {
         path: "/verify-email",
-        element: <ForgotPassword />,
+        element: <VerifyEmail />,
       },
 
       {
