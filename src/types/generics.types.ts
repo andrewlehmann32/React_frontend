@@ -74,8 +74,8 @@ export interface Resource {
   os: string;
   projectId: string;
   serverId: number;
-  createdAt: Date;
   location: { id: number; name: string };
+  reinstall: boolean;
 }
 
 export type ResourcesType = {

@@ -18,7 +18,9 @@ const RenderBillingCards = ({ cardItems }: { cardItems: any[] }) => {
         {cardItems.map((item, index) => (
           <div
             key={index}
-            className="w-1/3 border px-4 py-2 gap-1 text-xs rounded-md min-w-0 sm:min-w-[8rem] sm:w-fit text-gray-500 cursor-pointer active:scale-95"
+            className={`w-1/3 border px-4 py-2 gap-1 min-h-20 text-xs rounded-md min-w-0 sm:min-w-[8rem] sm:w-fit text-gray-500 cursor-pointer active:scale-95 ${
+              index === 0 ? "flex flex-col justify-center" : ""
+            }`}
             onClick={item.action}
           >
             <h5 className="font-medium">{item.title}</h5>
@@ -39,10 +41,20 @@ export const DisplayBillCards = () => {
   const currentProject = useAppSelector(selectActiveProject);
   const dispatch = useAppDispatch();
 
+  const getMonthRange = () => {
+    const now = new Date();
+    const start = new Date(now.getFullYear(), now.getMonth(), 1);
+    const end = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+    return `${start.toLocaleString("default", {
+      month: "long",
+    })} 1 - ${end.toLocaleString("default", {
+      month: "long",
+    })} ${end.getDate()}, ${now.getFullYear()}`;
+  };
+
   const cardItems = [
     {
       title: "Available Credit",
-      subTitle: "January 17 - February 17,2024",
       amount: `$${currentProject?.credit ?? 0}`,
       action: () => setIsModalOpen(true),
     },
@@ -54,7 +66,7 @@ export const DisplayBillCards = () => {
     },
     {
       title: "Estimated Monthly Bill",
-      subTitle: "January 17 - February 17,2024",
+      subTitle: getMonthRange(),
       amount: "$143.18",
       action: () => {},
     },

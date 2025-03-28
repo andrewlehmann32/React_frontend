@@ -43,7 +43,11 @@ export const InviteMembers = ({
         toast.success("Invitation sent successfully");
       }
     } catch (err) {
-      handleAxiosError(err);
+      if (axios.isAxiosError(err) && err?.response?.data?.message) {
+        toast.error(err.response.data.message);
+      } else {
+        handleAxiosError(err);
+      }
     }
   };
 

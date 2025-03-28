@@ -8,6 +8,7 @@ import { countryFlags, OSOrdering } from "../../constants/constants";
 import { useAppSelector } from "../../hooks/redux";
 import axios from "../../lib/apiConfig";
 import {
+  RegionItem,
   setBilling,
   setHostname,
   setOS,
@@ -41,7 +42,7 @@ export type SSHItem = {
 type OSList = {
   versions: Versions[];
   id?: number;
-  icon: React.ReactNode;
+  icon?: React.ReactNode;
   title: string;
   version: string;
 };
@@ -154,7 +155,7 @@ export const RenderDetails = ({ plan }: { plan: PlanData }) => {
               title: fetchedItem.name,
               icon: osItem.icon,
             }));
-          return { ...osItem, versions };
+          return { ...osItem, versions, version: "" };
         });
 
         setOs(response?.data?.data);
@@ -229,18 +230,16 @@ export const RenderDetails = ({ plan }: { plan: PlanData }) => {
     [details?.os?.title]
   );
 
-  const RegionSelector = ({ value }: any) => {
+  const RegionSelector = ({ icon, title }: RegionItem) => {
     return (
       <div className="flex items-center justify-between border rounded-lg px-4 py-2 mt-2 ">
         <div className="flex items-center gap-2">
           <p className="text-xs font-medium text-gray-500">Region</p>
           <div className="pl-4 flex items-center gap-2">
             <div className="w-5 h-5 flex items-center justify-center">
-              {value?.icon && React.isValidElement(value.icon)
+              {icon && React.isValidElement(icon)
                 ? React.cloneElement(
-                    value.icon as React.ReactElement<
-                      React.SVGProps<SVGSVGElement>
-                    >,
+                    icon as React.ReactElement<React.SVGProps<SVGSVGElement>>,
                     {
                       width: "100%",
                       height: "100%",
@@ -248,7 +247,7 @@ export const RenderDetails = ({ plan }: { plan: PlanData }) => {
                   )
                 : null}
             </div>
-            <p className="text-sm font-medium">{value?.title}</p>
+            <p className="text-sm font-medium">{title}</p>
           </div>
         </div>
 
@@ -268,7 +267,7 @@ export const RenderDetails = ({ plan }: { plan: PlanData }) => {
   const RenderOSGrid = () => {
     if (loading) return <div className="">"Loading..."</div>;
 
-    return osList.map((item, index) => (
+    return osList.map((item: OSList, index) => (
       <div
         // className={`justify-center items-center`}
         key={index}
@@ -292,8 +291,6 @@ export const RenderDetails = ({ plan }: { plan: PlanData }) => {
       </div>
     ));
   };
-
-  console.log(details);
 
   return (
     <div className="py-2 gap-2 flex flex-col pr-0 lg:pr-6 w-full mb-20 sm:mb-0">
@@ -352,20 +349,21 @@ export const RenderDetails = ({ plan }: { plan: PlanData }) => {
           <div className="flex flex-col gap-2">
             <p className="font-medium text-sm">Select Region</p>
             <div className="grid grid-cols-3 gap-3">
-              {countryFlags.map((item, index) => (
+              {countryFlags.map((item: RegionItem, index: number) => (
                 <div
                   className={`flex gap-2 sm:gap-4 rounded-lg pl-2 lg:pl-4 xl:pl-8 py-3 items-center text-xs  ${
                     details.region?.title === item.title
                       ? " bg-gray-100"
                       : "border-gray-200 border"
                   } ${
-                    !isLocationAvailable(item.title)
+                    !isLocationAvailable(item.title ?? "")
                       ? "opacity-50 cursor-not-allowed"
                       : "cursor-pointer"
                   }`}
                   key={index}
                   onClick={() =>
-                    isLocationAvailable(item.title) && dispatch(setRegion(item))
+                    isLocationAvailable(item.title ?? "") &&
+                    dispatch(setRegion(item))
                   }
                 >
                   <div>{item.icon}</div>
@@ -378,7 +376,10 @@ export const RenderDetails = ({ plan }: { plan: PlanData }) => {
                 </div>
               ))}
             </div>
-            <RegionSelector value={details.region} />
+            <RegionSelector
+              title={details?.region?.title}
+              icon={details?.region?.icon}
+            />
           </div>
           <div className="flex flex-col gap-2">
             <p className="font-medium text-sm">RAID</p>

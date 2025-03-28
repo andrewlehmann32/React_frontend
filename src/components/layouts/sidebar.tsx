@@ -53,7 +53,7 @@ const SidebarHead = ({
     if (!activeProject && userProjects.length > 0) {
       const defaultProject = userProjects[0];
       setActiveWorkspace({
-        icon: defaultProject?.icon ?? "https://i.pravatar.cc/150?img=62",
+        icon: defaultProject?.icon || "https://i.pravatar.cc/150?img=62",
         name: defaultProject.name,
         createdAt: `Created ${calculateDaysFromDate(
           defaultProject.createdAt

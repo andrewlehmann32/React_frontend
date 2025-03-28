@@ -9,15 +9,16 @@ import React, { useEffect, useState } from "react";
 import { DROPDOWN_DIRECTION, OSItem } from "../../../constants/constants";
 import { Button } from "../../ui/button";
 
+type ItemsType = {
+  label: string;
+  title: string;
+  id: number;
+  value?: string;
+  disabled?: boolean;
+  icon?: React.ReactNode;
+};
 interface DropdownMenuProps {
-  items: {
-    label: string;
-    title?: string;
-    id?: number;
-    value?: string;
-    disabled?: boolean;
-    icon?: React.ReactNode;
-  }[];
+  items: ItemsType[];
   placeholder?: string;
   defaultValue?: string;
   value?: string;
@@ -34,14 +35,14 @@ export const OrderDropdownMenu = ({
   direction = DROPDOWN_DIRECTION.BOTTOM,
   onChange = () => {},
   disabled = false,
-}: DropdownMenuProps & { value?: string }) => {
+}: DropdownMenuProps) => {
   const [active, setActive] = useState(value ?? defaultValue ?? placeholder);
 
   useEffect(() => {
     if (value) setActive(value);
   }, [value]);
 
-  const handleSelect = (selectedValue: any) => {
+  const handleSelect = (selectedValue: ItemsType) => {
     setActive(selectedValue.title || selectedValue.label);
     onChange(selectedValue);
   };

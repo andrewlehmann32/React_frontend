@@ -21,8 +21,8 @@ export const registerSchema = z.object({
     .nonempty({
       message: "Password is required",
     })
-    .min(8, {
-      message: "Password must be at least 8 characters",
+    .min(12, {
+      message: "Password must be at least 12 characters",
     })
     .regex(/[A-Z]/, {
       message: "Password must contain at least one uppercase letter",

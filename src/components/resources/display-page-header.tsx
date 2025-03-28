@@ -36,6 +36,8 @@ interface DisplayPageHeaderProps {
   id: number;
   serverId: number;
   refetchDevices: () => void;
+  setDisableServerActions: (value: boolean) => void;
+  disableServerActions: boolean;
 }
 
 type ModalDataType = {
@@ -54,6 +56,7 @@ type ModalPropsType = {
   isModalOpen: boolean;
   modalData: ModalDataType;
   refetchDevices: () => void;
+  setDisableServerActions: (value: boolean) => void;
 };
 
 type DeleteModalPropsType = {
@@ -70,10 +73,14 @@ const RenderModal = ({
   modalData,
   refetchDevices,
   serverId,
+  setDisableServerActions,
 }: ModalPropsType) => {
   const [raid, setRaid] = useState("");
   const [sshItems, setSshItems] = useState<SSHItem[]>([]);
-  const [os, setOs] = useState<{ label: string; id: number }[]>([]);
+  const [sshKey, setSshKey] = useState<SSHItem>();
+  const [os, setOs] = useState<{ label: string; id: number; title: string }[]>(
+    []
+  );
   const [selectedOs, setSelectedOs] = useState<{ label: string; id: number }>();
   const [hostname, setHostname] = useState("");
   const [confirmationInput, setConfirmationInput] = useState("");
@@ -108,6 +115,7 @@ const RenderModal = ({
         const formattedOS = fetchedOS.map(
           (item: { name: string; id: number }) => ({
             label: item.name,
+            title: item.name,
             id: item.id,
           })
         );
@@ -123,6 +131,9 @@ const RenderModal = ({
   const handleReInstall = async () => {
     const payLoad = {
       template: selectedOs?.id,
+      ssh: sshKey?.key,
+      hostname: hostname,
+      projectName: currentProject?.name,
     };
 
     try {
@@ -137,14 +148,27 @@ const RenderModal = ({
       const response = await axios(config);
 
       if (response.status === 200) {
-        toast.success(response?.data?.message);
+        if (response?.data?.data?.success === false) {
+          toast.error(response?.data?.data?.message);
+        } else {
+          toast.success(response?.data?.message);
+        }
         setIsModalOpen(false);
+        setDisableServerActions(true);
         refetchDevices();
       }
     } catch (error) {
       console.error(error);
       toast.error("Something went wrong");
     }
+  };
+
+  const handleInputChange = (label: string) => {
+    const filteredSsh = sshItems
+      .map((item) => ({ name: item.label, key: item.key }))
+      .find((item) => item.name === label);
+    if (filteredSsh)
+      setSshKey({ label: filteredSsh.name, key: filteredSsh.key });
   };
 
   return (
@@ -180,7 +204,11 @@ const RenderModal = ({
         <div>
           <p className="text-gray-500 text-sm font-medium mb-2">SSH Keys</p>
           <div className="flex items-center justify-between gap-2 w-full text-gray-500 ">
-            <RDropdownMenu items={sshItems} placeholder="SSH" />
+            <RDropdownMenu
+              items={sshItems}
+              placeholder="SSH"
+              onChange={(value) => handleInputChange(value)}
+            />
           </div>
         </div>
 
@@ -308,11 +336,15 @@ const RenderServerActions = ({
   resourceId,
   setIsModalOpen,
   setIsDeleteModalOpen,
+  refetchDevices,
+  disableServerActions,
 }: {
   serverId: number;
   resourceId: number;
   setIsModalOpen: (value: boolean) => void;
   setIsDeleteModalOpen: (value: boolean) => void;
+  refetchDevices: () => void;
+  disableServerActions: boolean;
 }) => {
   const [isActive, setIsActive] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -320,15 +352,18 @@ const RenderServerActions = ({
   const handleApiCall = async (value: string) => {
     try {
       let apiUrl;
+      let reFetch = false;
       let successMessage;
       let method = "POST";
 
       if (value === "Start") {
         apiUrl = `${environment.VITE_API_URL}/ordering/${serverId}/boot`;
         successMessage = "Server started successfully";
+        reFetch = true;
       } else if (value === "Stop") {
         apiUrl = `${environment.VITE_API_URL}/ordering/${serverId}/shutdown`;
         successMessage = "Server stopped successfully";
+        reFetch = true;
       } else if (value === "Novnc") {
         apiUrl = `${environment.VITE_API_URL}/ordering/${serverId}/novnc`;
         successMessage = "NoVNC Successful";
@@ -336,6 +371,7 @@ const RenderServerActions = ({
       } else {
         apiUrl = `${environment.VITE_API_URL}/ordering/${serverId}/reboot`;
         successMessage = "Server rebooted successfully";
+        reFetch = true;
       }
 
       const config = {
@@ -352,7 +388,15 @@ const RenderServerActions = ({
       const response = await axios(config);
 
       if (response.status === 200) {
-        toast.success(successMessage);
+        if (value === "Novnc") {
+          const url = response?.data?.data?.result?.url;
+          if (url.length) {
+            window.open(url, "_blank");
+          }
+        } else {
+          toast.success(successMessage);
+          if (reFetch) refetchDevices();
+        }
       }
     } catch (error) {
       console.error(error);
@@ -437,7 +481,10 @@ const RenderServerActions = ({
 
   return (
     <div className="relative" ref={dropdownRef}>
-      <Button onClick={() => setIsActive(!isActive)}>
+      <Button
+        onClick={() => setIsActive(!isActive)}
+        disabled={disableServerActions}
+      >
         Server Actions <IoIosArrowDown />
       </Button>
       {isActive && (
@@ -466,6 +513,8 @@ export const DisplayPageHeader = ({
   id,
   serverId,
   refetchDevices,
+  disableServerActions,
+  setDisableServerActions,
 }: DisplayPageHeaderProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -481,6 +530,8 @@ export const DisplayPageHeader = ({
         serverId={serverId}
         setIsModalOpen={setIsModalOpen}
         setIsDeleteModalOpen={setIsDeleteModalOpen}
+        refetchDevices={refetchDevices}
+        disableServerActions={disableServerActions}
       />
       <RenderModal
         isModalOpen={isModalOpen}
@@ -488,6 +539,7 @@ export const DisplayPageHeader = ({
         setIsModalOpen={setIsModalOpen}
         modalData={modalData}
         refetchDevices={refetchDevices}
+        setDisableServerActions={setDisableServerActions}
       />
       <RenderDeleteModal
         id={id}
