@@ -1,5 +1,6 @@
 import { useState } from "react";
 import toast from "react-hot-toast";
+import { FaRegTrashAlt } from "react-icons/fa";
 import { environment } from "../../config/environment";
 import { useAppDispatch, useAppSelector } from "../../hooks/redux";
 import axios from "../../lib/apiConfig";
@@ -17,32 +18,15 @@ import { Label } from "../ui/label";
 const AddKey = ({
   currentProject,
   dcimUserId,
+  fetchKeys,
 }: {
   currentProject: any;
   dcimUserId: number;
+  fetchKeys: () => void;
 }) => {
-  const dispatch = useAppDispatch();
   const [name, setName] = useState("");
   const [sshKey, setSshKey] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
-
-  const fetchKeys = async () => {
-    try {
-      const config = {
-        url: `${environment.VITE_API_URL}/projects/${currentProject._id}`,
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      };
-      const response = await axios(config);
-      if (response.status === 200) {
-        dispatch(setActiveProject(response.data.project));
-      }
-    } catch (error) {
-      console.error("Error fetching SSH Key:", error);
-    }
-  };
 
   const handleSaveKey = async () => {
     if (!name.length || !sshKey.length || !currentProject?._id) return;
@@ -118,9 +102,27 @@ const AddKey = ({
   );
 };
 
-const ListKeys = ({ sshKeys }: any) => {
+const ListKeys = ({ sshKeys, fetchKeys }: any) => {
+  const handleDelete = async (id: string) => {
+    try {
+      const config = {
+        url: `${environment.VITE_API_URL}/projects/ssh/${id}`,
+        method: "DELETE",
+      };
+      const response = await axios(config);
+      console.log(response);
+      if (response.status === 200) {
+        toast.success("SSH Key deleted successfully");
+        fetchKeys();
+      }
+    } catch (error: any) {
+      console.error("Error deleting SSH Key:", error);
+      toast.error(error?.response?.data?.message);
+    }
+  };
+
   const tableData = {
-    headers: ["Name", "SSH Key", "Created", "ID"],
+    headers: ["Name", "SSH Key", "Created", "ID", "Action"],
     body: sshKeys?.length
       ? sshKeys.map((key: any) => ({
           name: key.name,
@@ -128,6 +130,17 @@ const ListKeys = ({ sshKeys }: any) => {
             key.key.length > 30 ? `${key.key.substring(0, 30)}...` : key.key,
           created: new Date(key.createdAt).toLocaleDateString(),
           id: key._id,
+          action: (
+            <div
+              onClick={() => handleDelete(key._id)}
+              className="flex flex-wrap justify-start items-center p-1"
+            >
+              <FaRegTrashAlt
+                size={16}
+                className=" text-xs text-red-700 hover:text-red-800  cursor-pointer "
+              />
+            </div>
+          ),
         }))
       : [],
   };
@@ -140,6 +153,7 @@ const ListKeys = ({ sshKeys }: any) => {
 };
 
 export const Main = () => {
+  const dispatch = useAppDispatch();
   const currentProject = useAppSelector(selectActiveProject);
   const { user } = useAppSelector(selectUser);
   if (!user || !currentProject)
@@ -150,10 +164,33 @@ export const Main = () => {
         </p>
       </div>
     );
+
+  const fetchKeys = async () => {
+    try {
+      const config = {
+        url: `${environment.VITE_API_URL}/projects/${currentProject._id}`,
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      };
+      const response = await axios(config);
+      if (response.status === 200) {
+        dispatch(setActiveProject(response.data.project));
+      }
+    } catch (error) {
+      console.error("Error fetching SSH Key:", error);
+    }
+  };
+
   return (
     <div className="py-2 gap-4 flex flex-col pr-0 lg:pr-6 w-full">
-      <AddKey currentProject={currentProject} dcimUserId={user.dcimUserId} />
-      <ListKeys sshKeys={currentProject?.sshKeys} />
+      <AddKey
+        currentProject={currentProject}
+        dcimUserId={user.dcimUserId}
+        fetchKeys={fetchKeys}
+      />
+      <ListKeys sshKeys={currentProject?.sshKeys} fetchKeys={fetchKeys} />
     </div>
   );
 };

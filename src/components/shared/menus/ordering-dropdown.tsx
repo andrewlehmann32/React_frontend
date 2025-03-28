@@ -42,11 +42,7 @@ export const OrderDropdownMenu = ({
   }, [value]);
 
   const handleSelect = (selectedValue: any) => {
-    setActive(selectedValue.title);
-=======
-  const handleSelect = (selectedValue: any) => {
     setActive(selectedValue.title || selectedValue.label);
->>>>>>> Stashed changes
     onChange(selectedValue);
   };
 

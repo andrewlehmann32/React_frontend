@@ -1,6 +1,7 @@
 // Imports:
 import { createBrowserRouter } from "react-router-dom";
 import App from "../App";
+import ForgotPassword from "../components/modules/forget-password";
 import NotFound from "../components/not-found";
 import Activity from "../pages/activity-log";
 import AdminClients from "../pages/admin-pages/clients";
@@ -97,6 +98,15 @@ const router = createBrowserRouter([
         path: "/not-found",
         element: <NotFound />,
       },
+      {
+        path: "/reset-password",
+        element: <ForgotPassword />,
+      },
+      {
+        path: "/verify-email",
+        element: <ForgotPassword />,
+      },
+
       {
         path: "/ordering",
         element: (

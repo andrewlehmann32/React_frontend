@@ -4,9 +4,14 @@ import toast from "react-hot-toast";
 import { FcGoogle } from "react-icons/fc";
 import { useNavigate } from "react-router-dom";
 import { z } from "zod";
-import { useLoginContext, useRegisterContext } from "../../../contexts/auth";
+import { environment } from "../../../config/environment";
+import {
+  useLoginContext,
+  useRegisterContext,
+  useResetContext,
+} from "../../../contexts/auth";
 import { useAppDispatch } from "../../../hooks/redux";
-import { setAuthHeader } from "../../../lib/apiConfig";
+import axios, { setAuthHeader } from "../../../lib/apiConfig";
 import firebase from "../../../lib/firebase";
 import {
   useGoogleMutation,
@@ -24,24 +29,17 @@ import {
   registerUserStart,
 } from "../../../redux/reducer/userSlice";
 import {
-  authKeys,
   loginSchema,
   registerSchema,
+  resetSchema,
 } from "../../../schemas/auth-schema";
 import { Divider } from "../../generics/divider";
-import { GenericInput } from "../../generics/input";
 import { Button } from "../../ui/button";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormMessage,
-} from "../../ui/form";
+import { LoginForm, RegisterForm, ResetForm } from "./forms";
 
 type AuthProps = {
-  type: "login" | "register";
-  setFormState: (state: "login" | "register") => void;
+  type: "login" | "register" | "reset";
+  setFormState: (state: "login" | "register" | "reset") => void;
 };
 
 // PARTIALS -
@@ -51,6 +49,7 @@ const provider = new GoogleAuthProvider();
 export const Auth = ({ type, setFormState }: AuthProps) => {
   const { formHook: registerFormHook } = useRegisterContext();
   const { formHook: loginFormHook } = useLoginContext();
+  const { formHook: resetFormHook } = useResetContext();
   const [Google] = useGoogleMutation();
   const [Register] = useRegisterMutation();
   const [Login] = useLoginMutation();
@@ -74,6 +73,7 @@ export const Auth = ({ type, setFormState }: AuthProps) => {
 
       if (data?.success) {
         toast.success("Registered successfully");
+        toast.success("An Email with verification link has sent to you");
         dispatch(registerUser(data?.user));
         registerFormHook.reset();
         handleFormState();
@@ -172,99 +172,81 @@ export const Auth = ({ type, setFormState }: AuthProps) => {
     }
   }
 
+  // Login Handler:
+  async function onReset(value: z.infer<typeof resetSchema>) {
+    dispatch(loadUserStart());
+
+    try {
+      const response = await axios.post(
+        `${environment.VITE_API_URL}/user/reset-password`,
+        {
+          email: value.email,
+        }
+      );
+      if (response.data?.success) {
+        toast.success("Please check your email to reset your password");
+        navigate("/", {
+          replace: true,
+        });
+        resetFormHook.reset();
+        return;
+      }
+    } catch (error) {
+      const message =
+        error instanceof Error ? error.message : "Something went wrong";
+      toast.error(message);
+      dispatch(loadUserFailure(message));
+      dispatch(clearMessage());
+      dispatch(clearError());
+    }
+  }
+
   return (
-    <div className="container w-full h-full overflow-hidden space-y-10 flex flex-col justify-center">
-      <div className="w-full text-wrap overflow-auto space-y-2 font-inter">
+    <div className="container w-full h-full overflow-hidden space-y-4 lg:space-y-10 flex flex-col justify-center">
+      <div className="w-full text-wrap space-y-2 font-inter">
         <h1 className="font-semibold text-2xl sm:text-3xl md:text-4xl">
-          {type === "login" ? "Let's Login" : "Let's Register"}
+          {type === "reset"
+            ? "Let's reset your password"
+            : type === "login"
+            ? "Let's Login"
+            : "Let's Register"}
         </h1>
         <p className="text-sm sm:text-base md:text-md font-medium text-[#000000b3]">
-          Please provide your {type === "login" ? "login" : "registeration"}{" "}
-          details below
+          Please provide your{" "}
+          {type === "reset"
+            ? "email"
+            : type === "login"
+            ? "login details"
+            : "registeration details"}{" "}
+          below
         </p>
       </div>
+      {type !== "reset" && (
+        <>
+          <div className="w-full">
+            <Button
+              className="w-full max-w-full"
+              variant={"outline"}
+              onClick={googleHandler}
+            >
+              <FcGoogle />
+              {type === "login" ? "Login with Google" : "Register with Google"}
+            </Button>
+          </div>
 
-      <div className="w-full">
-        <Button
-          className="w-full max-w-full"
-          variant={"outline"}
-          onClick={googleHandler}
-        >
-          <FcGoogle />
-          {type === "login" ? "Login with Google" : "Register with Google"}
-        </Button>
-      </div>
+          <Divider label="or continue with" />
+        </>
+      )}
 
-      <Divider label="or continue with" />
+      {type === "reset" ? (
+        <ResetForm onReset={onReset} />
+      ) : type === "login" ? (
+        <LoginForm onLogin={onLogin} setFormState={setFormState} />
+      ) : (
+        <RegisterForm onRegister={onRegister} />
+      )}
 
-      <Form {...(type === "login" ? loginFormHook : registerFormHook)}>
-        <div className="space-y-5">
-          <FormField
-            control={
-              type === "login"
-                ? loginFormHook.control
-                : registerFormHook.control
-            }
-            name={authKeys.EMAIL}
-            render={({ field }) => (
-              <FormItem>
-                <FormControl>
-                  <GenericInput
-                    type="email"
-                    placeholder="Enter your email address"
-                    label="Email"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage id={`${type}-${authKeys.EMAIL}`} />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={
-              type === "login"
-                ? loginFormHook.control
-                : registerFormHook.control
-            }
-            name={authKeys.PASSWORD}
-            render={({ field }) => (
-              <FormItem>
-                <FormControl>
-                  <GenericInput
-                    type="password"
-                    placeholder="Enter your password"
-                    label="Password"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage id={`${type}-${authKeys.PASSWORD}`} />
-              </FormItem>
-            )}
-          />
-        </div>
-
-        <div className="w-full">
-          <Button
-            className="w-full max-w-full"
-            type="submit"
-            disabled={
-              type === "login"
-                ? !loginFormHook.formState.isValid
-                : !registerFormHook.formState.isValid
-            }
-            onClick={
-              type === "login"
-                ? loginFormHook.handleSubmit(onLogin)
-                : registerFormHook.handleSubmit(onRegister)
-            }
-          >
-            {type === "login" ? "Login" : "Register"}
-          </Button>
-        </div>
-      </Form>
-
-      <div className="w-full space-x-1 font-medium text-xs sm:text-sm md:text-base text-center sm:text-left">
+      <div className="w-full space-x-1 font-medium text-xs sm:text-sm md:text-base text-center sm:text-left pb-1">
         <span className=" text-[#00000080]">
           {type === "login"
             ? "Don’t have an account?"

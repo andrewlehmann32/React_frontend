@@ -6,8 +6,12 @@ import {
   authKeys,
   loginSchema,
   registerSchema,
+  resetPSchema,
+  resetSchema,
   TLoginSchema,
   TRegisterSchema,
+  TResetPSchema,
+  TResetSchema,
 } from "../../schemas/auth-schema";
 import { TGenericProps } from "../../types/generics.types";
 
@@ -39,6 +43,33 @@ export function LoginFormProvider({ children }: TGenericProps) {
   return <FormProvider {...form}>{children}</FormProvider>;
 }
 
+// Login Form Provider:
+export function ResetFormProvider({ children }: TGenericProps) {
+  const form = useForm<TResetSchema>({
+    resolver: zodResolver(resetSchema),
+    defaultValues: {
+      [authKeys.EMAIL]: "",
+    },
+    mode: "onChange",
+  });
+
+  return <FormProvider {...form}>{children}</FormProvider>;
+}
+
+// Login Form Provider:
+export function ResetPasswordProvider({ children }: TGenericProps) {
+  const form = useForm<TResetPSchema>({
+    resolver: zodResolver(resetPSchema),
+    defaultValues: {
+      [authKeys.PASSWORD]: "",
+      [authKeys.CONFIRM_PASSWORD]: "",
+    },
+    mode: "onChange",
+  });
+
+  return <FormProvider {...form}>{children}</FormProvider>;
+}
+
 // Register Context:
 export function useRegisterContext() {
   const formHook = useFormContext<TRegisterSchema>();
@@ -48,5 +79,17 @@ export function useRegisterContext() {
 // Login Context:
 export function useLoginContext() {
   const formHook = useFormContext<TLoginSchema>();
+  return useMemo(() => ({ formHook }), [formHook]);
+}
+
+// Reset Context:
+export function useResetContext() {
+  const formHook = useFormContext<TResetSchema>();
+  return useMemo(() => ({ formHook }), [formHook]);
+}
+
+// Reset Password Context:
+export function useResetPContext() {
+  const formHook = useFormContext<TResetSchema>();
   return useMemo(() => ({ formHook }), [formHook]);
 }
