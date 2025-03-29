@@ -60,21 +60,17 @@ export const Main = ({
         const bandwidthData = response?.data?.data?.result?.current_month;
 
         if (bandwidthData) {
-          const BW_IN = parseFloat(bandwidthData.BW_IN_BYTES) || 100;
-          const BW_OUT = parseFloat(bandwidthData.BW_OUT_BYTES) || 200;
-          const BW_IN_95 = parseFloat(bandwidthData["95TH_PERC_IN"]) || 350;
-          const BW_OUT_95 = parseFloat(bandwidthData["95TH_PERC_OUT"]) || 450;
+          const BW_IN = parseFloat(bandwidthData.BW_IN_BYTES) || 0;
+          const BW_OUT = parseFloat(bandwidthData.BW_OUT_BYTES) || 0;
+          const BW_IN_95 = parseFloat(bandwidthData["95TH_PERC_IN"]) || 0;
+          const BW_OUT_95 = parseFloat(bandwidthData["95TH_PERC_OUT"]) || 0;
           const BW_IN_BYTES =
             Math.round(
-              ((parseFloat(bandwidthData.BW_IN_BYTES) || 120000000) /
-                1024 ** 3) *
-                100
+              ((parseFloat(bandwidthData.BW_IN_BYTES) || 0) / 1024 ** 3) * 100
             ) / 100;
           const BW_OUT_BYTES =
             Math.round(
-              ((parseFloat(bandwidthData.BW_OUT_BYTES) || 240000000) /
-                1024 ** 3) *
-                100
+              ((parseFloat(bandwidthData.BW_OUT_BYTES) || 0) / 1024 ** 3) * 100
             ) / 100;
 
           const formattedData: ChartData[] = [

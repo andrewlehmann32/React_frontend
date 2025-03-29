@@ -29,7 +29,9 @@ const Resources = () => {
       if (!currentProject) return;
       try {
         const response = await axios.get(
-          `${environment.VITE_API_URL}/ordering/${currentProject?._id}`,
+          `${environment.VITE_API_URL}/ordering/${
+            currentProject?._id || currentProject
+          }`,
           {
             headers: {
               "Content-Type": "application/json",
