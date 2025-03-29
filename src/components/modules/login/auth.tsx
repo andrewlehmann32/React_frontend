@@ -180,7 +180,9 @@ export const Auth = ({ type, setFormState }: AuthProps) => {
         `${environment.VITE_API_URL}/user/verify-2fa`,
         {
           code: values[authKeys.TWO_FA_CODE],
-          userId: localStorage.getItem("id") ?? "",
+          userId: localStorage.getItem("id")
+            ? JSON.parse(localStorage.getItem("id") || "")
+            : "",
         }
       );
 
