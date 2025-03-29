@@ -15,7 +15,7 @@ const VerifyEmail = () => {
         if (!userId) return;
 
         const response = await axios.post(
-          `${environment.VITE_API_URL}/user/verify-email?${userId}`
+          `${environment.VITE_API_URL}/user/verify-email?userId=${userId}`
         );
 
         if (response.status === 200) {
@@ -34,7 +34,11 @@ const VerifyEmail = () => {
     verifyEmail();
   }, [userId, navigate]);
 
-  return <div>Loading....</div>;
+  return (
+    <div className="w-full items-center justify-center h-screen flex ">
+      <p className=" text-center">Loading....</p>
+    </div>
+  );
 };
 
 export default VerifyEmail;
