@@ -12,6 +12,8 @@ import {
   TRegisterSchema,
   TResetPSchema,
   TResetSchema,
+  TTwoFaSchema,
+  twoFaSchema,
 } from "../../schemas/auth-schema";
 import { TGenericProps } from "../../types/generics.types";
 
@@ -49,6 +51,19 @@ export function ResetFormProvider({ children }: TGenericProps) {
     resolver: zodResolver(resetSchema),
     defaultValues: {
       [authKeys.EMAIL]: "",
+    },
+    mode: "onChange",
+  });
+
+  return <FormProvider {...form}>{children}</FormProvider>;
+}
+
+// 2FA Form Provider:
+export function TwoFaFormProvider({ children }: TGenericProps) {
+  const form = useForm<TTwoFaSchema>({
+    resolver: zodResolver(twoFaSchema),
+    defaultValues: {
+      [authKeys.TWO_FA_CODE]: "",
     },
     mode: "onChange",
   });

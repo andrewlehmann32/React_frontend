@@ -7,12 +7,13 @@ import {
   LoginFormProvider,
   RegisterFormProvider,
   ResetFormProvider,
+  TwoFaFormProvider,
 } from "../../contexts/auth";
 
 export default function Home() {
-  const [formState, setFormState] = useState<"login" | "register" | "reset">(
-    "login"
-  );
+  const [formState, setFormState] = useState<
+    "login" | "register" | "reset" | "2fa"
+  >("login");
 
   return (
     <Wrapper>
@@ -28,10 +29,14 @@ export default function Home() {
             <LoginFormProvider>
               <Auth type={formState} setFormState={setFormState} />
             </LoginFormProvider>
-          ) : (
+          ) : formState === "register" ? (
             <RegisterFormProvider>
               <Auth type={formState} setFormState={setFormState} />
             </RegisterFormProvider>
+          ) : (
+            <TwoFaFormProvider>
+              <Auth type={formState} setFormState={setFormState} />
+            </TwoFaFormProvider>
           )
         }
         right={<AuthLayer />}

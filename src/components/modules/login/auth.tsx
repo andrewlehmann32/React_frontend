@@ -29,17 +29,19 @@ import {
   registerUserStart,
 } from "../../../redux/reducer/userSlice";
 import {
+  authKeys,
   loginSchema,
   registerSchema,
   resetSchema,
+  twoFaSchema,
 } from "../../../schemas/auth-schema";
 import { Divider } from "../../generics/divider";
 import { Button } from "../../ui/button";
-import { LoginForm, RegisterForm, ResetForm } from "./forms";
+import { LoginForm, RegisterForm, ResetForm, TwoFAForm } from "./forms";
 
 type AuthProps = {
-  type: "login" | "register" | "reset";
-  setFormState: (state: "login" | "register" | "reset") => void;
+  type: "login" | "register" | "reset" | "2fa";
+  setFormState: (state: "login" | "register" | "reset" | "2fa") => void;
 };
 
 // PARTIALS -
@@ -132,15 +134,58 @@ export const Auth = ({ type, setFormState }: AuthProps) => {
 
   // Login Handler:
   async function onLogin(values: z.infer<typeof loginSchema>) {
-    dispatch(loadUserStart());
-
     try {
       const { data, error } = await Login({
         email: values.email,
         password: values.password,
       });
-
+      console.log(data);
       if (data?.success) {
+        console.log("first");
+        toast.success(data?.message);
+        localStorage.setItem("id", JSON.stringify(data?.user?.id));
+        setFormState("2fa");
+        // toast.success("Logged in successfully");
+        // dispatch(loadUser(data?.user));
+        // setAuthHeader(data?.token);
+        // localStorage.setItem("token", data?.token);
+        // localStorage.setItem("userRole", data?.user?.role);
+        // localStorage.setItem("id", JSON.stringify(data?.user?._id));
+        // navigate(data?.user?.role === "admin" ? "/admin/home" : "/home", {
+        //   replace: true,
+        // });
+        loginFormHook.reset();
+      }
+
+      if (error) {
+        const { data } = error as unknown as { data: { message: string } };
+        toast.error(data?.message);
+        dispatch(clearError());
+        return;
+      }
+    } catch (error) {
+      const message =
+        error instanceof Error ? error.message : "Something went wrong";
+      toast.error(message);
+      dispatch(clearError());
+    }
+  }
+
+  //2FA Handler:
+  async function onConfirm(values: z.infer<typeof twoFaSchema>) {
+    dispatch(loadUserStart());
+
+    try {
+      const response = await axios.post(
+        `${environment.VITE_API_URL}/user/verify-2fa`,
+        {
+          code: values[authKeys.TWO_FA_CODE],
+          userId: localStorage.getItem("id") ?? "",
+        }
+      );
+
+      if (response.data?.success) {
+        const { data } = response;
         toast.success("Logged in successfully");
         dispatch(loadUser(data?.user));
         setAuthHeader(data?.token);
@@ -151,15 +196,6 @@ export const Auth = ({ type, setFormState }: AuthProps) => {
           replace: true,
         });
         loginFormHook.reset();
-        return;
-      }
-
-      if (error) {
-        const { data } = error as unknown as { data: { message: string } };
-        toast.error(data?.message);
-        dispatch(loadUserFailure(data?.message));
-        dispatch(clearMessage());
-        dispatch(clearError());
         return;
       }
     } catch (error) {
@@ -209,7 +245,9 @@ export const Auth = ({ type, setFormState }: AuthProps) => {
             ? "Let's reset your password"
             : type === "login"
             ? "Let's Login"
-            : "Let's Register"}
+            : type === "register"
+            ? "Let's Register"
+            : "Provide 2FA code sent to you"}
         </h1>
         <p className="text-sm sm:text-base md:text-md font-medium text-[#000000b3]">
           Please provide your{" "}
@@ -217,11 +255,13 @@ export const Auth = ({ type, setFormState }: AuthProps) => {
             ? "email"
             : type === "login"
             ? "login details"
-            : "registeration details"}{" "}
+            : type === "register"
+            ? "registeration details"
+            : "2FA code"}{" "}
           below
         </p>
       </div>
-      {type !== "reset" && (
+      {type !== "reset" && type !== "2fa" && (
         <>
           <div className="w-full">
             <Button
@@ -242,8 +282,10 @@ export const Auth = ({ type, setFormState }: AuthProps) => {
         <ResetForm onReset={onReset} />
       ) : type === "login" ? (
         <LoginForm onLogin={onLogin} setFormState={setFormState} />
-      ) : (
+      ) : type === "register" ? (
         <RegisterForm onRegister={onRegister} />
+      ) : (
+        <TwoFAForm onConfirm={onConfirm} />
       )}
 
       <div className="w-full space-x-1 font-medium text-xs sm:text-sm md:text-base text-center sm:text-left pb-1">

@@ -222,3 +222,45 @@ export const PasswordResetForm = ({ onConfirm }: any) => {
     </Form>
   );
 };
+
+export const TwoFAForm = ({ onConfirm }: any) => {
+  const { formHook } = useLoginContext();
+
+  if (!formHook) {
+    return <div>Loading...</div>;
+  }
+
+  return (
+    <Form {...formHook}>
+      <div className="space-y-5">
+        <FormField
+          name={authKeys.TWO_FA_CODE}
+          render={({ field }) => (
+            <FormItem>
+              <FormControl>
+                <GenericInput
+                  type="text"
+                  placeholder="Enter your 2FA code"
+                  label="Code"
+                  {...field}
+                />
+              </FormControl>
+              <FormMessage id={`twofa-${authKeys.TWO_FA_CODE}`} />
+            </FormItem>
+          )}
+        />
+
+        <div className="w-full">
+          <Button
+            className="w-full max-w-full"
+            type="submit"
+            disabled={!formHook.formState.isValid}
+            onClick={formHook.handleSubmit(onConfirm)}
+          >
+            Confirm
+          </Button>
+        </div>
+      </div>
+    </Form>
+  );
+};

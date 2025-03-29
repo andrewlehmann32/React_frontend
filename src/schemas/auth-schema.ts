@@ -4,7 +4,8 @@ import * as z from "zod";
 export enum authKeys {
   EMAIL = "email",
   PASSWORD = "password",
-  CONFIRM_PASSWORD = 'confirm_password'
+  CONFIRM_PASSWORD = 'confirm_password',
+  TWO_FA_CODE = 'two_fa_code'
 }
 
 export const registerSchema = z.object({
@@ -64,6 +65,17 @@ export const resetSchema = z.object({
     }),
 });
 
+export const twoFaSchema = z.object({
+  [authKeys.TWO_FA_CODE]: z
+    .string()
+    .nonempty({
+      message: "6 digit code is required",
+    })
+    .min(6, {
+      message: "6 digit code is required",
+    })
+});
+
 export const resetPSchema = z.object({
   [authKeys.PASSWORD]: z.string().min(1, {
     message: "Password is required",
@@ -81,3 +93,4 @@ export type TRegisterSchema = z.infer<typeof registerSchema>;
 export type TLoginSchema = z.infer<typeof loginSchema>;
 export type TResetSchema = z.infer<typeof resetSchema>;
 export type TResetPSchema = z.infer<typeof resetPSchema>;
+export type TTwoFaSchema = z.infer<typeof twoFaSchema>;
