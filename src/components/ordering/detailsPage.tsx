@@ -191,10 +191,11 @@ export const RenderDetails = ({ plan }: { plan: PlanData }) => {
         osName: details.os?.version,
         raid: details.raid,
         billing: details.billing,
-        projectId: currentProject?._id,
+        projectId: currentProject?._id || currentProject,
         clientId: user?.dcimUserId,
         ssh: details.ssh,
         planId: plan._id,
+        createdBy: user?._id,
       };
 
       const config = {

@@ -1,8 +1,24 @@
-import { useState } from "react";
-import { Chart } from "../generics/chart";
+import { useEffect, useState } from "react";
+import { environment } from "../../config/environment";
+import { useAppSelector } from "../../hooks/redux";
+import axios from "../../lib/apiConfig";
+import { selectUser } from "../../redux/selectors/userSelector";
+import { SpecificationsChart } from "../resources/specifications-chart";
+import { ChartData } from "./trafficChart";
 
-const DisplayTabs = () => {
-  const [selected, setSelected] = useState("Month");
+export interface SpendType {
+  dailySpend?: { current: number; expected: number };
+  monthlySpend?: { current: number; expected: number };
+  yearlySpend?: { current: number; expected: number };
+}
+
+const DisplayTabs = ({
+  selected,
+  setSelected,
+}: {
+  selected: string;
+  setSelected: (value: string) => void;
+}) => {
   const items = ["Day", "Month", "Year"];
   const selectedStyles = "bg-white shadow-md hover:bg-white";
   return (
@@ -25,24 +41,64 @@ const DisplayTabs = () => {
 };
 
 export const MonthlySpendage = () => {
+  const { user } = useAppSelector(selectUser);
+  const [spendage, setSpendage] = useState<SpendType>();
+  const [selectedTab, setSelectedTab] = useState("Month");
+
+  useEffect(() => {
+    const fetchMonthlySpendage = async () => {
+      try {
+        const response = await axios.get(
+          `${environment.VITE_API_URL}/ordering/${user?._id}/spendage`
+        );
+        setSpendage(response?.data?.data);
+      } catch (error) {
+        console.error("Error fetching projects:", error);
+      }
+    };
+    fetchMonthlySpendage();
+  }, []);
+
+  const getChartData = (): ChartData[] => {
+    const mapSpendage = (current: number, expected: number): ChartData[] => [
+      { name: "Current", value: current },
+      { name: "Expected", value: expected },
+    ];
+
+    if (selectedTab === "Day") {
+      return spendage?.dailySpend
+        ? mapSpendage(spendage.dailySpend.current, spendage.dailySpend.expected)
+        : [];
+    } else if (selectedTab === "Month") {
+      return spendage?.monthlySpend
+        ? mapSpendage(
+            spendage.monthlySpend.current,
+            spendage.monthlySpend.expected
+          )
+        : [];
+    } else if (selectedTab === "Year") {
+      return spendage?.yearlySpend
+        ? mapSpendage(
+            spendage.yearlySpend.current,
+            spendage.yearlySpend.expected
+          )
+        : [];
+    }
+    return [];
+  };
+
   return (
     <div className="flex flex-col gap-2 text-gray-800 font-medium h-full w-full">
       <div className="flex justify-between items-end ">
-        <h1>Monthly Spendage</h1>
-        <DisplayTabs />
+        <h1>{selectedTab} Spendage</h1>
+        <DisplayTabs selected={selectedTab} setSelected={setSelectedTab} />
       </div>
       <div className="flex flex-col border rounded-md px-3 sm:px-6  h-full max-h-96">
         <div className="flex flex-col text-gray-500 text-sm pt-4 font-normal">
-          <h4>Monthly Spend</h4>
-          <div className="flex gap-16 flex-wrap items-center pt-2">
-            <span className="font-semibold text-gray-800">$8.81</span>
-            <div className="flex bg-gray-100 px-2 py-1 rounded-sm text-xs ">
-              Projected Spend: <span className="px-3">$14.4</span>
-            </div>
-          </div>
+          <h4>{selectedTab} Spend</h4>
         </div>
         <div>
-          <Chart />
+          <SpecificationsChart layout="vertical" chartData={getChartData()} />
         </div>
       </div>
     </div>

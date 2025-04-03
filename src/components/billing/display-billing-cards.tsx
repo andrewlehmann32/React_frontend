@@ -1,10 +1,14 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { environment } from "../../config/environment";
 import { useAppDispatch, useAppSelector } from "../../hooks/redux";
 import axios from "../../lib/apiConfig";
 import { setActiveProject } from "../../redux/reducer/userSlice";
-import { selectActiveProject } from "../../redux/selectors/userSelector";
+import {
+  selectActiveProject,
+  selectUser,
+} from "../../redux/selectors/userSelector";
+import { SpendType } from "../dashboard/monthlySpendage";
 import { CreditsModal } from "../shared/modals/credits-modal";
 
 const RenderBillingCards = ({ cardItems }: { cardItems: any[] }) => {
@@ -36,10 +40,26 @@ const RenderBillingCards = ({ cardItems }: { cardItems: any[] }) => {
 };
 
 export const DisplayBillCards = () => {
+  const { user } = useAppSelector(selectUser);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [newCredits, setNewCredits] = useState("");
+  const [spendage, setSpendage] = useState<SpendType>();
   const currentProject = useAppSelector(selectActiveProject);
   const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    const fetchMonthlySpendage = async () => {
+      try {
+        const response = await axios.get(
+          `${environment.VITE_API_URL}/ordering/${user?._id}/spendage`
+        );
+        setSpendage(response?.data?.data);
+      } catch (error) {
+        console.error("Error fetching projects:", error);
+      }
+    };
+    fetchMonthlySpendage();
+  }, []);
 
   const getMonthRange = () => {
     const now = new Date();
@@ -61,13 +81,13 @@ export const DisplayBillCards = () => {
     {
       title: "Current Bill",
       subTitle: "As of today",
-      amount: "$133.18",
+      amount: `$${spendage?.monthlySpend?.current || "-"}`,
       action: () => {},
     },
     {
       title: "Estimated Monthly Bill",
       subTitle: getMonthRange(),
-      amount: "$143.18",
+      amount: `$${spendage?.monthlySpend?.expected || "-"}`,
       action: () => {},
     },
   ];
@@ -77,7 +97,9 @@ export const DisplayBillCards = () => {
     try {
       const credit = (currentProject.credit ?? 0) + Number(newCredits);
       const response = await axios.put(
-        `${environment.VITE_API_URL}/projects/update-project/${currentProject._id}`,
+        `${environment.VITE_API_URL}/projects/update-project/${
+          currentProject._id || currentProject
+        }`,
         { credit }
       );
       if (response.status === 200 && response.data?.project) {
