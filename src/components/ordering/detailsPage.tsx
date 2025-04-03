@@ -195,7 +195,6 @@ export const RenderDetails = ({ plan }: { plan: PlanData }) => {
         clientId: user?.dcimUserId,
         ssh: details.ssh,
         planId: plan._id,
-        createdBy: user?._id,
       };
 
       const config = {
