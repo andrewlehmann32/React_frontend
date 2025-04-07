@@ -31,8 +31,8 @@ export const TrafficChart = ({ layout = "vertical" }: TrafficChartProps) => {
         const bandwidthData = response?.data?.data?.result?.current_month;
 
         if (bandwidthData) {
-          const BW_IN = parseFloat(bandwidthData.BW_IN) || 0.01;
-          const BW_OUT = parseFloat(bandwidthData.BW_OUT) || 0.01;
+          const BW_IN = parseFloat(bandwidthData.BW_IN) || 0.0;
+          const BW_OUT = parseFloat(bandwidthData.BW_OUT) || 0.0;
 
           const formattedData: ChartData[] = [
             { name: "Inbound", value: BW_IN },

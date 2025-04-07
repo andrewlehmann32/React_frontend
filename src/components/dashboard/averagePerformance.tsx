@@ -1,19 +1,46 @@
+import axios from "axios";
+import { useEffect, useState } from "react";
 import { MdOutlineArrowOutward } from "react-icons/md";
-
-const items = [
-  {
-    name: "Ram Deployed",
-    storage: "12.5 GB",
-    percentage: "13%",
-  },
-  {
-    name: "Cores Deployed",
-    storage: "10.5 GB",
-    percentage: "19%",
-  },
-];
+import { useNavigate } from "react-router-dom";
+import { environment } from "../../config/environment";
+import { useAppSelector } from "../../hooks/redux";
+import { selectUser } from "../../redux/selectors/userSelector";
 
 export const AveragePerformance = () => {
+  const navigate = useNavigate();
+  const { user } = useAppSelector(selectUser);
+  const [items, setItems] = useState([
+    { name: "Ram Deployed", value: "N/A" },
+    { name: "Cores Deployed", value: "N/A" },
+  ]);
+
+  useEffect(() => {
+    const fetchPerformanceData = async () => {
+      try {
+        const response = await axios.get(
+          `${environment.VITE_API_URL}/ordering/${user?._id}/performance`
+        );
+
+        const { totalRam, totalCores } = response?.data?.data ?? {
+          totalRam: "N/A",
+          totalCores: "N/A",
+        };
+
+        console.log({ response });
+        setItems([
+          { name: "Ram Deployed", value: `${totalRam} GB` },
+          {
+            name: "Cores Deployed",
+            value: `${totalCores} Cores`,
+          },
+        ]);
+      } catch (error) {
+        console.error("Error fetching performance data:", error);
+      }
+    };
+    fetchPerformanceData();
+  }, []);
+
   return (
     <div className="flex flex-col gap-2 text-gray-800 font-medium mb-20 sm:mb-0 h-full w-full">
       <h1>Average Performance</h1>
@@ -26,11 +53,7 @@ export const AveragePerformance = () => {
             >
               <p className="text-gray-500">{item.name}</p>
               <div className="flex flex-wrap gap-3 items-center">
-                <p className="font-semibold text-lg">{item.storage}</p>
-                {/* <span className="bg-green-100 text-[10px] text-green-600 h-fit px-1 py-[2px] rounded-full flex items-center">
-                  <MdOutlineArrowOutward className="text-sm" />
-                  {item.percentage}
-                </span> */}
+                <p className="font-semibold text-lg">{item.value}</p>
               </div>
             </div>
           ))}
@@ -46,7 +69,13 @@ export const AveragePerformance = () => {
           </p>
           <div className="flex text-xs items-center gap-6">
             <div className="px-4 text-sm items-center py-2 flex gap-3 bg-white text-black  rounded-lg">
-              <span> Order Now</span>
+              <span
+                className="cursor-pointer"
+                onClick={() => navigate("/ordering")}
+              >
+                {" "}
+                Order Now
+              </span>
               <MdOutlineArrowOutward />
             </div>
             <p>
