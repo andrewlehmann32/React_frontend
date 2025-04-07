@@ -100,9 +100,9 @@ export const DisplayPaymentMethods = () => {
         toast.success("Payment method deleted successfully");
         fetchAndDispatchProjects();
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
-      toast.error("An error occurred while deleting the payment method");
+      toast.error(error?.response?.data?.message);
     }
   };
 

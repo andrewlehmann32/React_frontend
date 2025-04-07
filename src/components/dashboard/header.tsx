@@ -27,7 +27,7 @@ export const Header = ({ title }: { title: string }) => {
         </ol>
       </div>
       <div className="flex gap-2 items-center w-full sm:w-fit justify-end sm:justify-between ">
-        <div className="relative">
+        {/* <div className="relative">
           <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
             <svg
               className="w-4 h-4 text-gray-500"
@@ -51,7 +51,7 @@ export const Header = ({ title }: { title: string }) => {
             className="block w-full min-w-80 p-2 ps-10 text-sm text-gray-900 rounded-lg bg-gray-100 focus:ring-blue-500 focus:border-blue-500  "
             placeholder="Search"
           />
-        </div>
+        </div> */}
         <GoBellFill className="h-6 w-6 text-gray-600" />
       </div>
     </div>

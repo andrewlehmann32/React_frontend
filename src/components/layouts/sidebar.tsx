@@ -22,21 +22,28 @@ import {
   selectUser,
   selectUserProjects,
 } from "../../redux/selectors/userSelector";
-import { ProjectsType } from "../../types/generics.types";
+import { ProjectsType, User } from "../../types/generics.types";
 import { AddTeam } from "../generics/add-team";
 import { DotsDropdown } from "../shared/menus/simple-dropdown";
-import { DropdownMenu, DropdownMenuTrigger } from "../ui/dropdown-menu";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "../ui/dropdown-menu";
 
 type SidebarHeaderProps = {
   userProjects: ProjectsType[];
   activeProject: ProjectsType;
   isSidebarCollapsed: boolean;
+  user: User;
 };
 
 const SidebarHead = ({
   userProjects,
   activeProject,
   isSidebarCollapsed,
+  user,
 }: SidebarHeaderProps) => {
   const dispatch = useAppDispatch();
   const [isWorkspaceActive, setIsWorkspaceActive] = useState(!!activeProject);
@@ -64,15 +71,15 @@ const SidebarHead = ({
     }
   }, [activeProject, userProjects, dispatch]);
 
-  // const handleWorkspace = (item: any) => {
-  //   setIsWorkspaceActive(true);
-  //   setActiveWorkspace({
-  //     icon: item?.icon ?? "https://i.pravatar.cc/150?img=62",
-  //     name: item.name,
-  //     createdAt: `Created ${calculateDaysFromDate(item.createdAt)} days ago`,
-  //   });
-  //   dispatch(setActiveProject(item));
-  // };
+  const handleWorkspace = (item: any) => {
+    setIsWorkspaceActive(true);
+    setActiveWorkspace({
+      icon: item?.icon ?? "",
+      name: item.name,
+      createdAt: `Created ${calculateDaysFromDate(item.createdAt)} days ago`,
+    });
+    dispatch(setActiveProject(item));
+  };
 
   const RenderWorkSpace = () => {
     if (!isWorkspaceActive)
@@ -121,6 +128,24 @@ const SidebarHead = ({
     );
   };
 
+  const userHasProjectCreated = userProjects.some(
+    (item: any) => item.createdBy === user._id
+  );
+
+  const RenderCreateButton = () => {
+    if (userHasProjectCreated) return null;
+    return (
+      <DropdownMenuItem className="px-0 lg:px-1">
+        <p
+          className="text-center text-sm font-medium text-gray-500 cursor-pointer px-2"
+          onClick={() => setIsModalOpen(true)}
+        >
+          + Create new team
+        </p>
+      </DropdownMenuItem>
+    );
+  };
+
   return (
     <div className="flex items-center text-gray-700 pb-4">
       <DropdownMenu>
@@ -136,7 +161,7 @@ const SidebarHead = ({
 
         {/* TODO: Feature for Later */}
 
-        {/* <DropdownMenuContent className="w-[--radix-popper-anchor-width] divide-y min-w-48">
+        <DropdownMenuContent className="w-[--radix-popper-anchor-width] divide-y min-w-48">
           {userProjects.map((item: any, index: number) => {
             const daysSinceCreated = calculateDaysFromDate(item.createdAt);
             return (
@@ -161,16 +186,8 @@ const SidebarHead = ({
               </DropdownMenuItem>
             );
           })}
-
-          <DropdownMenuItem className="px-0 lg:px-1">
-            <p
-              className="text-center text-sm font-medium text-gray-500 cursor-pointer px-2"
-              onClick={() => setIsModalOpen(true)}
-            >
-              + Create new team
-            </p>
-          </DropdownMenuItem>
-        </DropdownMenuContent> */}
+          <RenderCreateButton />
+        </DropdownMenuContent>
       </DropdownMenu>
 
       <AddTeam isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} />
@@ -281,6 +298,7 @@ const Sidebar = () => {
               userProjects={userProjects as ProjectsType[]}
               activeProject={activeProject as ProjectsType}
               isSidebarCollapsed={isCollapsed}
+              user={user as User}
             />
           )}
           <div className=" text-sm text-gray-700">

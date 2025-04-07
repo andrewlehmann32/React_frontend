@@ -23,6 +23,10 @@ export const InviteMembers = ({
 
   if (!isActive) return null;
   const sendInvite = async (email: string) => {
+    if (!email) {
+      toast.error("Please enter an email address");
+      return;
+    }
     try {
       const config = {
         url: `${environment.VITE_API_URL}/members/sendInvite`,

@@ -216,7 +216,7 @@ export const Auth = ({ type, setFormState }: AuthProps) => {
 
     try {
       const response = await axios.post(
-        `${environment.VITE_API_URL}/user/reset-password`,
+        `${environment.VITE_API_URL}/user/forgot-password`,
         {
           email: value.email,
         }

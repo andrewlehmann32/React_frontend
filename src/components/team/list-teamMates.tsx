@@ -94,7 +94,8 @@ export const ListTeamMembers = ({
               items={menuItems}
               value={member.role}
               onChange={(e) => handleRoleChange(member.user?._id, e)}
-              disabled={member.user?._id === createdBy}
+              // disabled={member.user?._id === createdBy}
+              disabled={true}
             />
           ),
           created: formatTimestamp(member.user?.createdAt),
