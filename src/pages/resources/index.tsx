@@ -54,9 +54,8 @@ const Resources = () => {
     return () => {
       controller.abort();
     };
-  }, [currentProject]); // Re-fetch devices when `currentProject` changes
+  }, [currentProject]);
 
-  // Refetch the devices after deleting one
   const refetchDevices = async () => {
     if (!currentProject) return;
     try {
