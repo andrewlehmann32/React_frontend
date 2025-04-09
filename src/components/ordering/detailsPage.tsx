@@ -170,6 +170,26 @@ export const RenderDetails = ({ plan }: { plan: PlanData }) => {
     fetchOS();
   }, []);
 
+  const sendSlackMessage = async (message: string) => {
+    try {
+      const response = await axios.post(
+        `${environment.VITE_API_URL}/ordering/slack`,
+        {
+          text: message,
+        }
+      );
+
+      if (response?.data?.data?.ok) {
+        toast.success("Location WishListed!");
+      } else {
+        toast.error("Something went wrong!");
+      }
+    } catch (error) {
+      console.error("Request failed", error);
+      toast.error("Something went wrong!");
+    }
+  };
+
   const isLocationAvailable = (title: string) => {
     const [city] = title.split(", ");
     return locations.some(
@@ -230,6 +250,11 @@ export const RenderDetails = ({ plan }: { plan: PlanData }) => {
     [details?.os?.title]
   );
 
+  const handleUnavailableLocation = (location: string) => {
+    const message = `${location} has been waitlisted by ${user?.email}`;
+    sendSlackMessage(message);
+  };
+
   const RegionSelector = ({ icon, title }: RegionItem) => {
     return (
       <div className="flex items-center justify-between border rounded-lg px-4 py-2 mt-2 ">
@@ -258,7 +283,6 @@ export const RenderDetails = ({ plan }: { plan: PlanData }) => {
           <p className=" border text-[10px] px-2  rounded-md">
             ${plan.price.hourly}/hr
           </p>
-          {/* <ChevronDownIcon className="w-5 h-5 text-gray-500" /> */}
         </div>
       </div>
     );
@@ -338,7 +362,11 @@ export const RenderDetails = ({ plan }: { plan: PlanData }) => {
           <div className="flex bg-gray-100 rounded-lg p-3 justify-between items-center">
             <div className="pl-0 lg:pl-2 text-sm ">
               <p className="text-xs text-gray-500">My Total</p>
-              <p className="font-medium">${plan.price.hourly}/hr</p>
+              <p className="font-medium">
+                {details.billing === "Monthly"
+                  ? `${plan.price.monthly}/mo`
+                  : `${plan.price.hourly}/hr`}
+              </p>
             </div>
             <Button className="lg:text-sm text-xs" onClick={handleDeployment}>
               Deploy Server
@@ -351,26 +379,44 @@ export const RenderDetails = ({ plan }: { plan: PlanData }) => {
             <div className="grid grid-cols-3 gap-3">
               {countryFlags.map((item: RegionItem, index: number) => (
                 <div
-                  className={`flex gap-2 sm:gap-4 rounded-lg pl-2 lg:pl-4 xl:pl-8 py-3 items-center text-xs  ${
+                  className={`relative flex gap-2 sm:gap-4 rounded-lg pl-2 lg:pl-4 xl:pl-8 py-3 items-center text-xs  ${
                     details.region?.title === item.title
                       ? " bg-gray-100"
                       : "border-gray-200 border"
-                  } ${
-                    !isLocationAvailable(item.title ?? "")
-                      ? "opacity-50 cursor-not-allowed"
-                      : "cursor-pointer"
-                  }`}
+                  } 
+                  `}
                   key={index}
                   onClick={() =>
                     isLocationAvailable(item.title ?? "") &&
                     dispatch(setRegion(item))
                   }
                 >
-                  <div>{item.icon}</div>
-                  <p>{item.title}</p>
+                  <span
+                    className={`flex gap-2 sm:gap-4 items-center justify-center ${
+                      !isLocationAvailable(item.title ?? "")
+                        ? "opacity-50 cursor-not-allowed"
+                        : "cursor-pointer"
+                    }`}
+                  >
+                    <div>{item.icon}</div>
+                    <p>{item.title}</p>
+                  </span>
                   {details.region?.title === item.title && (
-                    <div className="ml-4 w-5 h-5 p-1 bg-blue-500 rounded-full flex items-center justify-center">
+                    <div className="ml-4 w-5 h-5 p-1 bg-blue-700 rounded-full flex items-center justify-center">
                       <Check size={16} className="text-white" />
+                    </div>
+                  )}
+                  {!isLocationAvailable(item.title ?? "") && (
+                    <div className="absolute inset-0 flex items-center justify-center bg-white opacity-0 hover:opacity-100">
+                      <button
+                        className="px-3 py-1 text-xs font-medium text-white bg-blue-500 rounded-md z-50 opacity-100 relative"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleUnavailableLocation(item.title || "");
+                        }}
+                      >
+                        Add to Waitlist
+                      </button>
                     </div>
                   )}
                 </div>

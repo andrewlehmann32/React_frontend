@@ -139,9 +139,7 @@ export const Auth = ({ type, setFormState }: AuthProps) => {
         email: values.email,
         password: values.password,
       });
-      console.log(data);
       if (data?.success) {
-        console.log("first");
         toast.success(data?.message);
         localStorage.setItem("id", JSON.stringify(data?.user?.id));
         setFormState("2fa");
@@ -290,19 +288,21 @@ export const Auth = ({ type, setFormState }: AuthProps) => {
         <TwoFAForm onConfirm={onConfirm} />
       )}
 
-      <div className="w-full space-x-1 font-medium text-xs sm:text-sm md:text-base text-center sm:text-left pb-1">
-        <span className=" text-[#00000080]">
-          {type === "login"
-            ? "Don’t have an account?"
-            : "Already have an account?"}
-        </span>
-        <span
-          className="text-blue-500 cursor-pointer"
-          onClick={handleFormState}
-        >
-          {type === "login" ? "Sign Up" : "Log in"}
-        </span>
-      </div>
+      {type !== "2fa" && (
+        <div className="w-full space-x-1 font-medium text-xs sm:text-sm md:text-base text-center sm:text-left pb-1">
+          <span className=" text-[#00000080]">
+            {type === "login"
+              ? "Don’t have an account?"
+              : "Already have an account?"}
+          </span>
+          <span
+            className="text-blue-500 cursor-pointer"
+            onClick={handleFormState}
+          >
+            {type === "login" ? "Sign Up" : "Log in"}
+          </span>
+        </div>
+      )}
     </div>
   );
 };
