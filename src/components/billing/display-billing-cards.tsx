@@ -41,6 +41,7 @@ const RenderBillingCards = ({ cardItems }: { cardItems: any[] }) => {
 
 export const DisplayBillCards = () => {
   const { user } = useAppSelector(selectUser);
+  const isAdmin = user?.role === "admin";
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [newCredits, setNewCredits] = useState("");
   const [spendage, setSpendage] = useState<SpendType>();
@@ -95,7 +96,13 @@ export const DisplayBillCards = () => {
   const handleSaveCredits = async () => {
     if (!currentProject) return;
     try {
-      const credit = (currentProject.credit ?? 0) + Number(newCredits);
+      if (!isAdmin && Number(newCredits) < 0) {
+        toast.error("You cannot remove credits");
+        return;
+      }
+      const credit = parseFloat(
+        ((currentProject.credit ?? 0) + Number(newCredits)).toFixed(2)
+      );
       const response = await axios.put(
         `${environment.VITE_API_URL}/projects/update-project/${
           currentProject._id || currentProject

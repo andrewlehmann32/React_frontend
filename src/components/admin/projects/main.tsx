@@ -36,7 +36,9 @@ export const Main = () => {
 
   const handleSaveCredits = async () => {
     if (!selectedProjectId) return;
-    const credits = (getSelectedProject() ?? 0) + Number(newCredits);
+    const credits = parseFloat(
+      ((getSelectedProject() ?? 0) + Number(newCredits)).toFixed(2)
+    );
     try {
       const response = await axios.put(
         `${environment.VITE_API_URL}/projects/update-project/${selectedProjectId}`,
