@@ -81,7 +81,10 @@ const RenderModal = ({
   const [os, setOs] = useState<{ label: string; id: number; title: string }[]>(
     []
   );
-  const [selectedOs, setSelectedOs] = useState<{ label: string; id: number }>();
+  const [selectedOs, setSelectedOs] = useState<{ label: string; id: number }>({
+    label: "",
+    id: 0,
+  });
   const [hostname, setHostname] = useState("");
   const [confirmationInput, setConfirmationInput] = useState("");
   const currentProject = useAppSelector(selectActiveProject);
@@ -153,6 +156,11 @@ const RenderModal = ({
         } else {
           toast.success(response?.data?.message);
         }
+        setSelectedOs({ label: "", id: 0 });
+        setSshKey({ label: "", key: "" });
+        setHostname("");
+        setConfirmationInput("");
+        setRaid("");
         setIsModalOpen(false);
         setDisableServerActions(true);
         refetchDevices();

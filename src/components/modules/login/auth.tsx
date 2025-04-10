@@ -238,7 +238,7 @@ export const Auth = ({ type, setFormState }: AuthProps) => {
   }
 
   return (
-    <div className="container w-full h-full overflow-hidden space-y-4 lg:space-y-10 flex flex-col justify-center">
+    <div className="container w-full h-full overflow-y-scroll space-y-4 lg:space-y-10 flex flex-col justify-center">
       <div className="w-full text-wrap space-y-2 font-inter">
         <h1 className="font-semibold text-2xl sm:text-3xl md:text-4xl">
           {type === "reset"

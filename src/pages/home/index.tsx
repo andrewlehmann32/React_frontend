@@ -18,7 +18,7 @@ export default function Home() {
   return (
     <Wrapper>
       <SplitScreen
-        leftClassName="h-screen w-full p-4 md:p-12 xl:p-32"
+        leftClassName="h-screen w-full px-4 py-4 md:px-12 md:py-12 lg:px-18 lg:py-18 xl:px-32 "
         rightClassName="h-screen hidden md:block"
         left={
           formState === "reset" ? (
