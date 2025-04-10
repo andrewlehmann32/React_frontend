@@ -1,3 +1,5 @@
+import { useAppSelector } from "../../../hooks/redux";
+import { selectUser } from "../../../redux/selectors/userSelector";
 import { Modal } from "../popups/modal-box";
 
 type CreditsModalProps = {
@@ -17,6 +19,8 @@ export const CreditsModal = ({
   setCredits,
   availableCredits,
 }: CreditsModalProps) => {
+  const { user } = useAppSelector(selectUser);
+  const isAdmin = user?.role === "admin";
   return (
     <Modal
       title="Add/Remove Credits"
@@ -37,7 +41,7 @@ export const CreditsModal = ({
           </p>
           <div className="flex flex-col flex-wrap w-1/2 gap-1">
             <input
-              type="text"
+              type="number"
               className="border rounded-md py-1 px-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               placeholder="Enter credits"
               value={credits}
@@ -45,7 +49,9 @@ export const CreditsModal = ({
             />
             <label className="text-xs text-gray-500">
               Enter the amount of credit you wish to add to the current credit.
-              To remove credit, enter amount with negative value.
+              {isAdmin
+                ? " To remove credit, enter amount with negative value."
+                : ""}
             </label>
           </div>
         </div>
