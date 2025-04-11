@@ -74,7 +74,6 @@ export const Auth = ({ type, setFormState }: AuthProps) => {
       });
 
       if (data?.success) {
-        toast.success("Registered successfully");
         toast.success("An Email with verification link has sent to you");
         dispatch(registerUser(data?.user));
         registerFormHook.reset();

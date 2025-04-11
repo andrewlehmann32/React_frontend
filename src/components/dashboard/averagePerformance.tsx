@@ -10,8 +10,8 @@ export const AveragePerformance = () => {
   const navigate = useNavigate();
   const { user } = useAppSelector(selectUser);
   const [items, setItems] = useState([
-    { name: "Ram Deployed", value: "N/A" },
-    { name: "Cores Deployed", value: "N/A" },
+    { name: "Ram Deployed", value: "0 GB" },
+    { name: "Cores Deployed", value: "0 Cores" },
   ]);
 
   useEffect(() => {
@@ -22,11 +22,10 @@ export const AveragePerformance = () => {
         );
 
         const { totalRam, totalCores } = response?.data?.data ?? {
-          totalRam: "N/A",
-          totalCores: "N/A",
+          totalRam: "0 GB",
+          totalCores: "0 Cores",
         };
 
-        console.log({ response });
         setItems([
           { name: "Ram Deployed", value: `${totalRam} GB` },
           {

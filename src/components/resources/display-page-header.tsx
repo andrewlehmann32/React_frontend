@@ -53,6 +53,7 @@ const modalData: ModalDataType = {
 type ModalPropsType = {
   setIsModalOpen: (value: boolean) => void;
   serverId: number;
+  name: string;
   isModalOpen: boolean;
   modalData: ModalDataType;
   refetchDevices: () => void;
@@ -73,6 +74,7 @@ const RenderModal = ({
   modalData,
   refetchDevices,
   serverId,
+  name,
   setDisableServerActions,
 }: ModalPropsType) => {
   const [raid, setRaid] = useState("");
@@ -81,10 +83,7 @@ const RenderModal = ({
   const [os, setOs] = useState<{ label: string; id: number; title: string }[]>(
     []
   );
-  const [selectedOs, setSelectedOs] = useState<{ label: string; id: number }>({
-    label: "",
-    id: 0,
-  });
+  const [selectedOs, setSelectedOs] = useState<{ label: string; id: number }>();
   const [hostname, setHostname] = useState("");
   const [confirmationInput, setConfirmationInput] = useState("");
   const currentProject = useAppSelector(selectActiveProject);
@@ -100,7 +99,7 @@ const RenderModal = ({
     }
   }, [currentProject]);
 
-  const isDisabled = confirmationInput !== hostname;
+  const isDisabled = confirmationInput !== name;
 
   useEffect(() => {
     const fetchOS = async () => {
@@ -253,7 +252,7 @@ const RenderModal = ({
           </div>
           <div className="flex flex-col p-1 gap-1">
             <p className="text-xs text-gray-500 mt-1">
-              Please type: {hostname} to confirm
+              Please type: {name} to confirm
             </p>
             <input
               type="text"
@@ -544,6 +543,7 @@ export const DisplayPageHeader = ({
       <RenderModal
         isModalOpen={isModalOpen}
         serverId={serverId}
+        name={name}
         setIsModalOpen={setIsModalOpen}
         modalData={modalData}
         refetchDevices={refetchDevices}
