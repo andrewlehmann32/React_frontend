@@ -100,14 +100,21 @@ export const DisplayBillCards = () => {
         toast.error("You cannot remove credits");
         return;
       }
-      const credit = parseFloat(
-        ((currentProject.credit ?? 0) + Number(newCredits)).toFixed(2)
-      );
+      const credit = parseFloat(Number(newCredits).toFixed(2));
+      if (credit === 0) {
+        toast.error("Amount should be greater than $0");
+        return;
+      }
+      const defaultPaymentMethod = currentProject?.defaultPaymentMethod;
+      if (!defaultPaymentMethod) {
+        toast.error("No default payment method found");
+        return;
+      }
       const response = await axios.put(
-        `${environment.VITE_API_URL}/projects/update-project/${
+        `${environment.VITE_API_URL}/projects/update-credit/${
           currentProject._id || currentProject
         }`,
-        { credit }
+        { credit, defaultPaymentMethod }
       );
       if (response.status === 200 && response.data?.project) {
         toast.success("Credits added successfully");

@@ -215,6 +215,7 @@ export const RenderDetails = ({ plan }: { plan: PlanData }) => {
         clientId: user?.dcimUserId,
         ssh: details.ssh,
         planId: plan._id,
+        defaultPaymentMethod: currentProject?.defaultPaymentMethod,
       };
 
       const config = {
