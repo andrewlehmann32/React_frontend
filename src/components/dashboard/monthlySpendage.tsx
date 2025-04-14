@@ -7,7 +7,6 @@ import { SpecificationsChart } from "../resources/specifications-chart";
 import { ChartData } from "./trafficChart";
 
 export interface SpendType {
-  dailySpend?: { current: number; expected: number };
   monthlySpend?: { current: number; expected: number };
   yearlySpend?: { current: number; expected: number };
 }
@@ -19,7 +18,7 @@ const DisplayTabs = ({
   selected: string;
   setSelected: (value: string) => void;
 }) => {
-  const items = ["Day", "Month", "Year"];
+  const items = ["Month", "Year"];
   const selectedStyles = "bg-white shadow-md hover:bg-white";
   return (
     <div className="px-4 py-1 bg-gray-100 rounded-sm">
@@ -65,11 +64,7 @@ export const MonthlySpendage = () => {
       { name: "Expected", value: expected },
     ];
 
-    if (selectedTab === "Day") {
-      return spendage?.dailySpend
-        ? mapSpendage(spendage.dailySpend.current, spendage.dailySpend.expected)
-        : [];
-    } else if (selectedTab === "Month") {
+    if (selectedTab === "Month") {
       return spendage?.monthlySpend
         ? mapSpendage(
             spendage.monthlySpend.current,

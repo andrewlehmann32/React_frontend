@@ -99,7 +99,7 @@ export const Main = ({
     };
 
     fetchBandwidth();
-  }, [selectedDevice]);
+  }, [selectedDevice, selectedDevice?.resource?.serverId]);
 
   if (!currentProject) return;
   if (!devices.length)
