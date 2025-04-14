@@ -96,7 +96,13 @@ export const Main = ({
         value: `ssh ${selectedDevice?.resource?.username}@${selectedDevice?.resource?.ip}`,
       },
     ],
-    billing: selectedDevice?.planId?.price?.hourly ?? "N/A",
+    billing: {
+      billingType: selectedDevice?.resource?.price || "Hourly",
+      value:
+        selectedDevice?.resource?.price === "Hourly"
+          ? selectedDevice?.planId?.price?.hourly ?? "N/A"
+          : selectedDevice?.planId?.price?.monthly ?? "N/A",
+    },
     traffic: trafficDataBytes,
   };
 

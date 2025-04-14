@@ -158,8 +158,10 @@ export const DisplaySpecificaions = ({
             <p className="text-gray-500">View billing information here</p>
           </div>
           <div className="flex justify-between items-center py-5 pb-4">
-            <p className="text-gray-500">Hourly Price</p>
-            <p>{`$ ${resourcData.billing}`}</p>
+            <p className="text-gray-500">
+              {resourcData?.billing?.billingType} Price
+            </p>
+            <p>{`$ ${resourcData.billing?.value}`}</p>
           </div>
         </div>
         <div className="border  rounded-md p-2 divide-y">

@@ -60,7 +60,7 @@ export const RenderForm = ({
         <div>
           <p className="text-sm text-gray-700 font-medium">CPU Speed</p>
           <input
-            type="text"
+            type="number"
             className="mt-1 w-full border rounded-md py-2 px-4 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             placeholder="Type here"
             onChange={(e) => handleChange("cpu.speed", e)}
@@ -85,7 +85,7 @@ export const RenderForm = ({
         <p className="text-sm text-gray-700 font-medium">Storage</p>
         <span className="flex items-end gap-1">
           <input
-            type="text"
+            type="number"
             className="mt-1 w-full border rounded-md py-2 px-4 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             placeholder="Type here"
             onChange={(e) => handleChange("storage", e)}
@@ -109,7 +109,7 @@ export const RenderForm = ({
           <p className="text-sm text-gray-700 font-medium">Network Speed</p>
           <span className="flex items-end gap-1">
             <input
-              type="text"
+              type="number"
               className="mt-1 w-full border rounded-md py-2 px-4 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               placeholder="Type here"
               onChange={(e) => handleChange("network.speed", e)}

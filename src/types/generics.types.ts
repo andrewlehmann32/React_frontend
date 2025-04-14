@@ -66,7 +66,7 @@ export interface Resource {
   name: string;
   orderStatus: string;
   devicePowerStatus: string;
-  price: number;
+  price: number | string;
   ip: string;
   password: string;
   username: string;

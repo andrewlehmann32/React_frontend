@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { environment } from "../../../config/environment";
 import { initialPlan } from "../../../constants/constants";
@@ -28,6 +29,32 @@ export const PlanModal = ({
   planData,
   setPlanData,
 }: CreatePlanProps) => {
+  const [isFormValid, setIsFormValid] = useState(false);
+  useEffect(() => {
+    const isValid =
+      planData.name &&
+      planData.cpu.name &&
+      planData.cpu.cores !== null &&
+      planData.cpu.cores !== undefined &&
+      planData.cpu.speed !== null &&
+      planData.cpu.speed !== undefined &&
+      planData.ram !== null &&
+      planData.ram !== undefined &&
+      planData.storage !== null &&
+      planData.storage !== undefined &&
+      planData.network.total !== null &&
+      planData.network.total !== undefined &&
+      planData.network.speed !== null &&
+      planData.network.speed !== undefined &&
+      planData.price.monthly !== null &&
+      planData.price.monthly !== undefined &&
+      planData.price.hourly !== null &&
+      planData.price.hourly !== undefined &&
+      planData.regions[0].name;
+
+    setIsFormValid(isValid);
+  }, [planData]);
+
   const handleRegionChange = (selectedRegions: any) => {
     const newRegions = selectedRegions.map((region: any) => ({
       name: region.label,
@@ -119,6 +146,7 @@ export const PlanModal = ({
     <Modal
       title={`${modalType} Plan`}
       isOpen={isModalOpen}
+      disabled={!isFormValid}
       setIsOpen={setIsModalOpen}
       onSave={handleSave}
       actionButtonText={modalType === "Create" ? "Create Plan" : "Update Plan"}
