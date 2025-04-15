@@ -36,14 +36,14 @@ export const LatestInvoices = () => {
   };
   return (
     <div className="flex flex-col h-full w-full gap-2">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-start">
         <div className="flex text-gray-800 font-medium gap-1 items-center">
           <h1>Latest Invoices</h1>
           <MdOutlineArrowOutward className="text-sky-600" />
         </div>
-        <p className="text-xs text-gray-600 cursor-pointer hover:text-gray-900">
+        {/* <p className="text-xs text-gray-600 cursor-pointer hover:text-gray-900">
           Clear Invoices
-        </p>
+        </p> */}
       </div>
       <Table {...tableData} />
     </div>

@@ -305,7 +305,7 @@ const Sidebar = () => {
             <div className={`${!isAdmin ? "border-b" : ""} pb-3`}>
               {!isCollapsed && !isAdmin && (
                 <h1 className={` hidden text-xs text-gray-500 lg:block ml-1`}>
-                  Application
+                  Main Menu
                 </h1>
               )}
               <nav
