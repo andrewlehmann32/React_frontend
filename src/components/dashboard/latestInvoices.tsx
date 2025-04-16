@@ -29,7 +29,7 @@ export const LatestInvoices = () => {
                 : "bg-gray-200 text-gray-700"
             }  text-center my-0 w-full max-w-20`}
           >
-            {invoice.status}
+            {invoice.status.charAt(0).toUpperCase() + invoice.status.slice(1)}
           </p>
         ),
       })) || [],
@@ -41,9 +41,9 @@ export const LatestInvoices = () => {
           <h1>Latest Invoices</h1>
           <MdOutlineArrowOutward className="text-sky-600" />
         </div>
-        <p className="text-xs text-gray-600 cursor-pointer hover:text-gray-900">
+        {/* <p className="text-xs text-gray-600 cursor-pointer hover:text-gray-900">
           Clear Invoices
-        </p>
+        </p> */}
       </div>
       <Table {...tableData} />
     </div>

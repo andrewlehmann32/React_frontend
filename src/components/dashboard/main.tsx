@@ -19,9 +19,12 @@ export const Main = () => {
       <div className="pb-2">
         <div className="flex items-center gap-3 py-3">
           <img
-            src="/assets/workspace.png"
+            src={
+              user?.avatar?.url ||
+              `https://ui-avatars.com/api/?name=${user?.email?.split("@")[0]}`
+            }
             alt="workspace"
-            className="w-10 h-10 "
+            className="w-10 h-10"
           />
           <div className="font-medium h-full flex flex-col justify-between">
             <h1 className="text-sm">

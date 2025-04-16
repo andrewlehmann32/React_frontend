@@ -28,7 +28,7 @@ export const RenderInvoicesTable = () => {
                 : "bg-gray-200 text-gray-700"
             }  text-center my-0 w-full max-w-20`}
           >
-            {invoice.status}
+            {invoice.status.charAt(0).toUpperCase() + invoice.status.slice(1)}
           </p>
         ),
       })) || [],

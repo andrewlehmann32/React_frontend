@@ -81,7 +81,7 @@ export const DisplayBillCards = () => {
     },
     {
       title: "Current Bill",
-      subTitle: "As of today",
+      subTitle: "As of now",
       amount: `$${spendage?.monthlySpend?.current || "-"}`,
       action: () => {},
     },
