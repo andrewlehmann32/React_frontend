@@ -73,11 +73,23 @@ export const DisplayBillCards = () => {
     })} ${end.getDate()}, ${now.getFullYear()}`;
   };
 
+  const handleCreditModal = () => {
+    if (!currentProject) {
+      toast.error("No project found, Create one before crediting amount.");
+      return;
+    } else if (!currentProject.defaultPaymentMethod) {
+      toast.error("No payment method found");
+      return;
+    } else {
+      setIsModalOpen(true);
+    }
+  };
+
   const cardItems = [
     {
       title: "Available Credit",
       amount: `$${currentProject?.credit ?? 0}`,
-      action: () => setIsModalOpen(true),
+      action: () => handleCreditModal(),
     },
     {
       title: "Current Bill",
@@ -94,7 +106,6 @@ export const DisplayBillCards = () => {
   ];
 
   const handleSaveCredits = async () => {
-    if (!currentProject) return;
     try {
       if (!isAdmin && Number(newCredits) < 0) {
         toast.error("You cannot remove credits");
