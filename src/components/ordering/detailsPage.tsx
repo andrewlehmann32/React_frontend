@@ -18,6 +18,7 @@ import {
   setToInitial,
   Versions,
 } from "../../redux/reducer/resourcesReducer";
+import { setActiveProject } from "../../redux/reducer/userSlice";
 import {
   selectActiveProject,
   selectUser,
@@ -221,17 +222,14 @@ export const RenderDetails = ({ plan }: { plan: PlanData }) => {
       const config = {
         url: `${environment.VITE_API_URL}/ordering`,
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
         data: payload,
       };
 
       const response = await axios(config);
-
       if (response.status === 200 || response.status === 201) {
         toast.success("Successfully Deployed!");
         dispatch(setToInitial());
+        dispatch(setActiveProject(response.data?.project));
         navigate("/resources");
       }
     } catch (error: any) {

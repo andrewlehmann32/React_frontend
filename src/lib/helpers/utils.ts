@@ -31,6 +31,14 @@ export const formatTimestamp = (timestamp: Date) => {
   });
 };
 
+export const formatTime = (timestamp: Date) => {
+  const date = new Date(timestamp);
+  return date.toLocaleTimeString("en-US", {
+    hour: "numeric",
+    minute: "numeric",
+    hour12: true,
+  });
+};
 
 export const handleAxiosError = (error: any) => {
   if (axios.isAxiosError(error)) {
@@ -46,13 +54,18 @@ export const handleAxiosError = (error: any) => {
           toast.error(message ?? "Unauthorized. Please log in again.");
           break;
         case 403:
-          toast.error(message ?? "Access denied. You don't have permission to perform this action.");
+          toast.error(
+            message ??
+              "Access denied. You don't have permission to perform this action."
+          );
           break;
         case 404:
           toast.error(message ?? "Resource not found.");
           break;
         case 500:
-          toast.error(message ?? "Internal server error. Please try again later.");
+          toast.error(
+            message ?? "Internal server error. Please try again later."
+          );
           break;
         default:
           toast.error(message);

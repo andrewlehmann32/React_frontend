@@ -6,8 +6,9 @@ import { FiDownload } from "react-icons/fi";
 import { IoIosArrowDown, IoMdRefresh } from "react-icons/io";
 import { environment } from "../../config/environment";
 import { OS, raid } from "../../constants/constants";
-import { useAppSelector } from "../../hooks/redux";
+import { useAppDispatch, useAppSelector } from "../../hooks/redux";
 import axios from "../../lib/apiConfig";
+import { setActiveProject } from "../../redux/reducer/userSlice";
 import { selectActiveProject } from "../../redux/selectors/userSelector";
 import { SSHItem } from "../ordering/detailsPage";
 import { RDropdownMenu } from "../shared/menus/dropdown-menu";
@@ -275,6 +276,7 @@ const RenderDeleteModal = ({
   isDeleteModalOpen,
   refetchDevices,
 }: DeleteModalPropsType) => {
+  const dispatch = useAppDispatch();
   const [inputValue, setInputValue] = useState("");
   const isDisabled = inputValue !== name;
 
@@ -299,6 +301,7 @@ const RenderDeleteModal = ({
 
       if (response.status === 200) {
         toast.success(successMessage);
+        dispatch(setActiveProject(response.data.project));
         refetchDevices();
       }
       setIsDeleteModalOpen(false);

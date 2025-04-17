@@ -135,6 +135,7 @@ export type InvoiceType = {
   amount: number;
   status: InvoiceStatus;
   projectId: string;
+  createdAt: Date;
 };
 
 export type PlanData = {
