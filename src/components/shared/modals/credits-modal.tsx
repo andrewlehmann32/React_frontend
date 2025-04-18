@@ -23,7 +23,7 @@ export const CreditsModal = ({
   const isAdmin = user?.role === "admin";
   return (
     <Modal
-      title="Add/Remove Credits"
+      title={isAdmin ? "Add/Remove Credits" : "Add Credits"}
       isOpen={isOpen}
       setIsOpen={setIsOpen}
       onSave={handleSave}

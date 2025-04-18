@@ -1,6 +1,8 @@
 import { Check } from "lucide-react";
 import React, { useEffect, useMemo, useState } from "react";
 import toast from "react-hot-toast";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { environment } from "../../config/environment";
@@ -72,6 +74,7 @@ export const RenderDetails = ({ plan }: { plan: PlanData }) => {
   const { user } = useAppSelector(selectUser);
   const [sshEnabled, setSshEnabled] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [deployServerLoding, setDeployServerLoading] = useState(false);
 
   useEffect(() => {
     if (currentProject?.sshKeys) {
@@ -136,12 +139,7 @@ export const RenderDetails = ({ plan }: { plan: PlanData }) => {
       try {
         setLoading(true);
         const response = await axios.get(
-          `${environment.VITE_API_URL}/ordering/os`,
-          {
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
+          `${environment.VITE_API_URL}/ordering/os`
         );
         const fetchedOS = response?.data?.data;
 
@@ -161,10 +159,10 @@ export const RenderDetails = ({ plan }: { plan: PlanData }) => {
 
         setOs(response?.data?.data);
         setOsList(osWithVersions);
-        setLoading(false);
       } catch (error) {
-        setLoading(false);
         console.error(error);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -205,6 +203,7 @@ export const RenderDetails = ({ plan }: { plan: PlanData }) => {
 
   const handleDeployment = async () => {
     try {
+      setDeployServerLoading(true);
       const payload = {
         location: details.region?.id || 1,
         hostname: details.hostname,
@@ -235,6 +234,8 @@ export const RenderDetails = ({ plan }: { plan: PlanData }) => {
     } catch (error: any) {
       console.error("Error deploying server:", error);
       toast.error(error?.response?.data?.message);
+    } finally {
+      setDeployServerLoading(false);
     }
   };
 
@@ -288,7 +289,23 @@ export const RenderDetails = ({ plan }: { plan: PlanData }) => {
   };
 
   const RenderOSGrid = () => {
-    if (loading) return <div className="">"Loading..."</div>;
+    // if (loading) return <div className="">"Loading..."</div>;
+
+    if (loading) {
+      return Array.from({ length: 6 }).map((_, index) => (
+        <div
+          key={index}
+          className="rounded-lg border flex flex-col gap-3 px-2 py-3"
+        >
+          <div className="flex justify-center">
+            <Skeleton circle={true} height={50} width={50} />
+          </div>
+          <div className="min-w-14 mx-auto  ">
+            <Skeleton width="100%" />
+          </div>
+        </div>
+      ));
+    }
 
     return osList.map((item: OSList, index) => (
       <div
@@ -297,16 +314,15 @@ export const RenderDetails = ({ plan }: { plan: PlanData }) => {
         onClick={() => isOsAvailable(item.title) && dispatch(setOS(item))}
       >
         <div
-          className={`w-full  rounded-lg items-center flex justify-center border  px-3 py-4  text-xs  flex-col gap-4 ${
+          className={`w-full rounded-lg items-center flex justify-center border px-3 py-4 text-xs flex-col gap-4 ${
             details.os?.title === item.title
               ? "border-sky-600"
               : "border-gray-200"
-          }
-                ${
-                  !isOsAvailable(item.title)
-                    ? "opacity-50 cursor-not-allowed"
-                    : "cursor-pointer"
-                }    `}
+          } ${
+            !isOsAvailable(item.title)
+              ? "opacity-50 cursor-not-allowed"
+              : "cursor-pointer"
+          }`}
         >
           <div>{item.icon}</div>
           <p>{item.title}</p>
@@ -329,7 +345,6 @@ export const RenderDetails = ({ plan }: { plan: PlanData }) => {
           <div className="border rounded-lg py-2 pl-4 pr-4 xl:pl-8 flex items-start lg:items-center gap-2 flex-col lg:flex-row flex-wrap">
             <p className="text-xs text-gray-500">OS Version:</p>
             <div className="flex flex-wrap items-center gap-3 ">
-              {/* {!loading ? ( */}
               <OrderDropdownMenu
                 items={memoizedOsVersions || []}
                 value={details?.os?.title}
@@ -338,9 +353,6 @@ export const RenderDetails = ({ plan }: { plan: PlanData }) => {
                   setVersion(item);
                 }}
               />
-              {/* // ) : (
-              //   <div className="text-xs text-gray-500">Loading...</div>
-              // )} */}
             </div>
           </div>
           <div className=" text-xs text-gray-500">
@@ -367,8 +379,12 @@ export const RenderDetails = ({ plan }: { plan: PlanData }) => {
                   : `${plan.price.hourly}/hr`}
               </p>
             </div>
-            <Button className="lg:text-sm text-xs" onClick={handleDeployment}>
-              Deploy Server
+            <Button
+              className="lg:text-sm text-xs"
+              onClick={handleDeployment}
+              disabled={deployServerLoding}
+            >
+              {deployServerLoding ? "Deploying..." : "Deploy Server"}
             </Button>
           </div>
         </div>

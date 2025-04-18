@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import Skeleton from "react-loading-skeleton";
 import { environment } from "../../config/environment";
 import { useAppDispatch, useAppSelector } from "../../hooks/redux";
 import axios from "../../lib/apiConfig";
@@ -94,13 +95,29 @@ export const DisplayBillCards = () => {
     {
       title: "Current Bill",
       subTitle: "As of now",
-      amount: `$${spendage?.monthlySpend?.current || "-"}`,
+      amount: spendage?.monthlySpend?.current ? (
+        `$ ${spendage.monthlySpend.current}`
+      ) : (
+        <span>
+          $
+          <Skeleton className="ml-1.5" width="50%" />
+        </span>
+      ),
+
       action: () => {},
     },
     {
       title: "Estimated Monthly Bill",
       subTitle: getMonthRange(),
-      amount: `$${spendage?.monthlySpend?.expected || "-"}`,
+      amount: spendage?.monthlySpend?.expected ? (
+        `$ ${spendage?.monthlySpend?.expected}`
+      ) : (
+        <span>
+          $
+          <Skeleton className="ml-1.5" width="50%" />
+        </span>
+      ),
+
       action: () => {},
     },
   ];

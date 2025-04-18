@@ -106,12 +106,7 @@ const RenderModal = ({
     const fetchOS = async () => {
       try {
         const response = await axios.get(
-          `${environment.VITE_API_URL}/ordering/os`,
-          {
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
+          `${environment.VITE_API_URL}/ordering/os`
         );
         const fetchedOS = response?.data?.data;
 
@@ -358,9 +353,11 @@ const RenderServerActions = ({
 }) => {
   const [isActive, setIsActive] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const [loading, setLoading] = useState(false);
 
   const handleApiCall = async (value: string) => {
     try {
+      setLoading(true);
       let apiUrl;
       let reFetch = false;
       let successMessage;
@@ -415,6 +412,8 @@ const RenderServerActions = ({
           ? error.response.data.message
           : "Something went wrong";
       toast.error(errorMessage);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -503,9 +502,9 @@ const RenderServerActions = ({
             <div
               className={`flex items-center py-2 gap-3 px-3 hover:bg-gray-100 cursor-pointer ${
                 item.label === "Destroy Server" ? "text-red-500" : ""
-              }`}
+              } ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
               key={index}
-              onClick={() => handleSelection(item)}
+              onClick={() => !loading && handleSelection(item)}
             >
               <span>{item.icon}</span>
               <p>{item.label}</p>
