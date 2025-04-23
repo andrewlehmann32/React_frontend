@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
 import { environment } from "../../../config/environment";
 import { formatTimestamp } from "../../../lib/helpers/utils";
+import { Order } from "../../../types/generics.types";
 import { Table } from "../../shared/table";
 import axios from "./../../../lib/apiConfig";
 
 export const Main = () => {
-  const [orders, setOrders] = useState<any[]>([]);
+  const [orders, setOrders] = useState<Order[]>([]);
 
   const fetchOrders = async () => {
     try {
@@ -37,7 +38,7 @@ export const Main = () => {
       ),
       createdat: (
         <p className="font-semibold">
-          {formatTimestamp(order?.createdAt) || "N/A"}
+          {formatTimestamp(new Date(order.createdAt)) || "N/A"}
         </p>
       ),
     }));
@@ -51,7 +52,7 @@ export const Main = () => {
   return (
     <>
       <div>Orders</div>
-      <div className="flex w-full overflow-x-auto">
+      <div className="flex w-full overflow-x-auto max-h-[calc(100vh-5rem)] overflow-y-scroll">
         <Table {...tableData} />
       </div>
     </>

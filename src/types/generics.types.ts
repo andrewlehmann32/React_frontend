@@ -1,5 +1,6 @@
 // Imports:
 import { HTMLInputTypeAttribute } from "react";
+import { ChartData } from "../components/dashboard/trafficChart";
 import { InvoiceStatus } from "../constants/constants";
 
 export type TGenericProps = {
@@ -169,3 +170,46 @@ export type HeadersType = {
   "Content-Type"?: string;
   "api-key"?: string;
 };
+
+export interface Log {
+  eventName: string;
+  projectName?: string;
+  loggedBy?: { email?: string };
+  createdAt: string;
+}
+export interface LogTableData {
+  event: JSX.Element;
+  project: string;
+  author: string;
+  date: string;
+  createdAt: string;
+}
+
+export interface Order {
+  resource?: {
+    ip?: string;
+    resourceId?: string;
+  };
+  projectId?: {
+    createdBy?: {
+      email?: string;
+    };
+  };
+  createdAt: string;
+}
+export interface CardItem {
+  title: string;
+  amount: string | JSX.Element;
+  subTitle?: string;
+  action: () => void;
+}
+export interface ResourcDataType {
+  properties: { title: string; value: string; icon?: React.ReactNode }[];
+  hardware: { title: string; value: string }[];
+  credentials: { title: string; value: string }[];
+  billing: {
+    billingType: string | number;
+    value: string | number;
+  };
+  traffic: ChartData[];
+}

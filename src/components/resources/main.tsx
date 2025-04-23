@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import Skeleton from "react-loading-skeleton";
 import { environment } from "../../config/environment";
 import { countryFlags } from "../../constants/constants";
 import { useAppSelector } from "../../hooks/redux";
@@ -9,17 +10,6 @@ import { selectActiveProject } from "../../redux/selectors/userSelector";
 import { ChartData } from "../dashboard/trafficChart";
 import { DisplayPageHeader } from "./display-page-header";
 import { DisplayChart, DisplaySpecificaions } from "./display-specifications";
-
-export interface ResourcDataType {
-  properties: { title: string; value: string; icon?: React.ReactNode }[];
-  hardware: { title: string; value: string }[];
-  credentials: { title: string; value: string }[];
-  billing: {
-    billingType: string | number;
-    value: string | number;
-  };
-  traffic: ChartData[];
-}
 
 export const Main = ({
   devices,
@@ -104,9 +94,30 @@ export const Main = ({
   if (!currentProject) return;
   if (!devices.length)
     return (
-      <p className="text-center text-gray-500 mt-80 text-xl font-medium">
-        Nothing to show here
-      </p>
+      <>
+        <div className="flex items-center justify-between">
+          <div className="flex flex-col gap-2">
+            <Skeleton className="min-w-36" count={0.2} height={30} />
+            <Skeleton className="min-w-28" count={0.2} height={15} />
+          </div>
+          <Skeleton className="min-w-28" count={0.2} height={30} />
+        </div>
+        <div className="grid grid-cols-3 gap-4 h-full">
+          <div className="col-span-1">
+            <Skeleton className="h-72" />
+          </div>
+          <div className="col-span-2 flex flex-col gap-4">
+            <Skeleton className="h-32" />
+            <Skeleton className="h-32" />
+          </div>
+          <div className="col-span-1">
+            <Skeleton className="h-72" />
+          </div>
+          <div className="col-span-2 flex flex-col gap-4">
+            <Skeleton className="h-72" />
+          </div>
+        </div>
+      </>
     );
 
   const location = countryFlags.find(
@@ -183,7 +194,7 @@ export const Main = ({
 
   if (!selectedDevice) {
     return (
-      <div className="w-full h-screen  justify-center items-center text-center flex">
+      <div className="w-full h-full justify-center items-center text-center flex">
         <div> Loading...</div>
       </div>
     );

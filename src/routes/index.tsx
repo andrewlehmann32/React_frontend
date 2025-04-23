@@ -14,6 +14,7 @@ import AdminServers from "../pages/admin-pages/servers";
 import Billing from "../pages/billing";
 import Dashboard from "../pages/dashboard";
 import Home from "../pages/home";
+import NoComponent from "../pages/no-componant";
 import Ordering from "../pages/ordering";
 import Resources from "../pages/resources";
 import SSHkeys from "../pages/ssh-keys";
@@ -149,6 +150,14 @@ const router = createBrowserRouter([
         element: (
           <ProtectedRoute>
             <Resources />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "*",
+        element: (
+          <ProtectedRoute>
+            <NoComponent />
           </ProtectedRoute>
         ),
       },

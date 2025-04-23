@@ -1,4 +1,5 @@
 import { memo } from "react";
+import Skeleton from "react-loading-skeleton";
 import { useNavigate } from "react-router-dom";
 import { useAppSelector } from "../../hooks/redux";
 import {
@@ -81,13 +82,41 @@ export const ServersList = ({
   const navigate = useNavigate();
 
   const DisplayLoader = () => {
-    if (!currentProject) return;
-    if (!devices.length)
+    if (!isAdmin && !currentProject) return null;
+    if (!devices.length) {
       return (
-        <p className="text-center text-gray-500 mt-80 text-xl font-medium">
-          Nothing to show here
-        </p>
+        <div className="space-y-4">
+          {Array.from({ length: 5 }).map((_, index) => (
+            <div
+              key={index}
+              className="flex items-center gap-4 p-3 bg-gray-200 rounded-lg shadow-sm"
+            >
+              <div className="flex flex-col flex-grow gap-1">
+                <Skeleton
+                  className="min-w-10"
+                  width="60%"
+                  height={20}
+                  baseColor="#d1d5db"
+                />
+                <Skeleton
+                  className="min-w-10"
+                  width="40%"
+                  height={15}
+                  baseColor="#d1d5db"
+                />
+              </div>
+              <Skeleton
+                className="min-w-12"
+                width="100%"
+                height={20}
+                baseColor="#d1d5db"
+              />
+            </div>
+          ))}
+        </div>
       );
+    }
+    return null;
   };
 
   return (

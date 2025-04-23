@@ -57,7 +57,6 @@ const AdminServers = () => {
 
   // Refetch the devices after deleting one
   const refetchDevices = async () => {
-    console.log("triggered");
     const controller = new AbortController();
     const signal = controller.signal;
     const fetchDevices = async () => {

@@ -9,10 +9,11 @@ import {
   selectActiveProject,
   selectUser,
 } from "../../redux/selectors/userSelector";
+import { CardItem } from "../../types/generics.types";
 import { SpendType } from "../dashboard/monthlySpendage";
 import { CreditsModal } from "../shared/modals/credits-modal";
 
-const RenderBillingCards = ({ cardItems }: { cardItems: any[] }) => {
+const RenderBillingCards = ({ cardItems }: { cardItems: CardItem[] }) => {
   return (
     <>
       <div className="w-full sm:w-2/5 flex flex-col justify-between font-medium">
@@ -44,6 +45,7 @@ export const DisplayBillCards = () => {
   const { user } = useAppSelector(selectUser);
   const isAdmin = user?.role === "admin";
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [saveCreditsLoading, setSaveCreditsLoading] = useState(false);
   const [newCredits, setNewCredits] = useState("");
   const [spendage, setSpendage] = useState<SpendType>();
   const currentProject = useAppSelector(selectActiveProject);
@@ -89,7 +91,7 @@ export const DisplayBillCards = () => {
   const cardItems = [
     {
       title: "Available Credit",
-      amount: `$${currentProject?.credit ?? 0}`,
+      amount: `$ ${currentProject?.credit ?? 0}`,
       action: () => handleCreditModal(),
     },
     {
@@ -124,6 +126,7 @@ export const DisplayBillCards = () => {
 
   const handleSaveCredits = async () => {
     try {
+      setSaveCreditsLoading(true);
       if (!isAdmin && Number(newCredits) < 0) {
         toast.error("You cannot remove credits");
         return;
@@ -152,6 +155,8 @@ export const DisplayBillCards = () => {
       setIsModalOpen(false);
     } catch (error) {
       console.error("Error updating credits:", error);
+    } finally {
+      setSaveCreditsLoading(false);
     }
   };
 
@@ -164,6 +169,7 @@ export const DisplayBillCards = () => {
         isOpen={isModalOpen}
         setIsOpen={setIsModalOpen}
         setCredits={setNewCredits}
+        saveCreditsLoading={saveCreditsLoading}
       />
       <RenderBillingCards cardItems={cardItems} />
     </div>

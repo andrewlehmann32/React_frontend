@@ -289,8 +289,6 @@ export const RenderDetails = ({ plan }: { plan: PlanData }) => {
   };
 
   const RenderOSGrid = () => {
-    // if (loading) return <div className="">"Loading..."</div>;
-
     if (loading) {
       return Array.from({ length: 6 }).map((_, index) => (
         <div
