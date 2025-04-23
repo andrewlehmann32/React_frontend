@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import toast from "react-hot-toast";
 import { PageLayout } from "../../components/layouts/pageLayout";
 import { Main } from "../../components/resources/main";
 import { ServersList } from "../../components/resources/servers-list";
@@ -20,6 +19,7 @@ const Resources = () => {
   const [devices, setDevices] = useState<Device[]>([]);
   const [selectedId, setSelectedId] = useState<number | null>(1);
   const [selectedDevice, setSelectedDevice] = useState<Device>();
+  const [loading, setLoading] = useState<boolean>(false);
   const currentProject = useAppSelector(selectActiveProject);
 
   useEffect(() => {
@@ -28,14 +28,12 @@ const Resources = () => {
     const fetchDevices = async () => {
       if (!currentProject) return;
       try {
+        setLoading(true);
         const response = await axios.get(
           `${environment.VITE_API_URL}/ordering/${
             currentProject?._id || currentProject
           }`,
           {
-            headers: {
-              "Content-Type": "application/json",
-            },
             signal,
           }
         );
@@ -44,7 +42,9 @@ const Resources = () => {
         setSelectedDevice(response.data.data[0]);
       } catch (error) {
         console.error(error);
-        toast.error("Failed to fetch devices");
+        // toast.error("Failed to fetch devices");¨
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -78,7 +78,7 @@ const Resources = () => {
       }
     } catch (error) {
       console.error(error);
-      toast.error("Failed to fetch devices");
+      // toast.error("Failed to fetch devices");
     }
   };
 
@@ -99,6 +99,7 @@ const Resources = () => {
       <ServersList
         devices={filteredDevices()}
         selectedId={selectedId}
+        loading={loading}
         setSelectedId={setSelectedId}
       />
       <div className="w-[100%] lg:w-[76%] xl:w-[73%]">
@@ -107,6 +108,7 @@ const Resources = () => {
             devices={devices}
             selectedId={selectedId}
             selectedDevice={selectedDevice}
+            loading={loading}
             setSelectedDevice={setSelectedDevice}
             refetchDevices={refetchDevices}
           />

@@ -16,12 +16,14 @@ export const Main = ({
   devices,
   selectedId,
   selectedDevice,
+  loading,
   setSelectedDevice,
   refetchDevices,
 }: {
   devices: Device[];
   selectedId: number | null;
   selectedDevice: Device | undefined;
+  loading: boolean;
   setSelectedDevice: (device: Device) => void;
   refetchDevices: () => void;
 }) => {
@@ -119,6 +121,7 @@ export const Main = ({
   useEffect(() => {
     const fetchBandwidth = async () => {
       try {
+        if (!selectedDevice) return;
         const response = await axios.get(
           `${environment.VITE_API_URL}/ordering/${selectedDevice?.resource?.serverId}/bandwidth`
         );
@@ -163,7 +166,7 @@ export const Main = ({
     fetchBandwidth();
   }, [selectedDevice, selectedDevice?.resource?.serverId]);
 
-  if (!devices.length)
+  if (loading)
     return (
       <>
         <div className="flex items-center justify-between">
@@ -189,6 +192,13 @@ export const Main = ({
           </div>
         </div>
       </>
+    );
+
+  if (!devices.length)
+    return (
+      <p className="text-center text-gray-500 mt-80 text-xl font-medium">
+        Nothing to show here
+      </p>
     );
 
   if (!selectedDevice) {

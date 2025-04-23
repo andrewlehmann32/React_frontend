@@ -203,6 +203,10 @@ export const RenderDetails = ({ plan }: { plan: PlanData }) => {
 
   const handleDeployment = async () => {
     try {
+      if (!currentProject) {
+        toast.error("No project found, Create one before deploying a server.");
+        return;
+      }
       setDeployServerLoading(true);
       const payload = {
         location: details.region?.id || 1,

@@ -4,12 +4,15 @@ import Skeleton from "react-loading-skeleton";
 import { environment } from "../../config/environment";
 import { useAppDispatch, useAppSelector } from "../../hooks/redux";
 import axios from "../../lib/apiConfig";
-import { setActiveProject } from "../../redux/reducer/userSlice";
+import {
+  setActiveProject,
+  setUserProjects,
+} from "../../redux/reducer/userSlice";
 import {
   selectActiveProject,
   selectUser,
 } from "../../redux/selectors/userSelector";
-import { CardItem } from "../../types/generics.types";
+import { CardItem, ProjectsType } from "../../types/generics.types";
 import { SpendType } from "../dashboard/monthlySpendage";
 import { CreditsModal } from "../shared/modals/credits-modal";
 
@@ -30,8 +33,8 @@ const RenderBillingCards = ({ cardItems }: { cardItems: CardItem[] }) => {
             onClick={item.action}
           >
             <h5 className="font-medium">{item.title}</h5>
-            <h1 className="font-semibold text-lg text-gray-900">
-              {item.amount}
+            <h1 className=" flex font-semibold text-lg text-gray-900">
+              $ {item.amount}
             </h1>
             <span className="text-[10px]">{item.subTitle}</span>
           </div>
@@ -91,35 +94,27 @@ export const DisplayBillCards = () => {
   const cardItems = [
     {
       title: "Available Credit",
-      amount: `$ ${currentProject?.credit ?? 0}`,
+      amount: `${currentProject?.credit ?? 0}`,
       action: () => handleCreditModal(),
     },
     {
       title: "Current Bill",
       subTitle: "As of now",
-      amount: spendage?.monthlySpend?.current ? (
-        `$ ${spendage.monthlySpend.current}`
-      ) : (
-        <span>
-          $
-          <Skeleton className="ml-1.5" width="50%" />
-        </span>
+      amount: spendage?.monthlySpend?.current ?? (
+        <div>
+          <Skeleton className="ml-1.5 min-w-8" width="50%" />
+        </div>
       ),
-
       action: () => {},
     },
     {
       title: "Estimated Monthly Bill",
       subTitle: getMonthRange(),
-      amount: spendage?.monthlySpend?.expected ? (
-        `$ ${spendage?.monthlySpend?.expected}`
-      ) : (
-        <span>
-          $
-          <Skeleton className="ml-1.5" width="50%" />
-        </span>
+      amount: spendage?.monthlySpend?.expected ?? (
+        <div>
+          <Skeleton className="ml-1.5 min-w-8" width="50%" />
+        </div>
       ),
-
       action: () => {},
     },
   ];
@@ -147,9 +142,13 @@ export const DisplayBillCards = () => {
         }`,
         { credit, defaultPaymentMethod }
       );
-      if (response.status === 200 && response.data?.project) {
+      if (response.status === 200 && response.data?.projects) {
         toast.success("Credits added successfully");
-        dispatch(setActiveProject(response.data.project));
+        dispatch(setUserProjects(response.data?.projects));
+        const activeProject = response.data.projects.find(
+          (project: ProjectsType) => project._id === currentProject?._id
+        );
+        dispatch(setActiveProject(activeProject));
       }
       setNewCredits("");
       setIsModalOpen(false);

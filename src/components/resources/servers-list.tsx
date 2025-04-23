@@ -26,6 +26,7 @@ interface ServerItemProps {
 interface ServersListProps {
   devices: { id: number; name: string; ip: string }[];
   selectedId: number | null;
+  loading: boolean;
   setSelectedId: (id: number) => void;
 }
 
@@ -74,6 +75,7 @@ const ServerItem = memo(
 export const ServersList = ({
   devices,
   selectedId,
+  loading,
   setSelectedId,
 }: ServersListProps) => {
   const { user } = useAppSelector(selectUser);
@@ -83,10 +85,10 @@ export const ServersList = ({
 
   const DisplayLoader = () => {
     if (!isAdmin && !currentProject) return null;
-    if (!devices.length) {
+    if (loading) {
       return (
         <div className="space-y-4">
-          {Array.from({ length: 5 }).map((_, index) => (
+          {Array.from({ length: 6 }).map((_, index) => (
             <div
               key={index}
               className="flex items-center gap-4 p-3 bg-gray-200 rounded-lg shadow-sm"
@@ -116,6 +118,12 @@ export const ServersList = ({
         </div>
       );
     }
+    if (!devices.length)
+      return (
+        <p className="text-center text-gray-500 mt-80 text-xl font-medium">
+          No Active Servers
+        </p>
+      );
     return null;
   };
 
@@ -132,16 +140,17 @@ export const ServersList = ({
         </h1>
         <div className="flex flex-col flex-grow overflow-y-auto">
           <DisplayLoader />
-          {devices.map((server, index) => (
-            <ServerItem
-              key={server?.id}
-              server={server}
-              selectedId={selectedId}
-              setSelectedId={setSelectedId}
-              isLastItem={index === devices.length - 1}
-              previousItemSelected={selectedId === devices[index + 1]?.id}
-            />
-          ))}
+          {!loading &&
+            devices.map((server, index) => (
+              <ServerItem
+                key={server?.id}
+                server={server}
+                selectedId={selectedId}
+                setSelectedId={setSelectedId}
+                isLastItem={index === devices.length - 1}
+                previousItemSelected={selectedId === devices[index + 1]?.id}
+              />
+            ))}
         </div>
       </div>
     </div>

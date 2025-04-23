@@ -51,7 +51,7 @@ const RenderGrid: React.FC<RenderGridProps> = ({ columns }) => {
 export const Main = () => {
   const [orderNumber, setOrderNumber] = useState<string | number>();
   const [clientNumber, setClientNumber] = useState<string | number>();
-  const [activeServers, setActiveServers] = useState([]);
+  const [activeServers, setActiveServers] = useState<string | number>();
 
   const fetchOrders = async () => {
     try {
@@ -74,7 +74,7 @@ export const Main = () => {
   const fetchServers = async () => {
     try {
       const response = await axios.get(`${environment.VITE_API_URL}/ordering`);
-      setActiveServers(response?.data?.data);
+      setActiveServers(response?.data?.data?.length);
     } catch (error) {
       console.error("Error fetching servers:", error);
     }
@@ -96,7 +96,7 @@ export const Main = () => {
       },
       {
         title: "Active Servers",
-        value: activeServers.length || (
+        value: activeServers ?? (
           <Skeleton className="min-w-10" baseColor="#d1d5db" />
         ),
       },

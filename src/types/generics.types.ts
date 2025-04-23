@@ -199,7 +199,7 @@ export interface Order {
 }
 export interface CardItem {
   title: string;
-  amount: string | JSX.Element;
+  amount: string | number | JSX.Element;
   subTitle?: string;
   action: () => void;
 }
