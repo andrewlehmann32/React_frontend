@@ -1,17 +1,38 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { MdOutlineArrowOutward } from "react-icons/md";
+import Skeleton from "react-loading-skeleton";
 import { useNavigate } from "react-router-dom";
 import { environment } from "../../config/environment";
 import { useAppSelector } from "../../hooks/redux";
 import { selectUser } from "../../redux/selectors/userSelector";
 
+type ItemState = {
+  name: string;
+  value: string | React.ReactNode;
+};
+
 export const AveragePerformance = () => {
   const navigate = useNavigate();
   const { user } = useAppSelector(selectUser);
-  const [items, setItems] = useState([
-    { name: "Ram Deployed", value: "0 GB" },
-    { name: "Cores Deployed", value: "0 Cores" },
+  const [items, setItems] = useState<ItemState[]>([
+    {
+      name: "Ram Deployed",
+      value: (
+        <div className="flex gap-2">
+          <Skeleton className="mr-0.5 min-w-6" /> <span>GB</span>
+        </div>
+      ),
+    },
+    {
+      name: "Cores Deployed",
+      value: (
+        <div className="flex gap-2">
+          <Skeleton className="mr-0.5 min-w-6" />
+          <span>Cores</span>
+        </div>
+      ),
+    },
   ]);
 
   useEffect(() => {
@@ -27,10 +48,10 @@ export const AveragePerformance = () => {
         };
 
         setItems([
-          { name: "Ram Deployed", value: `${totalRam} GB` },
+          { name: "Ram Deployed", value: `${totalRam ?? 0} GB` },
           {
             name: "Cores Deployed",
-            value: `${totalCores} Cores`,
+            value: `${totalCores ?? 0} Cores`,
           },
         ]);
       } catch (error) {

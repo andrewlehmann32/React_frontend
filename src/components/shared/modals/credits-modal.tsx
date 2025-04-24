@@ -9,6 +9,7 @@ type CreditsModalProps = {
   setCredits: (value: string) => void;
   availableCredits: number;
   handleSave: () => void;
+  saveCreditsLoading: boolean;
 };
 
 export const CreditsModal = ({
@@ -18,6 +19,7 @@ export const CreditsModal = ({
   setIsOpen,
   setCredits,
   availableCredits,
+  saveCreditsLoading,
 }: CreditsModalProps) => {
   const { user } = useAppSelector(selectUser);
   const isAdmin = user?.role === "admin";
@@ -25,9 +27,10 @@ export const CreditsModal = ({
     <Modal
       title={isAdmin ? "Add/Remove Credits" : "Add Credits"}
       isOpen={isOpen}
+      disabled={saveCreditsLoading}
       setIsOpen={setIsOpen}
       onSave={handleSave}
-      actionButtonText="Save"
+      actionButtonText={saveCreditsLoading ? "Saving..." : "Save"}
       actionButtonStyles="w-full border text-white bg-gray-800 hover:text-gray-800"
     >
       <div className="flex flex-col gap-3">

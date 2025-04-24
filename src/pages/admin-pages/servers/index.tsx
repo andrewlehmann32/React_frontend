@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import toast from "react-hot-toast";
 import { Main } from "../../../components/admin/servers/main";
 import { PageLayout } from "../../../components/layouts/pageLayout";
 import { ServersList } from "../../../components/resources/servers-list";
@@ -10,6 +9,7 @@ import axios from "./../../../lib/apiConfig";
 const AdminServers = () => {
   const [devices, setDevices] = useState<Device[]>([]);
   const [selectedId, setSelectedId] = useState<number | null>(1);
+  const [loading, setLoading] = useState<boolean>(false);
   const [selectedDevice, setSelectedDevice] = useState<Device>();
 
   useEffect(() => {
@@ -17,6 +17,7 @@ const AdminServers = () => {
     const signal = controller.signal;
     const fetchDevices = async () => {
       try {
+        setLoading(true);
         const response = await axios.get(
           `${environment.VITE_API_URL}/ordering`,
           {
@@ -31,7 +32,9 @@ const AdminServers = () => {
         setSelectedDevice(response.data.data[0]);
       } catch (error) {
         console.error(error);
-        toast.error("Failed to fetch devices");
+        // toast.error("Failed to fetch devices");
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -57,7 +60,6 @@ const AdminServers = () => {
 
   // Refetch the devices after deleting one
   const refetchDevices = async () => {
-    console.log("triggered");
     const controller = new AbortController();
     const signal = controller.signal;
     const fetchDevices = async () => {
@@ -76,7 +78,7 @@ const AdminServers = () => {
         setSelectedDevice(response.data.data[0]);
       } catch (error) {
         console.error(error);
-        toast.error("Failed to fetch devices");
+        // toast.error("Failed to fetch devices");
       }
     };
 
@@ -93,6 +95,7 @@ const AdminServers = () => {
       <ServersList
         devices={filteredDevices()}
         selectedId={selectedId}
+        loading={loading}
         setSelectedId={setSelectedId}
       />
       <div className="w-[100%] lg:w-[76%] xl:w-[73%]">
@@ -101,6 +104,7 @@ const AdminServers = () => {
             devices={devices}
             selectedId={selectedId}
             selectedDevice={selectedDevice}
+            loading={loading}
             setSelectedDevice={setSelectedDevice}
             refetchDevices={refetchDevices}
           />

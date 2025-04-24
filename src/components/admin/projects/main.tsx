@@ -13,6 +13,7 @@ export const Main = () => {
     null
   );
   const [newCredits, setNewCredits] = useState("");
+  const [saveCreditsLoading, setSaveCreditsLoading] = useState(false);
 
   useEffect(() => {
     const fetchProjects = async () => {
@@ -40,6 +41,7 @@ export const Main = () => {
       ((getSelectedProject() ?? 0) + Number(newCredits)).toFixed(2)
     );
     try {
+      setSaveCreditsLoading(true);
       const response = await axios.put(
         `${environment.VITE_API_URL}/projects/update-project/${selectedProjectId}`,
         { credit: credits }
@@ -58,6 +60,8 @@ export const Main = () => {
       setIsModalOpen(false);
     } catch (error) {
       console.error("Error updating credits:", error);
+    } finally {
+      setSaveCreditsLoading(false);
     }
   };
 
@@ -80,6 +84,7 @@ export const Main = () => {
         isOpen={isModalOpen}
         setIsOpen={setIsModalOpen}
         setCredits={setNewCredits}
+        saveCreditsLoading={saveCreditsLoading}
       />
     </>
   );

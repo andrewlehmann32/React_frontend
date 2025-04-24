@@ -203,6 +203,10 @@ export const RenderDetails = ({ plan }: { plan: PlanData }) => {
 
   const handleDeployment = async () => {
     try {
+      if (!currentProject) {
+        toast.error("No project found, Create one before deploying a server.");
+        return;
+      }
       setDeployServerLoading(true);
       const payload = {
         location: details.region?.id || 1,
@@ -289,8 +293,6 @@ export const RenderDetails = ({ plan }: { plan: PlanData }) => {
   };
 
   const RenderOSGrid = () => {
-    // if (loading) return <div className="">"Loading..."</div>;
-
     if (loading) {
       return Array.from({ length: 6 }).map((_, index) => (
         <div

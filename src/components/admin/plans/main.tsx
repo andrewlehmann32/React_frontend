@@ -1,12 +1,13 @@
 import { useState } from "react";
 import { initialPlan } from "../../../constants/constants";
+import { PlanData } from "../../../types/generics.types";
 import { Button } from "../../ui/button";
 import { PlanModal } from "./create-plan";
 import { PlansTable } from "./plans-table";
 
 export const Main = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [plan, setPlan] = useState<any>(initialPlan);
+  const [plan, setPlan] = useState<PlanData>(initialPlan);
   const [modalType, setModalType] = useState("");
 
   const handleCreatePlan = () => {

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import Skeleton from "react-loading-skeleton";
 import { environment } from "../../../config/environment";
 import { countryFlags } from "../../../constants/constants";
 import axios from "../../../lib/apiConfig";
@@ -15,12 +16,14 @@ export const Main = ({
   devices,
   selectedId,
   selectedDevice,
+  loading,
   setSelectedDevice,
   refetchDevices,
 }: {
   devices: Device[];
   selectedId: number | null;
   selectedDevice: Device | undefined;
+  loading: boolean;
   setSelectedDevice: (device: Device) => void;
   refetchDevices: () => void;
 }) => {
@@ -118,6 +121,7 @@ export const Main = ({
   useEffect(() => {
     const fetchBandwidth = async () => {
       try {
+        if (!selectedDevice) return;
         const response = await axios.get(
           `${environment.VITE_API_URL}/ordering/${selectedDevice?.resource?.serverId}/bandwidth`
         );
@@ -160,11 +164,46 @@ export const Main = ({
     };
 
     fetchBandwidth();
-  }, [selectedDevice]);
+  }, [selectedDevice, selectedDevice?.resource?.serverId]);
+
+  if (loading)
+    return (
+      <>
+        <div className="flex items-center justify-between">
+          <div className="flex flex-col gap-2">
+            <Skeleton className="min-w-36" count={0.2} height={30} />
+            <Skeleton className="min-w-28" count={0.2} height={15} />
+          </div>
+          <Skeleton className="min-w-28" count={0.2} height={30} />
+        </div>
+        <div className="grid grid-cols-3 gap-4 h-full">
+          <div className="col-span-1">
+            <Skeleton className="h-72" />
+          </div>
+          <div className="col-span-2 flex flex-col gap-4">
+            <Skeleton className="h-32" />
+            <Skeleton className="h-32" />
+          </div>
+          <div className="col-span-1">
+            <Skeleton className="h-72" />
+          </div>
+          <div className="col-span-2 flex flex-col gap-4">
+            <Skeleton className="h-72" />
+          </div>
+        </div>
+      </>
+    );
+
+  if (!devices.length)
+    return (
+      <p className="text-center text-gray-500 mt-80 text-xl font-medium">
+        Nothing to show here
+      </p>
+    );
 
   if (!selectedDevice) {
     return (
-      <div className="w-full h-screen  justify-center items-center text-center flex">
+      <div className="w-full h-full justify-center items-center text-center flex">
         <div> Loading...</div>
       </div>
     );

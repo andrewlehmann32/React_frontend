@@ -118,9 +118,17 @@ const AddPaymentMethod = ({ reFetch }: { reFetch: () => void }) => {
     }
   };
 
+  const handlePaymentModal = () => {
+    if (!activeProject) {
+      toast.error("No project found, Create one before adding payment method.");
+      return;
+    }
+    setIsModalOpen(true);
+  };
+
   return (
     <div>
-      <Button onClick={() => setIsModalOpen(true)}>+ Add new method</Button>
+      <Button onClick={handlePaymentModal}>+ Add new method</Button>
       <Modal
         title="Add Payment Method"
         actionButtonStyles="w-full border"

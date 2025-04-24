@@ -110,7 +110,6 @@ const ListKeys = ({ sshKeys, fetchKeys }: any) => {
         method: "DELETE",
       };
       const response = await axios(config);
-      console.log(response);
       if (response.status === 200) {
         toast.success("SSH Key deleted successfully");
         fetchKeys();

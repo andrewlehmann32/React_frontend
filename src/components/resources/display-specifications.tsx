@@ -4,9 +4,9 @@ import { CiCalendar } from "react-icons/ci";
 import { IoIosArrowDown } from "react-icons/io";
 import { IoCopyOutline } from "react-icons/io5";
 import { OSOrdering } from "../../constants/constants";
+import { ResourcDataType } from "../../types/generics.types";
 import { ChartData } from "../dashboard/trafficChart";
 import { ToggleButton } from "../shared/buttons/buttons";
-import { ResourcDataType } from "./main";
 import { SpecificationsChart } from "./specifications-chart";
 
 export const DisplayChart = ({

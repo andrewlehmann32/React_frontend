@@ -7,7 +7,13 @@ import { Table } from "../shared/table";
 
 type TableData = {
   headers: string[];
-  body: { [key: string]: string | number | any }[];
+  body: {
+    invoicenumber: string;
+    amount: string;
+    date: string;
+    time: string;
+    status: JSX.Element;
+  }[];
 };
 
 export const LatestInvoices = () => {
@@ -15,26 +21,33 @@ export const LatestInvoices = () => {
 
   const tableData: TableData = {
     headers: ["Invoice Number", "Amount", "  Date", "Time", "Status"],
-    body:
-      activeProject?.invoices?.map((invoice) => ({
-        invoicenumber: invoice.invoiceNumber,
-        amount: `$${invoice.amount}`,
-        date: formatTimestamp(invoice.createdAt),
-        time: formatTime(invoice.createdAt),
-        status: (
-          <p
-            className={`px-2 py-1 rounded-full ${
-              invoice.status === InvoiceStatus.PAID
-                ? "bg-green-200 text-green-700"
-                : invoice.status === InvoiceStatus.OVERDUE
-                ? "bg-red-200 text-red-700"
-                : "bg-gray-200 text-gray-700"
-            }  text-center my-0 w-full max-w-20`}
-          >
-            {invoice.status.charAt(0).toUpperCase() + invoice.status.slice(1)}
-          </p>
-        ),
-      })) || [],
+    body: activeProject?.invoices
+      ? [...activeProject.invoices]
+          .map((invoice) => ({
+            invoicenumber: invoice.invoiceNumber,
+            amount: `$${invoice.amount}`,
+            date: formatTimestamp(invoice.createdAt),
+            time: formatTime(invoice.createdAt),
+            status: (
+              <p
+                className={`px-2 py-1 rounded-full ${
+                  invoice.status === InvoiceStatus.PAID
+                    ? "bg-green-200 text-green-700"
+                    : invoice.status === InvoiceStatus.OVERDUE
+                    ? "bg-red-200 text-red-700"
+                    : "bg-gray-200 text-gray-700"
+                }  text-center my-0 w-full max-w-20`}
+              >
+                {invoice.status.charAt(0).toUpperCase() +
+                  invoice.status.slice(1)}
+              </p>
+            ),
+          }))
+          .sort(
+            (a: { date: string }, b: { date: string }) =>
+              new Date(b.date).getTime() - new Date(a.date).getTime()
+          )
+      : [],
   };
   return (
     <div className="flex flex-col h-full w-full gap-2 max-h-[18.5rem] overflow-scroll">
