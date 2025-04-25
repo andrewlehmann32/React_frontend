@@ -55,9 +55,6 @@ export const AddTeam = ({ isModalOpen, setIsModalOpen }: AddTeamProps) => {
       const config = {
         url: `${environment.VITE_API_URL}/projects`,
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
         data: {
           name: teamInfo.name,
           icon: teamInfo.icon,

@@ -31,9 +31,6 @@ export const InviteMembers = ({
       const config = {
         url: `${environment.VITE_API_URL}/members/sendInvite`,
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
         data: {
           email,
           projectId: activeProject?._id,

@@ -21,9 +21,6 @@ const AdminServers = () => {
         const response = await axios.get(
           `${environment.VITE_API_URL}/ordering`,
           {
-            headers: {
-              "Content-Type": "application/json",
-            },
             signal,
           }
         );
@@ -67,15 +64,12 @@ const AdminServers = () => {
         const response = await axios.get(
           `${environment.VITE_API_URL}/ordering`,
           {
-            headers: {
-              "Content-Type": "application/json",
-            },
             signal,
           }
         );
-        setDevices(response.data?.data);
+        setDevices(response.data?.data || []);
         setSelectedId(response.data?.data[0]?.resource?.resourceId);
-        setSelectedDevice(response.data.data[0]);
+        setSelectedDevice(response.data?.data[0]);
       } catch (error) {
         console.error(error);
         // toast.error("Failed to fetch devices");

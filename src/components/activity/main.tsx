@@ -19,12 +19,7 @@ export const Main = () => {
     const fetchLogs = async () => {
       try {
         const response = await axios.get(
-          `${environment.VITE_API_URL}/logs/${user?._id}`,
-          {
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
+          `${environment.VITE_API_URL}/logs/${user?._id}`
         );
         const logs = response?.data?.data;
         const mappedLogs = logs

@@ -15,11 +15,7 @@ const VerifyInvite = () => {
         const projectId = searchParams.get("projectId");
         const inviteLink = `${environment.VITE_API_URL}/members/verify-invite?token=${token}&projectId=${projectId}`;
 
-        const response = await axios.get(inviteLink, {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
+        const response = await axios.get(inviteLink);
 
         if (response.status === 200) {
           setMessage("You have been verified and added to the team.");

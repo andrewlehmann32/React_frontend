@@ -91,12 +91,7 @@ export const RenderDetails = ({ plan }: { plan: PlanData }) => {
     const fetchLocations = async () => {
       try {
         const response = await axios.get(
-          `${environment.VITE_API_URL}/ordering/locations`,
-          {
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
+          `${environment.VITE_API_URL}/ordering/locations`
         );
         setLocations(response?.data?.data?.result);
       } catch (error) {

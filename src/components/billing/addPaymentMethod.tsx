@@ -96,11 +96,6 @@ const AddPaymentMethod = ({ reFetch }: { reFetch: () => void }) => {
           {
             paymentMethod,
             projectId: activeProject?._id,
-          },
-          {
-            headers: {
-              "Content-Type": "application/json",
-            },
           }
         );
 

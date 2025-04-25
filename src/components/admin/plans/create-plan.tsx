@@ -128,9 +128,6 @@ export const PlanModal = ({
       const config = {
         url: `${environment.VITE_API_URL}/plans`,
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
         data: payload,
       };
       const response = await axios(config);

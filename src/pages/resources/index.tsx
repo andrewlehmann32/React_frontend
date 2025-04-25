@@ -62,8 +62,8 @@ const Resources = () => {
       const response = await axios.get(
         `${environment.VITE_API_URL}/ordering/${currentProject?._id}`
       );
+      setDevices(response.data?.data || []);
       if (response.data?.data.length) {
-        setDevices(response.data?.data);
         const defaultDevice = response.data.data[0]?.resource;
         const previousDevice = response.data.data.find(
           (device: Device) => device.resource.resourceId === selectedId
@@ -75,6 +75,9 @@ const Resources = () => {
           setSelectedId(previousDevice.resource.resourceId);
           setSelectedDevice(previousDevice);
         }
+      } else {
+        setSelectedId(null);
+        setSelectedDevice(undefined);
       }
     } catch (error) {
       console.error(error);

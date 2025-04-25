@@ -285,9 +285,6 @@ const RenderDeleteModal = ({
       const config = {
         url: apiUrl,
         method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-        },
       };
 
       const response = await axios(config);
@@ -382,9 +379,6 @@ const RenderServerActions = ({
       const config = {
         url: apiUrl,
         method: method,
-        headers: {
-          "Content-Type": "application/json",
-        },
         data: {
           resourceId: resourceId,
         },

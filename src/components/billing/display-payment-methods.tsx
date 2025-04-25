@@ -88,11 +88,6 @@ export const DisplayPaymentMethods = () => {
         {
           projectId: activeProject._id,
           paymentMethodId,
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
         }
       );
 
@@ -113,11 +108,6 @@ export const DisplayPaymentMethods = () => {
         {
           projectId: activeProject?._id,
           paymentMethodId,
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
         }
       );
 

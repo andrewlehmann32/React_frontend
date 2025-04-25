@@ -213,3 +213,8 @@ export interface ResourcDataType {
   };
   traffic: ChartData[];
 }
+export const menuItems = [
+  { label: Roles.ADMINISTRATOR },
+  { label: Roles.OWNER },
+  { label: Roles.USER },
+];

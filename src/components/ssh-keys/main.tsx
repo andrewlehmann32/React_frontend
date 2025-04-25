@@ -34,9 +34,6 @@ const AddKey = ({
       const config = {
         url: `${environment.VITE_API_URL}/projects/ssh`,
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
         data: {
           name,
           key: sshKey,
@@ -169,9 +166,6 @@ export const Main = () => {
       const config = {
         url: `${environment.VITE_API_URL}/projects/${currentProject._id}`,
         method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
       };
       const response = await axios(config);
       if (response.status === 200) {

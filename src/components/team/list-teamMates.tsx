@@ -5,27 +5,21 @@ import { useAppDispatch } from "../../hooks/redux";
 import axios from "../../lib/apiConfig";
 import { formatTimestamp } from "../../lib/helpers/utils";
 import { setActiveProject } from "../../redux/reducer/userSlice";
-import { ProjectsType, Roles } from "../../types/generics.types";
+import { menuItems, ProjectsType } from "../../types/generics.types";
 import { RDropdownMenu } from "../shared/menus/dropdown-menu";
 import { DotsDropdown } from "../shared/menus/simple-dropdown";
 import { Table } from "../shared/table";
-
-export const menuItems = [
-  { label: Roles.ADMINISTRATOR },
-  { label: Roles.OWNER },
-  { label: Roles.USER },
-];
 
 export const ListTeamMembers = ({
   currentProject,
 }: {
   currentProject: ProjectsType | null;
 }) => {
-  if (!currentProject) return;
-  // const { user } = useAppSelector(selectUser);
-
-  const { createdBy } = currentProject;
   const dispatch = useAppDispatch();
+  // const { user } = useAppSelector(selectUser);
+  if (!currentProject) return;
+  const { createdBy } = currentProject;
+
   // const calculatedRole = (role: string) => {
   //   return user?._id === createdBy ? Roles.OWNER : role;
   // };
@@ -35,9 +29,6 @@ export const ListTeamMembers = ({
       const config = {
         url: `${environment.VITE_API_URL}/members/remove-teammate`,
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
         data: {
           email,
           projectId: currentProject?._id,
@@ -133,12 +124,7 @@ export const ListTeamMembers = ({
     try {
       const response = await axios.post(
         `${environment.VITE_API_URL}/user/update-role`,
-        { userId, newRole },
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
+        { userId, newRole }
       );
 
       if (response.status === 200) {
