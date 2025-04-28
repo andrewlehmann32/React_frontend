@@ -23,6 +23,10 @@ export const LatestInvoices = () => {
     headers: ["Invoice Number", "Amount", "  Date", "Time", "Status"],
     body: activeProject?.invoices
       ? [...activeProject.invoices]
+          .sort(
+            (a, b) =>
+              new Date(b.createdAt).valueOf() - new Date(a.createdAt).valueOf()
+          )
           .map((invoice) => ({
             invoicenumber: invoice.invoiceNumber,
             amount: `$${invoice.amount}`,
@@ -43,10 +47,6 @@ export const LatestInvoices = () => {
               </p>
             ),
           }))
-          .sort(
-            (a: { date: string }, b: { date: string }) =>
-              new Date(b.date).getTime() - new Date(a.date).getTime()
-          )
       : [],
   };
   return (

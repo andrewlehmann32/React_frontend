@@ -20,13 +20,16 @@ import {
   setToInitial,
   Versions,
 } from "../../redux/reducer/resourcesReducer";
-import { setActiveProject } from "../../redux/reducer/userSlice";
+import {
+  setActiveProject,
+  setUserProjects,
+} from "../../redux/reducer/userSlice";
 import {
   selectActiveProject,
   selectUser,
 } from "../../redux/selectors/userSelector";
 import { RootState } from "../../redux/store";
-import { PlanData } from "../../types/generics.types";
+import { PlanData, ProjectsType } from "../../types/generics.types";
 import { ToggleButton } from "../shared/buttons/buttons";
 import { RDropdownMenu } from "../shared/menus/dropdown-menu";
 import { OrderDropdownMenu } from "../shared/menus/ordering-dropdown";
@@ -227,7 +230,11 @@ export const RenderDetails = ({ plan }: { plan: PlanData }) => {
       if (response.status === 200 || response.status === 201) {
         toast.success("Successfully Deployed!");
         dispatch(setToInitial());
-        dispatch(setActiveProject(response.data?.project));
+        dispatch(setUserProjects(response.data?.projects));
+        const activeProject = response.data.projects.find(
+          (project: ProjectsType) => project._id === currentProject?._id
+        );
+        dispatch(setActiveProject(activeProject));
         navigate("/resources");
       }
     } catch (error: any) {

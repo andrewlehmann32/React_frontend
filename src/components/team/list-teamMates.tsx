@@ -1,10 +1,14 @@
 import toast from "react-hot-toast";
 import { FaRegTrashCan } from "react-icons/fa6";
 import { environment } from "../../config/environment";
-import { useAppDispatch } from "../../hooks/redux";
+import { useAppDispatch, useAppSelector } from "../../hooks/redux";
 import axios from "../../lib/apiConfig";
 import { formatTimestamp } from "../../lib/helpers/utils";
-import { setActiveProject } from "../../redux/reducer/userSlice";
+import {
+  setActiveProject,
+  setUserProjects,
+} from "../../redux/reducer/userSlice";
+import { selectUserProjects } from "../../redux/selectors/userSelector";
 import { menuItems, ProjectsType } from "../../types/generics.types";
 import { RDropdownMenu } from "../shared/menus/dropdown-menu";
 import { DotsDropdown } from "../shared/menus/simple-dropdown";
@@ -16,7 +20,8 @@ export const ListTeamMembers = ({
   currentProject: ProjectsType | null;
 }) => {
   const dispatch = useAppDispatch();
-  // const { user } = useAppSelector(selectUser);
+  const userProjects = useAppSelector(selectUserProjects);
+
   if (!currentProject) return;
   const { createdBy } = currentProject;
 
@@ -39,7 +44,15 @@ export const ListTeamMembers = ({
 
       if (response.status === 200) {
         toast.success(response.data.message);
-        dispatch(setActiveProject(response.data.project));
+        const updatedProject = response.data.project;
+        dispatch(setActiveProject(updatedProject));
+
+        if (userProjects) {
+          const updatedProjects = userProjects.map((project) =>
+            project._id === updatedProject._id ? updatedProject : project
+          );
+          dispatch(setUserProjects(updatedProjects));
+        }
       }
     } catch (err) {
       console.error(err);
@@ -58,6 +71,12 @@ export const ListTeamMembers = ({
           ),
         })
       );
+      if (userProjects) {
+        const updatedProjects = userProjects.map((project) =>
+          project._id === currentProject?._id ? currentProject : project
+        );
+        dispatch(setUserProjects(updatedProjects));
+      }
     }
   };
 

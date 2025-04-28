@@ -4,10 +4,14 @@ import { FaRegTrashAlt } from "react-icons/fa";
 import { environment } from "../../config/environment";
 import { useAppDispatch, useAppSelector } from "../../hooks/redux";
 import axios from "../../lib/apiConfig";
-import { setActiveProject } from "../../redux/reducer/userSlice";
+import {
+  setActiveProject,
+  setUserProjects,
+} from "../../redux/reducer/userSlice";
 import {
   selectActiveProject,
   selectUser,
+  selectUserProjects,
 } from "../../redux/selectors/userSelector";
 import { Modal } from "../shared/popups/modal-box";
 import { Table } from "../shared/table";
@@ -151,6 +155,7 @@ const ListKeys = ({ sshKeys, fetchKeys }: any) => {
 export const Main = () => {
   const dispatch = useAppDispatch();
   const currentProject = useAppSelector(selectActiveProject);
+  const userProjects = useAppSelector(selectUserProjects);
   const { user } = useAppSelector(selectUser);
   if (!user || !currentProject)
     return (
@@ -169,7 +174,15 @@ export const Main = () => {
       };
       const response = await axios(config);
       if (response.status === 200) {
-        dispatch(setActiveProject(response.data.project));
+        const updatedProject = response.data.project;
+        dispatch(setActiveProject(updatedProject));
+
+        if (userProjects) {
+          const updatedProjects = userProjects.map((project) =>
+            project._id === updatedProject._id ? updatedProject : project
+          );
+          dispatch(setUserProjects(updatedProjects));
+        }
       }
     } catch (error) {
       console.error("Error fetching SSH Key:", error);
